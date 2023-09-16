@@ -19,7 +19,7 @@
             align-items: center;
         }
         .logo {
-            width: 100px; /* Ajuste o tamanho da logo conforme necessário */
+            width: 100px;
             height: auto;
             margin-right: 20px;
         }
@@ -39,7 +39,31 @@
         }
         .content {
             padding: 20px;
-            text-align: center; /* Centraliza o texto dentro da div content */
+            text-align: center;
+        }
+        .image-carousel {
+            display: flex;
+            overflow: hidden;
+        }
+        .image-carousel img {
+            flex: 0 0 100%;
+            max-width: 100%;
+            transition: transform 0.5s;
+        }
+        .image-carousel img:hover {
+            transform: scale(1.1);
+        }
+        .login-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -54,10 +78,26 @@
             </ul>
         </nav>
     </header>
+    <a href="tela-Cadastro.html" class="login-button">Entrar/Cadastrar-se</a>
     <div class="content">
-        <!-- Conteúdo da sua página vai aqui -->
         <h1>Bem-vindo à nossa página inicial</h1>
-      
+        <div class="image-carousel">
+            <img src="imagens/imagem1.jgp.jpg" alt="Imagem 1">
+            <img src="imagens/imagem2.jgp.webp" alt="Imagem 2">
+            <img src="imagens/imagem3.jgp.jpg" alt="Imagem 3">
+        </div>
     </div>
+    <script>
+        let currentImageIndex = 0;
+        const images = document.querySelectorAll('.image-carousel img');
+        
+        function nextImage() {
+            images[currentImageIndex].style.transform = 'translateX(-100%)';
+            currentImageIndex = (currentImageIndex + 1) % images.length;
+            images[currentImageIndex].style.transform = 'translateX(0)';
+        }
+
+        setInterval(nextImage, 3000); // Troca de imagem a cada 3 segundos
+    </script>
 </body>
 </html>
