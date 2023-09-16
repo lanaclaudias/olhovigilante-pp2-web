@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de Dados Pessoais</title>
+    <title>Cadastro de Dados</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #007bff; 
+            background-color: #00458f; 
             padding: 0;
             display: flex;
             justify-content: center;
@@ -44,13 +44,15 @@
             border-radius: 5px;
             padding: 10px 20px;
             cursor: pointer;
+            margin-bottom: 50px;
+            
         }
     </style>
 </head>
 <body>
     <div class="container">
         <img src="imagens/logo.jgp.jpg" alt="Logo da Empresa" class="logo">
-        <h2>Cadastro de Dados Pessoais</h2>
+        <h2>Login</h2>
         <form>
             <input type="text" placeholder="Nome Completo" required>
             <input type="email" placeholder="E-mail" required>
@@ -65,7 +67,7 @@
                 <option value="MG">Minas Gerais</option>
                 <!-- Adicione mais estados conforme necessário -->
             </select>
-            <input type="tel" placeholder="Telefone" required>
+            <input type="tel" placeholder="Telefone(ex:(81)98888-8888)" required>
             <label for="sexo">Sexo:</label>
             <input type="radio" name="sexo" value="masculino"> Masculino
             <input type="radio" name="sexo" value="feminino"> Feminino
