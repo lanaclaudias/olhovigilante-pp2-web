@@ -1,19 +1,15 @@
-import React from 'react';
-import './App.css'
+import React from "react";
+import ReactDOM from "react-dom";
+import "./index.css"; // Certifique-se de importar o arquivo CSS correspondente
+import Home from './Home';
+import Rotas from './Rotas';
 
 function App() {
   return (
-    <div className="container">
-      <img src="./logo.jpg" alt="Logo da Empresa" className="logo" />
-      <h2>Login</h2>
-      <form>
-        <input type="email" placeholder="E-mail" required />
-        <input type="password" placeholder="Senha" required />
-        <button type="submit">Cadastrar</button>
-      </form>
+    <div>
+      <Rotas />
     </div>
   );
-
 }
 
 export default App;
