@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Página Inicial</title>
     <style>
+
+
+    .image-carousel img {
+        flex: 0 0 100%;
+        max-width: 100%;
+        max-height: 400px;
+        transition: transform 0.5s;
+    }
+
+
+
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -12,7 +23,7 @@
             background-color: #f2f2f2;
         }
         header {
-            background-color: #007bff;
+            background-color: #033c63;
             color: #fff;
             padding: 20px;
             display: flex;
@@ -57,8 +68,8 @@
             position: fixed;
             top: 20px;
             right: 20px;
-            background-color: #007bff;
-            color: #fff;
+            background-color: #ffffff;
+            color: #000000;
             padding: 10px 20px;
             border: none;
             border-radius: 5px;
@@ -69,7 +80,7 @@
 </head>
 <body>
     <header>
-        <img src="imagens/logo.jgp.jpg" alt="Logo da Empresa" class="logo">
+        <img src="imagens/logprovi.jgp.png" alt="Logo da Empresa" class="logo" style="width: 100px; height: auto;">
         <nav>
             <ul>
                 <li><a href="#">Página Inicial</a></li>
@@ -78,13 +89,14 @@
             </ul>
         </nav>
     </header>
+    
     <a href="tela-Cadastro.html" class="login-button">Entrar/Cadastrar-se</a>
     <div class="content">
-        <h1>Bem-vindo à nossa página inicial</h1>
+        <h1>Bem-vindo ao nosso site !</h1>
         <div class="image-carousel">
-            <img src="imagens/imagem1.jgp.jpg" alt="Imagem 1">
-            <img src="imagens/imagem2.jgp.webp" alt="Imagem 2">
-            <img src="imagens/imagem3.jgp.jpg" alt="Imagem 3">
+            <img src="imagens/olho2.jgp.jpg" alt="Imagem 1">
+            <img src="imagens/olho4.jgp.jpg" alt="Imagem 2">
+            <img src="imagens/olho4.jgp.jpg" alt="Imagem 3">
         </div>
     </div>
     <script>
@@ -99,5 +111,9 @@
 
         setInterval(nextImage, 3000); // Troca de imagem a cada 3 segundos
     </script>
+    <footer style="background-color: #000000; color: #ffffff; text-align: center; padding: 30px;">
+        &copy; 2023 OlhoVigilante
+    </footer>
+    
 </body>
 </html>
