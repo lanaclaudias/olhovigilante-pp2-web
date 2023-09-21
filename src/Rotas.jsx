@@ -1,9 +1,9 @@
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes } from "react-router-dom";
 
-import Home from './Home';
-import Login from './Login';
-import Cadastro from './Cadastro';
-import NotFound from './NotFound';
+import Cadastro from "./Cadastro";
+import Login from "./Login";
+import NotFound from "./NotFound";
+import Home from "./components/Home";
 
 function Rotas() {
   return (
