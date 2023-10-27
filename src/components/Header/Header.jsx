@@ -10,7 +10,7 @@ const Header = () => {
         <nav>
           <ul className="flex gap-12">
             <li>
-              <a href="">Inicio</a>
+              <a href="Login.jsx">Inicio</a>
             </li>
             <li>
               <a href="">Entrar</a>
