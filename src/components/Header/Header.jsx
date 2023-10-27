@@ -10,13 +10,19 @@ const Header = () => {
         <nav>
           <ul className="flex gap-12">
             <li>
-              <a href="Login.jsx">Inicio</a>
+              <a href="">INICIO</a>
             </li>
             <li>
-              <a href="">Entrar</a>
+              <a href="OCORRENCIAS">OCORRENCIAS</a>
             </li>
             <li>
-              <a href="">Cadastrar</a>
+              <a href="ARTIGOS">ARTIGOS</a>
+            </li>
+            <li>
+              <a href="ONDE DENUNCIAR">ONDE DENUNCIAR</a>
+            </li>
+            <li>
+              <a href="PERFIL">PERFIL</a>
             </li>
           </ul>
         </nav>
