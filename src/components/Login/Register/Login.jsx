@@ -37,7 +37,7 @@ function Login() {
               </h1>
               <p className="text-black text-lg mt-6">
                 Aqui, você pode compartilhar informações, conhecer seus vizinhos, sua cidade,
-                e ajudar a tornar sua comunidade mais segura. Junte-se a nós!
+                e ajudar a tornar sua comunidade mais segura. Junte-se a nós !!
               </p>
             </div>
           </div>
