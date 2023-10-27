@@ -42,7 +42,7 @@ const Register = () => {
   const [confirmaSenha, setConfirmaSenha] = useState();
 
   return (
-    <main className="flex justify-center mx-auto mb-8">
+    <main className="flex container justify-center mx-auto mb-8">
       <div>
         <h1 className="text-2xl font-bold text-black  pt-[20px]">
           Cadastre-se
