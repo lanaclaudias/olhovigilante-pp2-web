@@ -20,7 +20,10 @@ function Login() {
               justifyContent: 'center',
               textAlign: 'center',
               position: 'relative',
-              marginBottom:'10px'
+              marginBottom:'11px',
+              
+              
+
             }}
           >
             <div
