@@ -1,31 +1,48 @@
-import logo from "../../assets/logo.png";
+import logo from "/mini-logo.png";
 
 const Header = () => {
   return (
     <header className="bg-black">
-      <div className="container mx-auto flex justify-between content-center items-center flex-wrap">
-        <a href="">
-          <img src={logo} alt="" />
+      <div className="container flex justify-between items-center flex-wrap">
+        <a href="/">
+          <img src={logo} alt="" className="mt-1" />
         </a>
         <nav>
-          <ul className="flex gap-12">
+          <ul className="flex items-center gap-12">
             <li>
-              <a href="">INICIO</a>
+              <a href="/" className="flex flex-col">
+                <img src="icon-inicio.svg" alt="" className="self-center" />
+                <p>Início</p>
+              </a>
             </li>
             <li>
-              <a href="OCORRENCIAS">OCORRENCIAS</a>
+              <a href="/ocorrencias" className="flex flex-col">
+                <img
+                  src="icon-ocorrencias.svg"
+                  alt=""
+                  className="self-center"
+                />
+                <p>Ocorrências</p>
+              </a>
             </li>
             <li>
-              <a href="ARTIGOS">ARTIGOS</a>
+              <a href="comunidade" className="flex flex-col">
+                <img src="icon-comunidade.svg" alt="" className="self-center" />
+                <p>Comunidade</p>
+              </a>
             </li>
             <li>
-              <a href="ONDE DENUNCIAR">ONDE DENUNCIAR</a>
-            </li>
-            <li>
-              <a href="PERFIL">PERFIL</a>
+              <a href="/denunciar" className="flex flex-col">
+                <img src="megaphone.svg" alt="" className="self-center w-8" />
+                <p>Onde Denunciar</p>
+              </a>
             </li>
           </ul>
         </nav>
+        <a href="/perfil" className="flex flex-col">
+          <img src="icon-usuario.svg" alt="" className="self-center w-8" />
+          <p>Perfil</p>
+        </a>
       </div>
     </header>
   );
