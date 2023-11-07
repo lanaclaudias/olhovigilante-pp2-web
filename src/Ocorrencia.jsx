@@ -1,4 +1,5 @@
 import React from 'react';
+import Mapa from './assets/mapa.png';
 import Header from './components/Header/Header';
 
 const fields = [
@@ -24,16 +25,19 @@ const Ocorrencia = () => {
       <Header />
       <div className="container">
         <h2 className="text-white text-center">Faça uma Ocorrência!</h2>
-        <div className="flex space-x-4 justify-center items-center">
+        <div className="flex space-x-4 justify-between items-center">
+          <div className='flex gap-10'>
           <button className="bg-black text-white font-bold py-2 px-4 rounded">
             Minhas Ocorrências
           </button>
+
           <button
             onClick={() => setShowModal(true)}
             className="bg-black text-white font-bold py-2 px-4 rounded"
           >
             Nova Ocorrência
           </button>
+          </div>
           <div className="flex space-x-4 justify-end pr-4">
             {' '}
             {/* Adicionando a classe pr-4 para margem direita */}
@@ -41,7 +45,7 @@ const Ocorrencia = () => {
               <input
                 type="text"
                 placeholder="Buscar"
-                className="border rounded-l px-4 py-2 focus:outline-none focus:ring focus:border-blue-300"
+                className="border-2 border-blue-500 rounded-tl-none px-10 py-2 focus:outline-none focus:ring focus:border-blue-800"
               />
               <button className="bg-blue-500 hover-bg-blue-700 text-white font-bold py-2 px-4 rounded-r">
                 Buscar
@@ -49,7 +53,17 @@ const Ocorrencia = () => {
             </div>
           </div>
         </div>
+
+        <div className='flex justify-between gap-10 items-start pt-10'>
+          
+        <div> 
+        <img src={Mapa}/>
+
+        </div>
+
         <div className="container mx-auto mt-4 p-4 rounded border border-gray-300 w-1/2">
+
+        
           {' '}
           {/* Definindo a largura para 50% (w-1/2) */}
           <p className="text-black font-semibold">
@@ -57,11 +71,9 @@ const Ocorrencia = () => {
           </p>
           <p className="text-gray-600">16/10/2023 20:40</p>
         </div>
-        <form>
-          <input type="text" id="nome" required />
-        </form>
+   
       </div>
-
+      </div>
       {/* MODAL */}
 
       {showModal ? (
