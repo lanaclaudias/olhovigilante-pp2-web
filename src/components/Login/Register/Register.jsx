@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import cepPromise from "cep-promise";
 
 const Register = () => {
   const [nome, setNome] = useState();
