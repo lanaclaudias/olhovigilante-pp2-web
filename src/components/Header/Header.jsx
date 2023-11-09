@@ -16,7 +16,7 @@ const Header = () => {
               </a>
             </li>
             <li>
-              <a href="/ocorrencias" className="flex flex-col">
+              <a href="/ocorrencia" className="flex flex-col">
                 <img
                   src="icon-ocorrencias.svg"
                   alt=""

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import cepPromise from "cep-promise";
 
@@ -12,6 +12,21 @@ const Register = () => {
   const [senha, setSenha] = useState();
   const [confirmaSenha, setConfirmaSenha] = useState();
 
+  /*useEffect(() => {
+    if (cep && cep.length == 8) {
+      cepPromise(cep)
+        .then((data) => {
+          setBairro(data.neighborhood);
+          setCidade(data.city);          
+        })
+        .catch((err) => {
+          err.errors.map((e) => {
+            alert(e.message);
+          });
+        });
+    }
+  });*/
+
   const fields = [
     {
       label: "NOME",
@@ -24,20 +39,21 @@ const Register = () => {
       label: "CEP",
       type: "text",
       placeholder: "Digite o seu cep",
-      handleChange: (e) => setCep(e.target.value),
+      maxlength: 8,
+      handleChange: (e) => setCep(e.target.value)
     },
     {
       label: "CIDADE",
       type: "text",
       placeholder: "",
-      disabled: true,
+      //disabled: true,
       handleChange: (e) => setCidade(e.target.value),
     },
     {
       label: "BAIRRO",
       type: "text",
       placeholder: "",
-      disabled: true,
+      //disabled: true,
       handleChange: (e) => setBairro(e.target.value),
     },
     {
@@ -52,6 +68,7 @@ const Register = () => {
       type: "text",
       placeholder: "***.***.**-**",
       required: true,
+      maxlength: 11,
       handleChange: (e) => setCpf(e.target.value),
     },
     {
@@ -72,13 +89,26 @@ const Register = () => {
 
   function handleSubmit(e) {
     e.preventDefault();
+    if (cep && cep.length == 8) {
+      cepPromise(cep)
+        .then((data) => {
+          setBairro(data.neighborhood);
+          setCidade(data.city);          
+        })
+        .catch((err) => {
+          err.errors.map((e) => {
+            alert(e.message);
+          });
+        });
+    }
     salvar();
   }
 
   function salvar() {
+
     const usuarioRequest = {
       nome: nome,
-      cep: cep,
+      //  cep: cep,
       cidade: cidade,
       bairro: bairro,
       email: email,
@@ -86,18 +116,19 @@ const Register = () => {
       senha: senha,
       confirmaSenha: confirmaSenha,
     };
+
     if (senha != confirmaSenha) {
-      alert("Senha e Confirmação não conferem.");
+      alert("A senha e a confirmação não são iguais.");
     } else {
       axios
         .post("http://localhost:8082/api/usuario", usuarioRequest)
         .then(
           //(res) => console.log("Usuário cadastrado com sucesso.")
-          (r) => alert("cadastrado " + r.data)
+          (r) => alert("Usuário cadastrado com sucesso.")
         )
         .catch(
           //(err) => console.log("Erro ao cadastrar usuário.")
-          (e) => alert("falha ao cadastrar.\n" + e.name + " - " + e.message)
+          (e) => alert("Falha ao cadastrar.\n" + e.name + " - " + e.message)
         );
     }
   }
@@ -112,7 +143,7 @@ const Register = () => {
           Mantenha-se informado sobre a sua região.
         </p>
         <form
-          className="mt-[12px] border-2 rounded-lg bg-white pl-[46px] pr-[38px] pt-[45px] w-[540px] shadow py-[32px]"
+          className="flex flex-col mt-[12px] border-2 rounded-lg bg-white pl-[46px] pr-[38px] pt-[45px] w-[540px] shadow py-[32px]"
           onSubmit={handleSubmit}
         >
           {fields.map((field, index) => (
@@ -129,16 +160,17 @@ const Register = () => {
                 required={field.required}
                 type={field.type}
                 placeholder={field.placeholder}
+                maxlength={field.maxlength}
                 onChange={field.handleChange}
                 className="border rounded-[6px] p-3 w-full mb-4 text-black"
               />
             </div>
           ))}
-          <div className="flex gap-2">
-            <input id="termos" type="checkbox" required />
+          <div className="">
+            <input className="inline-block mr-2" id="termos" type="checkbox" required />
             <label htmlFor="termos" className="text-black">
-              Eu concordo com os{" "}
-              <a href="" className="text-blue-400 underline">
+              Eu concordo com os {" "}
+              <a href="/tos" className="text-blue-400 underline">
                 termos de serviço
               </a>
             </label>
@@ -152,7 +184,7 @@ const Register = () => {
         </form>
         <p className="flex justify-center text-black mt-5 gap-1">
           Já tem uma conta?
-          <a href="" className="text-blue-400 underline">
+          <a href="/login" className="text-blue-400 underline">
             entre aqui.
           </a>
         </p>
