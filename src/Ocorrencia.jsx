@@ -3,6 +3,7 @@ import { useState } from "react";
 import Mapa from "./assets/mapa.png";
 import Header from "./components/Header/Header";
 import axios from "axios";
+import { stringify } from "postcss";
 
 const Ocorrencia = () => {
   const fields = [
@@ -38,20 +39,20 @@ const Ocorrencia = () => {
       type: "time",
       handleChange: (e) => setHora(e.target.value),
     },
-    //{ label: 'Presença policial?', type: 'radio', values: ['Sim', 'Não'] },
-    //{ label: 'Ação policial?', type: 'text' },
-    //{ label: 'Motivação', type: 'textarea' },
-    //{ label: 'Quantidade de vitimas', type: 'text' },
-    { label: "Midia", type: "file", onChange: (e) => setMidia(e.target.value) }, // implementação apropriada para múltiplos arquivos pendente e necessita integrar com a API de Mídia já configurada com suas associações
+    { 
+      label: "Midia",
+      type: "file",
+      handleChange: (e) => setMidia(e.target.value)
+    }, // implementação apropriada para múltiplos arquivos pendente e necessita integrar com a API de Mídia já configurada com suas associações
     {
       label: "Geolocalização",
       type: "text",
-      onChange: (e) => setGeolocalizacao(e.target.value),
+      handleChange: (e) => setGeolocalizacao(e.target.value),
     }, // aguardando a integração com a API do Google Maps
     {
       label: "ID do Usuário",
       type: "text",
-      onChange: (e) => setUsuarioId(parseInt(e.target.value)),
+      handleChange: (e) => setUsuarioId(parseInt(e.target.value)),
     }, // campo temporário até a implementação do login de usuário
   ];
 
@@ -63,7 +64,7 @@ const Ocorrencia = () => {
   const [data, setData] = useState();
   const [hora, setHora] = useState();
   const [midia, setMidia] = useState();
-  const [geolocalizacao, setGeolocalizacao] = useState();
+  const [geolocalizacao, setGeolocalizacao] = useState("");
   const [usuarioId, setUsuarioId] = useState();
 
   function salvar() {
@@ -74,11 +75,11 @@ const Ocorrencia = () => {
       bairro: bairro,
       dataHoraOcorrencia: data,
       hora: hora,
-      midia: midia, // não funcionam no momento / undefined
-      geolocalizacao: geolocalizacao, // não funcionam no momento / undefined
-      usuarioId: usuarioId, // não funcionam no momento / undefined
+      midia: midia,
+      geolocalizacao: geolocalizacao,
+      usuarioId: usuarioId,
     };
-    console.log(ocorrenciaRequest);
+    //console.log(JSON.stringify(ocorrenciaRequest));
     axios
       .post("http://localhost:8082/api/ocorrencia", ocorrenciaRequest)
       .then((r) => {
