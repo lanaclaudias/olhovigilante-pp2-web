@@ -93,7 +93,8 @@ const Register = () => {
       cepPromise(cep)
         .then((data) => {
           setBairro(data.neighborhood);
-          setCidade(data.city);          
+          setCidade(data.city);
+          salvar();          
         })
         .catch((err) => {
           err.errors.map((e) => {
@@ -101,7 +102,6 @@ const Register = () => {
           });
         });
     }
-    salvar();
   }
 
   function salvar() {
