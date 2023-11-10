@@ -160,7 +160,7 @@ const Register = () => {
                 required={field.required}
                 type={field.type}
                 placeholder={field.placeholder}
-                maxlength={field.maxlength}
+                maxLength={field.maxlength}
                 onChange={field.handleChange}
                 className="border rounded-[6px] p-3 w-full mb-4 text-black"
               />

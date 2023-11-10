@@ -1,11 +1,22 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Mapa from "./assets/mapa.png";
 import Header from "./components/Header/Header";
 import axios from "axios";
 import { stringify } from "postcss";
 
 const Ocorrencia = () => {
+  /*useEffect((props) => {
+    axios
+    .get("http://localhost:8082/api/usuario")
+    .then(
+      (res) => {
+        setOcorrenciasLista = res.data;
+        console.log(ocorrenciasLista)
+      }
+    )
+  });*/
+
   const fields = [
     {
       label: "Tipo de Ocorrência",
@@ -50,7 +61,7 @@ const Ocorrencia = () => {
       handleChange: (e) => setGeolocalizacao(e.target.value),
     }, // aguardando a integração com a API do Google Maps
     {
-      label: "ID do Usuário",
+      label: "ID do Usuário (campo temporário pela falta de implementação de login)",
       type: "text",
       handleChange: (e) => setUsuarioId(parseInt(e.target.value)),
     }, // campo temporário até a implementação do login de usuário
