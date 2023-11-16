@@ -1,16 +1,22 @@
-import { useState, useEffect } from "react";
+//<script src="http://localhost:8097"></script>
+import { useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
 import cepPromise from "cep-promise";
 
 const Register = () => {
   const [nome, setNome] = useState();
-  const [cep, setCep] = useState();
+  const [cep, setCep] = useState("");
   const [cidade, setCidade] = useState();
   const [bairro, setBairro] = useState();
   const [email, setEmail] = useState();
   const [cpf, setCpf] = useState();
   const [senha, setSenha] = useState();
   const [confirmaSenha, setConfirmaSenha] = useState();
+  
+  const [, updateState] = useState();
+  const forceUpdate = useCallback( () => updateState({}), [])
+  const bairroRef = useRef(null);
+  const cidadeRef = useRef(null);
 
   /*useEffect(() => {
     if (cep && cep.length == 8) {
@@ -26,7 +32,7 @@ const Register = () => {
         });
     }
   });*/
-
+  
   const fields = [
     {
       label: "NOME",
@@ -40,21 +46,33 @@ const Register = () => {
       type: "text",
       placeholder: "Digite o seu cep",
       maxlength: 8,
-      handleChange: (e) => setCep(e.target.value)
+      handleChange: (e) => {
+        //const currentCidade = e.target.value;
+        //if(currentCidade && currentCidade.length === 8) {
+        //  console.log(currentCidade)
+        //}
+        //cidadeRef.current.value = e.target.value.length;
+        setCep(e.target.value);
+      },
+      handleBlur: (e) => {
+        cidadeRef.current.value = cep;
+      }
     },
     {
       label: "CIDADE",
       type: "text",
       placeholder: "",
-      //disabled: true,
-      handleChange: (e) => setCidade(e.target.value),
+      ref: cidadeRef,
+      disabled: true,
+      //handleChange: (e) => {},
     },
     {
       label: "BAIRRO",
       type: "text",
       placeholder: "",
-      //disabled: true,
-      handleChange: (e) => setBairro(e.target.value),
+      bairro: bairroRef,
+      disabled: true,
+      //handleChange: (e) => setBairro(e.target.value),
     },
     {
       label: "EMAIL",
@@ -161,7 +179,9 @@ const Register = () => {
                 type={field.type}
                 placeholder={field.placeholder}
                 maxLength={field.maxlength}
+                ref={field.ref}
                 onChange={field.handleChange}
+                onBlur={field.handleBlur}
                 className="border rounded-[6px] p-3 w-full mb-4 text-black"
               />
             </div>
