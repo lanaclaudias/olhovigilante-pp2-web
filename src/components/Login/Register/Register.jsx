@@ -6,15 +6,15 @@ import cepPromise from "cep-promise";
 const Register = () => {
   const [nome, setNome] = useState();
   const [cep, setCep] = useState("");
-  const [cidade, setCidade] = useState();
-  const [bairro, setBairro] = useState();
+  const [cidade, setCidade] = useState("");
+  const [bairro, setBairro] = useState("");
   const [email, setEmail] = useState();
   const [cpf, setCpf] = useState();
   const [senha, setSenha] = useState();
   const [confirmaSenha, setConfirmaSenha] = useState();
-  
+
   const [, updateState] = useState();
-  const forceUpdate = useCallback( () => updateState({}), [])
+  const forceUpdate = useCallback(() => updateState({}), [])
   const bairroRef = useRef(null);
   const cidadeRef = useRef(null);
 
@@ -32,10 +32,10 @@ const Register = () => {
         });
     }
   });*/
-  
+
   const fields = [
     {
-      label: "NOME",
+      label: "NOME *",
       type: "text",
       placeholder: "Digite o seu nome",
       required: true,
@@ -53,9 +53,26 @@ const Register = () => {
         //}
         //cidadeRef.current.value = e.target.value.length;
         setCep(e.target.value);
+        //setBairro("hey")
       },
       handleBlur: (e) => {
-        cidadeRef.current.value = cep;
+        cepPromise(cep)
+          .then((data) => {
+            bairroRef.current.value = data.neighborhood
+            cidadeRef.current.value = data.city;
+            setBairro(bairroRef.current.value);
+            setCidade(cidadeRef.current.value);
+          })
+          .catch((err) => {
+            console.log(err)
+            bairroRef.current.value = "CEP Vazio ou Inválido"
+            cidadeRef.current.value = "";
+            setBairro(bairroRef.current.value);
+            setCidade(cidadeRef.current.value);
+            /*err.errors.map((e) => {
+              //console.log(e.message);
+            });*/
+          });
       }
     },
     {
@@ -70,7 +87,7 @@ const Register = () => {
       label: "BAIRRO",
       type: "text",
       placeholder: "",
-      bairro: bairroRef,
+      ref: bairroRef,
       disabled: true,
       //handleChange: (e) => setBairro(e.target.value),
     },
@@ -107,19 +124,7 @@ const Register = () => {
 
   function handleSubmit(e) {
     e.preventDefault();
-    if (cep && cep.length == 8) {
-      cepPromise(cep)
-        .then((data) => {
-          setBairro(data.neighborhood);
-          setCidade(data.city);
-          salvar();          
-        })
-        .catch((err) => {
-          err.errors.map((e) => {
-            alert(e.message);
-          });
-        });
-    }
+    salvar();
   }
 
   function salvar() {
@@ -134,7 +139,7 @@ const Register = () => {
       senha: senha,
       confirmaSenha: confirmaSenha,
     };
-
+    console.log(usuarioRequest);
     if (senha != confirmaSenha) {
       alert("A senha e a confirmação não são iguais.");
     } else {
