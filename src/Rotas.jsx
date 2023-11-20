@@ -1,7 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 
-import Cadastro from "./Cadastro";
-
+import Cadastro from "./components/Login/Register/Register";
 import NotFound from "./NotFound";
 import Home from "./components/Home";
 import Ocorrencia from "./Ocorrencia";
