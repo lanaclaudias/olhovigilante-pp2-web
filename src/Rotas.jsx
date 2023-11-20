@@ -16,7 +16,7 @@ function Rotas() {
         <Route path="login" element={<Login />} />
         <Route path="cadastro" element={<Cadastro />} />
         <Route path="ocorrencia" element={<Ocorrencia />} />
-        <Route path="home" element={<Home />} />
+        <Route path="/" element={<Home />} />
         <Route path="*" element={<NotFound />} /> {/* Página 404 */}
       </Routes>
     </>
