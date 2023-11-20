@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
 import cepPromise from "cep-promise";
+import Header from "../../Header/Header";
 
 const Register = () => {
   const [nome, setNome] = useState();
@@ -14,7 +15,7 @@ const Register = () => {
   const [confirmaSenha, setConfirmaSenha] = useState();
 
   const [, updateState] = useState();
-  const forceUpdate = useCallback(() => updateState({}), [])
+  const forceUpdate = useCallback(() => updateState({}), []);
   const bairroRef = useRef(null);
   const cidadeRef = useRef(null);
 
@@ -58,14 +59,14 @@ const Register = () => {
       handleBlur: (e) => {
         cepPromise(cep)
           .then((data) => {
-            bairroRef.current.value = data.neighborhood
+            bairroRef.current.value = data.neighborhood;
             cidadeRef.current.value = data.city;
             setBairro(bairroRef.current.value);
             setCidade(cidadeRef.current.value);
           })
           .catch((err) => {
-            console.log(err)
-            bairroRef.current.value = "CEP Vazio ou Inválido"
+            console.log(err);
+            bairroRef.current.value = "CEP Vazio ou Inválido";
             cidadeRef.current.value = "";
             setBairro(bairroRef.current.value);
             setCidade(cidadeRef.current.value);
@@ -73,7 +74,7 @@ const Register = () => {
               //console.log(e.message);
             });*/
           });
-      }
+      },
     },
     {
       label: "CIDADE",
@@ -128,7 +129,6 @@ const Register = () => {
   }
 
   function salvar() {
-
     const usuarioRequest = {
       nome: nome,
       //  cep: cep,
@@ -157,64 +157,72 @@ const Register = () => {
   }
 
   return (
-    <main className="flex container justify-center mx-auto mb-8">
-      <div>
-        <h1 className="text-2xl font-bold text-black  pt-[20px]">
-          Cadastre-se
-        </h1>
-        <p className="text-slate-500 w-[230px] text-[18px]">
-          Mantenha-se informado sobre a sua região.
-        </p>
-        <form
-          className="flex flex-col mt-[12px] border-2 rounded-lg bg-white pl-[46px] pr-[38px] pt-[45px] w-[540px] shadow py-[32px]"
-          onSubmit={handleSubmit}
-        >
-          {fields.map((field, index) => (
-            <div key={index}>
-              <label
-                htmlFor={field.label}
-                className="block text-black font-bold"
-              >
-                {field.label}
-              </label>
-              <input
-                id={field.label}
-                disabled={field.disabled}
-                required={field.required}
-                type={field.type}
-                placeholder={field.placeholder}
-                maxLength={field.maxlength}
-                ref={field.ref}
-                onChange={field.handleChange}
-                onBlur={field.handleBlur}
-                className="border rounded-[6px] p-3 w-full mb-4 text-black"
-              />
-            </div>
-          ))}
-          <div className="">
-            <input className="inline-block mr-2" id="termos" type="checkbox" required />
-            <label htmlFor="termos" className="text-black">
-              Eu concordo com os {" "}
-              <a href="/tos" className="text-blue-400 underline">
-                termos de serviço
-              </a>
-            </label>
-          </div>
-          <button
-            type="submit"
-            className="font-bold bg-blue-400 px-[52px] py-[12px] rounded-lg mt-3 hover:bg-red-600"
+    <>
+      <Header />
+      <main className="flex container justify-center mx-auto mb-8">
+        <div>
+          <h1 className="text-2xl font-bold text-black  pt-[20px]">
+            Cadastre-se
+          </h1>
+          <p className="text-slate-500 w-[230px] text-[18px]">
+            Mantenha-se informado sobre a sua região.
+          </p>
+          <form
+            className="flex flex-col mt-[12px] border-2 rounded-lg bg-white pl-[46px] pr-[38px] pt-[45px] w-[540px] shadow py-[32px]"
+            onSubmit={handleSubmit}
           >
-            CADASTRAR
-          </button>
-        </form>
-        <p className="flex justify-center text-black mt-5 gap-1">
-          Já tem uma conta?
-          <a href="/login" className="text-blue-400 underline">
-            entre aqui.
-          </a>
-        </p>
-      </div>
-    </main>
+            {fields.map((field, index) => (
+              <div key={index}>
+                <label
+                  htmlFor={field.label}
+                  className="block text-black font-bold"
+                >
+                  {field.label}
+                </label>
+                <input
+                  id={field.label}
+                  disabled={field.disabled}
+                  required={field.required}
+                  type={field.type}
+                  placeholder={field.placeholder}
+                  maxLength={field.maxlength}
+                  ref={field.ref}
+                  onChange={field.handleChange}
+                  onBlur={field.handleBlur}
+                  className="border rounded-[6px] p-3 w-full mb-4 text-black"
+                />
+              </div>
+            ))}
+            <div className="">
+              <input
+                className="inline-block mr-2"
+                id="termos"
+                type="checkbox"
+                required
+              />
+              <label htmlFor="termos" className="text-black">
+                Eu concordo com os{" "}
+                <a href="/tos" className="text-blue-400 underline">
+                  termos de serviço
+                </a>
+              </label>
+            </div>
+            <button
+              type="submit"
+              className="font-bold bg-blue-400 px-[52px] py-[12px] rounded-lg mt-3 hover:bg-red-600"
+            >
+              CADASTRAR
+            </button>
+          </form>
+          <p className="flex justify-center text-black mt-5 gap-1">
+            Já tem uma conta?
+            <a href="/login" className="text-blue-400 underline">
+              entre aqui.
+            </a>
+          </p>
+        </div>
+      </main>
+    </>
   );
 };
 

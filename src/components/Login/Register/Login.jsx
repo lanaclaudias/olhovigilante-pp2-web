@@ -1,4 +1,3 @@
-import Logo from "../../../assets/Polygon.png.png";
 import Header from "../../Header/Header";
 
 function Login() {
@@ -8,7 +7,7 @@ function Login() {
       <div className="container flex flex-wrap mt-20 items-center">
         <div className="flex">
           <div
-            className={`bg-[url(../../public/Polygon.png.png)] bg-contain bg-no-repeat w-[600px] h-[600px] flex items-center justify-center text-center relative mb-[11px]`}
+            className={`bg-[url(/Polygon.png)] bg-contain bg-no-repeat w-[600px] h-[600px] flex items-center justify-center text-center relative mb-[11px]`}
           >
             <div className="max-w-[100%] p-5 bg-white/70 rounded-lg text-center">
               <h1 className="text-black text-6xl mt-10 font-serif{ExtraBold} not-italic">
