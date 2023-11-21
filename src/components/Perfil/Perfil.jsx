@@ -1,14 +1,14 @@
-import Header from '../Header/Header';
-import Abas from './Abas';
-import fotoPerfil from '/foto-perfil.png';
-import banner from '/banner.png';
-import engrenagem from '/engrenagem.svg';
-import { useState } from 'react';
+import Header from "../Header/Header";
+import Abas from "./Abas";
+import fotoPerfil from "/foto-perfil.png";
+import banner from "/banner.png";
+import engrenagem from "/engrenagem.svg";
+import { useState } from "react";
 
 const Perfil = () => {
   const [showModal, setShowModal] = useState(false);
   const [nome, setNome] = useState();
-  const [cep, setCep] = useState('');
+  const [cep, setCep] = useState("");
   const [email, setEmail] = useState();
   const [cpf, setCpf] = useState();
   const [senha, setSenha] = useState();
@@ -19,29 +19,29 @@ const Perfil = () => {
 
   const fields = [
     {
-      label: 'Nome',
-      type: 'text',
+      label: "Nome",
+      type: "text",
       handleChange: (e) => setNome(e.target.value),
     }, // implementar select
     {
-      label: 'CEP',
-      type: 'text',
-      placeholder: '00.000-000',
+      label: "CEP",
+      type: "text",
+      placeholder: "00.000-000",
       handleChange: (e) => setCep(e.target.value),
     },
     {
-      label: 'Email',
-      type: 'email',
+      label: "Email",
+      type: "email",
       handleChange: (e) => setEmail(e.target.value),
     },
     {
-      label: 'CPF',
-      type: 'text',
+      label: "CPF",
+      type: "text",
       handleChange: (e) => setCpf(e.target.value),
     },
     {
-      label: 'Redefinir senha',
-      type: 'password',
+      label: "Redefinir senha",
+      type: "password",
       handleChange: (e) => setSenha(e.target.value),
     },
   ];
@@ -55,7 +55,7 @@ const Perfil = () => {
         </div>
         <button
           onClick={handleClick}
-          className="absolute top-10 right-0 flex rounded-l-lg font-semibold text-[16px] gap-2 px-[22px] py-[8px] bg-black"
+          className="absolute text-white top-10 right-0 flex rounded-l-lg font-semibold text-[16px] gap-2 px-[22px] py-[8px] bg-black"
         >
           Editar perfil <img src={engrenagem} alt="" />
         </button>
@@ -83,10 +83,7 @@ const Perfil = () => {
       {showModal ? (
         <>
           {/* Falta o elemento form com o botão de submit interno*/}
-          <form
-            className="justify-center items-start flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
-            // onSubmit={handleSubmit}
-          >
+          <form className="justify-center items-start flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
             <div className="relative min-w-[550px] my-6 mx-auto max-w-3xl">
               {/*content*/}
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
@@ -99,7 +96,7 @@ const Perfil = () => {
                       <label className="block text-black font-bold">
                         {label}
                       </label>
-                      {type === 'radio' ? (
+                      {type === "radio" ? (
                         <div className="flex">
                           {values.map((value, index) => (
                             <div key={index} className="mr-4">
