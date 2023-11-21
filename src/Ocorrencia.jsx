@@ -5,22 +5,119 @@ import Header from "./components/Header/Header";
 import axios from "axios";
 import { stringify } from "postcss";
 
+const TipoOcorrenciaSelect = (props) => {
+  return (
+    <>
+      <label for="countries" className="block mb-2 text-sm font-medium">Select an option</label>
+      <select id="countries" className="text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+        
+        {/* Corrigir */}
+        {props.lista.map(
+          (elem, index) => {
+            <option value="test">test</option>
+          }
+        )}
+        {/* <option selected>Choose a country</option>
+        <option value="US">United States</option>
+        <option value="CA">Canada</option>
+        <option value="FR">France</option>
+        <option value="DE">Germany</option> */}
+      </select>
+
+    </>
+  )
+};
+
 const Ocorrencia = () => {
   /*useEffect((props) => {
     axios
     .get("http://localhost:8082/api/usuario")
     .then(
       (res) => {
-        setOcorrenciasLista = res.data;
+        setOcorrenciasLista(res.data);
         console.log(ocorrenciasLista)
       }
     )
   });*/
+  /*
+  useEffect((props) => {
+    axios
+    .get("http://localhost:8082/api/ocorrencia/tipoocorrencia")
+    .then(
+      (res) => {
+        setTipoOcorrencia(res.data);
+        console.log(tipoOcorrencia);
+      }
+    )
+  })
+   */
 
+  const tiposOcorrenciaArr = [
+    "AMEAÇA",
+    "ATO / ESCRITO / OBJETO OBSCENO",
+    "APROPRIAÇÃO INDÉBITA",
+    "DANO / DEPREDAÇÃO",
+    "ESTELIONATO / FRAUDE",
+    "POSSE / INVASÃO DE PROPRIEDADE",
+    "CONSTRANGIMENTO ILEGAL",
+    "VIOLAÇÃO DE DOMICÍLIO",
+    "PERTURBAÇÃO DO SOSSEGO / TRANQUILIDADE PÚBLICA",
+    "DESACATO",
+    "DEIXAR DE ENTREGAR NOTA FISCAL",
+    "FAZER COBRANÇA DE DIVIDAS DE MANEIRA AMEAÇADORA",
+    "FALSA IDENTIDADE / FALSIDADE IDEOLÓGICA ",
+    "ACIDENTE DE TRÂNSITO SEM VÍTIMA",
+    "EXTRAVIO",
+    "OUTRAS OCORRÊNCIAS NÃO CRIMINAIS",
+    "CRIMES CONTRA AS RELAÇÕES DE CONSUMO",
+    "CRIMES CONTRA O SENTIMENTO RELIGIOSO E RESPEITO AOS MORTOS",
+    "EXERCÍCIO ILEGAL DA MEDICINA, ARTE DENTÁRIA OU FARMACÊUTICA",
+    "CRUELDADE CONTRA ANIMAIS",
+    "EXERCÍCIO ARBITRÁRIO DAS PRÓPRIAS RAZÕES",
+    "VIAS DE FATO",
+    "RIXA",
+    "CALÚNIA",
+    "DIFAMAÇÃO",
+    "DESENTENDIMENTO/DISCUSSÃO",
+    "ASSÉDIO SEXUAL",
+    "INJURIA QUALIFICADA RACIAL",
+    "ROUBO COM RESTRIÇÃO DA LIBERDADE DA VÍTIMA",
+    "ROUBO A TRANSEUNTE",
+    "ROUBO A ÔNIBUS",
+    "ROUBO A OUTROS TRANSPORTES COLETIVOS",
+    "ROUBO EM RESIDÊNCIA",
+    "ROUBO EM ESTABELECIMENTO COMERCIAL OU DE SERVIÇOS",
+    "ROUBO A OUTRAS INSTITUIÇÕES FINANCEIRAS",
+    "ROUBO (SAÍDA DE BANCO/INSTITUIÇÃO FINANCEIRA)",
+    "OUTROS ROUBOS",
+    "FURTO A TRANSEUNTE",
+    "FURTO EM RESIDÊNCIA",
+    "FURTO EM ESTABELECIMENTO COMERCIAL OU DE SERVIÇOS",
+    "FURTO A OUTRAS INSTITUIÇÕES FINANCEIRAS",
+    "FURTO (SAÍDA DE BANCO/INSTITUIÇÃO FINANCEIRA)",
+    "OUTROS FURTOS",
+    "AMEAÇA POR VIOLÊNCIA DOMÉSTICA/FAMILIAR",
+    "APROPRIAÇÃO DE BENS/RENDIMENTOS DE PESSOA IDOSA",
+    "CALÚNIA POR VIOLÊNCIA DOMÉSTICA/FAMILIAR",
+    "COAÇÃO DE IDOSO DOAR CONTRATAR, TESTAR, OUTORGAR PROCURAÇÃO",
+    "CONSTRANGIMENTO ILEGAL POR VIOLÊNCIA DOMÉSTICA/FAMILIAR",
+    "DISCRIMINAÇÃO DE PESSOA IDOSA",
+    "INDUZIMENTO DE IDOSO SEM DISCERNIMENTO A OUTORGAR PROCURAÇÃO",
+    "INJÚRIA POR VIOLÊNCIA DOMÉSTICA/FAMILIAR",
+    "PERTURBAÇÃO DO SOSSEGO POR VIOLÊNCIA DOMÉSTICA/FAMILIAR",
+    "OMISSÃO DE ASSISTÊNCIA A PESSOA IDOSA",
+    "RETENÇÃO DE DOCUMENTO DE PESSOA IDOSA",
+    "DIFERENÇA DE FLUXO  CAIXA EM INST. FIN. OU TRANSP DE VALORES",
+    "INVASÃO DE DISPOSITIVO INFORMÁTICO",
+    "CÁRCERE PRIVADO POR VIOLÊNCIA DOMÉSTICA/FAMILIAR",
+    "DESCUMPRIMENTO DE MEDIDA PROTETIVA DE URGÊNCIA",
+    "DIFAMAÇÃO POR VIOLÊNCIA DOMÉSTICA/FAMILIAR",
+    "INJURIA"
+  ]
   const fields = [
     {
       label: "Tipo de Ocorrência",
-      type: "text",
+      type: "select",
       handleChange: (e) => setTipoOcorrencia(e.target.value),
     }, // implementar select
     {
@@ -50,7 +147,7 @@ const Ocorrencia = () => {
       type: "time",
       handleChange: (e) => setHora(e.target.value),
     },
-    { 
+    {
       label: "Midia",
       type: "file",
       handleChange: (e) => setMidia(e.target.value)
@@ -68,6 +165,7 @@ const Ocorrencia = () => {
   ];
 
   const [showModal, setShowModal] = useState(false);
+  const [tipoOcorrenciaLista, setTipoOcorrenciaLista] = useState(tiposOcorrenciaArr);
   const [tipoOcorrencia, setTipoOcorrencia] = useState();
   const [descricao, setDescricao] = useState();
   const [cidade, setCidade] = useState();
@@ -160,9 +258,8 @@ const Ocorrencia = () => {
 
       {showModal ? (
         <>
-          {/* Falta o elemento form com o botão de submit interno*/}
           <form className="justify-center items-start flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
-          onSubmit={ handleSubmit }
+            onSubmit={handleSubmit}
           >
             <div className="relative min-w-[550px] my-6 mx-auto max-w-3xl">
               {/*content*/}
@@ -205,6 +302,8 @@ const Ocorrencia = () => {
                           onChange={handleChange}
                           className="border rounded-[6px] p-3 w-full mb-4 text-black"
                         />
+                      ) : type === "select" ? (
+                        <TipoOcorrenciaSelect lista={tipoOcorrenciaLista} />
                       ) : (
                         <input
                           type={type}
@@ -228,10 +327,10 @@ const Ocorrencia = () => {
                   <button
                     className="font-bold bg-blue-400 px-[52px] py-[12px] rounded-lg mt-3"
                     type="submit"
-                    /*onClick={() => {
-                      salvar();
-                      setShowModal(false);
-                    }}*/
+                  /*onClick={() => {
+                    salvar();
+                    setShowModal(false);
+                  }}*/
                   >
                     SALVAR
                   </button>
