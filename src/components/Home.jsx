@@ -1,3 +1,4 @@
+import React from 'react';
 import Header from "./Header/Header";
 import Banner from "../assets/banner.png";
 
@@ -7,15 +8,12 @@ const Home = () => {
       <Header />
       <div className="flex flex-col min-h-screen">
         {/* Barra de Navegação */}
-
         <div className="container p-4">
           {/* Banner */}
-          <div className="flex justify-between gap-10 items-start pt-10">
-            <div>
-              <img src={Banner} alt="Banner" />{" "}
-            </div>
+          <div className="relative">
+            <img src={Banner} alt="Banner" className="w-full" />
 
-            <div className="absolute top-0 left-0 right-0 bottom-0 flex justify-center items-start p-4">
+            <div className="absolute top-0 left-0 right-0 bottom-0 flex flex-col justify-center items-center p-4 text-center">
               <p className="text-white text-lg font-bold">
                 Aqui, você pode compartilhar informações, conhecer seus
                 vizinhos, sua cidade, e ajudar a tornar sua comunidade mais
