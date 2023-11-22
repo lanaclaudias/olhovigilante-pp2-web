@@ -10,17 +10,13 @@ const TipoOcorrenciaSelect = (props) => {
       {/* <label for="tipoOcorrencia" className="block mb-2 text-sm font-medium">Select an option</label> */}
       <select
         id="tiposOcorrencias"
-        className="rounded-[6px] p-3 w-full mb-4 text-black"
+        className={props.className}
+        onSelect={props.handleSelect}
       >
-        {/* Corrigir */}
-        {props.lista.map((elem) => (
-          <option key={elem} value={elem}>{elem}</option>
+        <option value="">Selecione Uma Categoria</option>
+        {props.lista && props.lista.map((elem) => (
+          <option key={elem.nome} value={elem.nome}>{elem.nome}</option>
         ))}
-        {/* <option selected>Choose a country</option>
-        <option value="US">United States</option>
-        <option value="CA">Canada</option>
-        <option value="FR">France</option>
-        <option value="DE">Germany</option> */}
       </select>
     </>
   );
@@ -37,21 +33,8 @@ const Ocorrencia = () => {
       }
     )
   });*/
-  
-  useEffect((props) => {
-    axios
-    .get("http://localhost:8082/api/ocorrencia/categoriaocorrencia")
-    .then(
-      (res) => {
-        
-        setTipoOcorrencia(res.data);
-        console.log(tipoOcorrencia);
-      }
-    )
-  })
-  
 
-  const tiposOcorrenciaArr = [
+  /* const tiposOcorrenciaArr = [
     "AMEAÇA",
     "ATO / ESCRITO / OBJETO OBSCENO",
     "APROPRIAÇÃO INDÉBITA",
@@ -112,12 +95,12 @@ const Ocorrencia = () => {
     "DESCUMPRIMENTO DE MEDIDA PROTETIVA DE URGÊNCIA",
     "DIFAMAÇÃO POR VIOLÊNCIA DOMÉSTICA/FAMILIAR",
     "INJURIA",
-  ];
+  ]; */
   const fields = [
     {
       label: "Tipo de Ocorrência",
       type: "select",
-      handleChange: (e) => setTipoOcorrencia(e.target.value),
+      handleSelect: (e) => setTipoOcorrencia(e.target.value),
     }, // implementar select
     {
       label: "Descrição",
@@ -166,7 +149,7 @@ const Ocorrencia = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [tipoOcorrenciaLista, setTipoOcorrenciaLista] =
-    useState(tiposOcorrenciaArr);
+    useState([]);
   const [tipoOcorrencia, setTipoOcorrencia] = useState();
   const [descricao, setDescricao] = useState();
   const [cidade, setCidade] = useState();
@@ -176,6 +159,21 @@ const Ocorrencia = () => {
   const [midia, setMidia] = useState();
   const [geolocalizacao, setGeolocalizacao] = useState("");
   const [usuarioId, setUsuarioId] = useState();
+
+  useEffect((props) => {
+    axios
+    .get("http://localhost:8082/api/categoriaocorrencia")
+    .then(
+      (res) => {
+        setTipoOcorrenciaLista(res.data);
+      }
+    ).catch(
+      (err) => {
+        setTipoOcorrenciaLista([{ nome: "Vazia" }]);
+        console.log("Nenhuma categoria de ocorrência encontrada.")
+      }
+    )
+  },[]);
 
   function salvar() {
     const ocorrenciaRequest = {
@@ -270,7 +268,7 @@ const Ocorrencia = () => {
                   NOVA OCORRÊNCIA
                 </h1>
                 <div className="relative p-6 flex-auto">
-                  {fields.map(({ label, type, values, handleChange }) => (
+                  {fields.map(({ label, type, values, handleChange, handleSelect }) => (
                     <div key={label}>
                       <label className="block text-black font-bold">
                         {label}
@@ -308,6 +306,7 @@ const Ocorrencia = () => {
                         <TipoOcorrenciaSelect
                           lista={tipoOcorrenciaLista}
                           className="border rounded-[6px] p-3 w-full mb-4 text-black"
+                          handleSelect={handleSelect}
                         />
                       ) : (
                         <input
