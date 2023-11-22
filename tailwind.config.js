@@ -9,7 +9,9 @@ export default {
         screens: {
           xl: '1084px'
         }
-      }
+      },
+     
+      
     },
   },
   plugins: [],
