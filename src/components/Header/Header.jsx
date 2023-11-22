@@ -42,7 +42,6 @@ const navUserBtns = [
     link: "/cadastro",
   },
 ];
-
 const icons = {
   perfil: "/icon-usuario.svg",
   login: "/btn-entrar.svg",
@@ -66,7 +65,7 @@ const Header = () => {
   }, [location]);
 
   return (
-    <header className="bg-black">
+    <header className="bg-black text-white">
       <div className="container flex justify-between items-center flex-wrap">
         <a href="/">
           <img src={logo} alt="" className="minilogo mt-1" />

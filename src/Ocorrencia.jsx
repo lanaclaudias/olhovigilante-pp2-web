@@ -3,29 +3,27 @@ import { useState, useEffect } from "react";
 import Mapa from "./assets/mapa.png";
 import Header from "./components/Header/Header";
 import axios from "axios";
-import { stringify } from "postcss";
 
 const TipoOcorrenciaSelect = (props) => {
   return (
     <>
-      <label for="countries" className="block mb-2 text-sm font-medium">Select an option</label>
-      <select id="countries" className="text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-        
+      {/* <label for="tipoOcorrencia" className="block mb-2 text-sm font-medium">Select an option</label> */}
+      <select
+        id="tiposOcorrencias"
+        className="rounded-[6px] p-3 w-full mb-4 text-black"
+      >
         {/* Corrigir */}
-        {props.lista.map(
-          (elem, index) => {
-            <option value="test">test</option>
-          }
-        )}
+        {props.lista.map((elem) => (
+          <option key={elem} value={elem}>{elem}</option>
+        ))}
         {/* <option selected>Choose a country</option>
         <option value="US">United States</option>
         <option value="CA">Canada</option>
         <option value="FR">France</option>
         <option value="DE">Germany</option> */}
       </select>
-
     </>
-  )
+  );
 };
 
 const Ocorrencia = () => {
@@ -39,18 +37,19 @@ const Ocorrencia = () => {
       }
     )
   });*/
-  /*
+  
   useEffect((props) => {
     axios
-    .get("http://localhost:8082/api/ocorrencia/tipoocorrencia")
+    .get("http://localhost:8082/api/ocorrencia/categoriaocorrencia")
     .then(
       (res) => {
+        
         setTipoOcorrencia(res.data);
         console.log(tipoOcorrencia);
       }
     )
   })
-   */
+  
 
   const tiposOcorrenciaArr = [
     "AMEAÇA",
@@ -112,8 +111,8 @@ const Ocorrencia = () => {
     "CÁRCERE PRIVADO POR VIOLÊNCIA DOMÉSTICA/FAMILIAR",
     "DESCUMPRIMENTO DE MEDIDA PROTETIVA DE URGÊNCIA",
     "DIFAMAÇÃO POR VIOLÊNCIA DOMÉSTICA/FAMILIAR",
-    "INJURIA"
-  ]
+    "INJURIA",
+  ];
   const fields = [
     {
       label: "Tipo de Ocorrência",
@@ -150,7 +149,7 @@ const Ocorrencia = () => {
     {
       label: "Midia",
       type: "file",
-      handleChange: (e) => setMidia(e.target.value)
+      handleChange: (e) => setMidia(e.target.value),
     }, // implementação apropriada para múltiplos arquivos pendente e necessita integrar com a API de Mídia já configurada com suas associações
     {
       label: "Geolocalização",
@@ -158,14 +157,16 @@ const Ocorrencia = () => {
       handleChange: (e) => setGeolocalizacao(e.target.value),
     }, // aguardando a integração com a API do Google Maps
     {
-      label: "ID do Usuário (campo temporário pela falta de implementação de login)",
+      label:
+        "ID do Usuário (campo temporário pela falta de implementação de login)",
       type: "text",
       handleChange: (e) => setUsuarioId(parseInt(e.target.value)),
     }, // campo temporário até a implementação do login de usuário
   ];
 
   const [showModal, setShowModal] = useState(false);
-  const [tipoOcorrenciaLista, setTipoOcorrenciaLista] = useState(tiposOcorrenciaArr);
+  const [tipoOcorrenciaLista, setTipoOcorrenciaLista] =
+    useState(tiposOcorrenciaArr);
   const [tipoOcorrencia, setTipoOcorrencia] = useState();
   const [descricao, setDescricao] = useState();
   const [cidade, setCidade] = useState();
@@ -258,7 +259,8 @@ const Ocorrencia = () => {
 
       {showModal ? (
         <>
-          <form className="justify-center items-start flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+          <form
+            className="justify-center items-start flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
             onSubmit={handleSubmit}
           >
             <div className="relative min-w-[550px] my-6 mx-auto max-w-3xl">
@@ -303,7 +305,10 @@ const Ocorrencia = () => {
                           className="border rounded-[6px] p-3 w-full mb-4 text-black"
                         />
                       ) : type === "select" ? (
-                        <TipoOcorrenciaSelect lista={tipoOcorrenciaLista} />
+                        <TipoOcorrenciaSelect
+                          lista={tipoOcorrenciaLista}
+                          className="border rounded-[6px] p-3 w-full mb-4 text-black"
+                        />
                       ) : (
                         <input
                           type={type}
@@ -316,7 +321,7 @@ const Ocorrencia = () => {
                   ))}
                 </div>
                 {/*footer*/}
-                <div className="flex gap-[20px] items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
+                <div className="flex gap-[20px] items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b text-white">
                   <button
                     className="font-bold px-[52px] py-[12px] rounded-lg mt-3 bg-red-600"
                     type="button"
@@ -327,7 +332,7 @@ const Ocorrencia = () => {
                   <button
                     className="font-bold bg-blue-400 px-[52px] py-[12px] rounded-lg mt-3"
                     type="submit"
-                  /*onClick={() => {
+                    /*onClick={() => {
                     salvar();
                     setShowModal(false);
                   }}*/
