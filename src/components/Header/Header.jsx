@@ -74,7 +74,7 @@ const Header = () => {
           <ul className="menu flex items-center gap-12">
             {navMenuItems.map((elem) => (
               <li key={elem.icon.slice(5, -4)}>
-                <a href={elem.link} className="flex flex-col">
+                <a href={elem.link} className="flex text-white flex-col">
                   <img
                     // src={elem.icon}
                     src={
@@ -99,7 +99,7 @@ const Header = () => {
               {Object.keys(user).length == 0 && elem.text == "Perfil" ? (
                 ""
               ) : (
-                <a href={elem.link} className="self-center" >
+                <a href={elem.link} className="self-center">
                   {/* Acrescentar highlights para quando estiver em hover */}
                   <img src={elem.icon} alt="" />
                   <p>{elem.text}</p>
