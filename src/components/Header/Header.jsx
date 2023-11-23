@@ -42,7 +42,6 @@ const navUserBtns = [
     link: "/cadastro",
   },
 ];
-
 const icons = {
   perfil: "/icon-usuario.svg",
   login: "/btn-entrar.svg",
@@ -66,7 +65,7 @@ const Header = () => {
   }, [location]);
 
   return (
-    <header className="bg-black">
+    <header className="bg-black text-white">
       <div className="container flex justify-between items-center flex-wrap">
         <a href="/">
           <img src={logo} alt="" className="minilogo mt-1" />
@@ -75,7 +74,7 @@ const Header = () => {
           <ul className="menu flex items-center gap-12">
             {navMenuItems.map((elem) => (
               <li key={elem.icon.slice(5, -4)}>
-                <a href={elem.link} className="flex flex-col">
+                <a href={elem.link} className="flex text-white flex-col">
                   <img
                     // src={elem.icon}
                     src={
@@ -91,6 +90,19 @@ const Header = () => {
                 </a>
               </li>
             ))}
+            {/* Item Temporário enquanto não for implementado o login */}
+            <li>
+              <a href={navUserBtns[0].link}>
+                <img
+                  src={
+                    activeUrl == navUserBtns[0].link
+                      ? navUserBtns[0].icon.slice(0, -4) + "-active.svg"
+                      : navUserBtns[0].icon
+                  }
+                />
+                <p>{navUserBtns[0].text}</p>
+              </a>
+            </li>
           </ul>
         </nav>
         <div className="userButtons flex gap-6">
@@ -100,7 +112,7 @@ const Header = () => {
               {Object.keys(user).length == 0 && elem.text == "Perfil" ? (
                 ""
               ) : (
-                <a href={elem.link} className="self-center" >
+                <a href={elem.link} className="self-center">
                   {/* Acrescentar highlights para quando estiver em hover */}
                   <img src={elem.icon} alt="" />
                   <p>{elem.text}</p>
