@@ -11,11 +11,11 @@ const TipoOcorrenciaSelect = (props) => {
       <select
         id="tiposOcorrencias"
         className={props.className}
-        onSelect={props.handleSelect}
+        onChange={props.handleChange}
       >
         <option value="">Selecione Uma Categoria</option>
         {props.lista && props.lista.map((elem) => (
-          <option key={elem.nome} value={elem.nome}>{elem.nome}</option>
+          <option key={elem.nome} value={elem.id}>{elem.nome}</option>
         ))}
       </select>
     </>
@@ -100,7 +100,7 @@ const Ocorrencia = () => {
     {
       label: "Tipo de Ocorrência",
       type: "select",
-      handleSelect: (e) => setTipoOcorrencia(e.target.value),
+      handleChange: (e) => setCategoriaId(e.target.value),
     }, // implementar select
     {
       label: "Descrição",
@@ -159,6 +159,7 @@ const Ocorrencia = () => {
   const [midia, setMidia] = useState();
   const [geolocalizacao, setGeolocalizacao] = useState("");
   const [usuarioId, setUsuarioId] = useState();
+  const [categoriaId, setCategoriaId] = useState();
 
   useEffect((props) => {
     axios
@@ -177,7 +178,6 @@ const Ocorrencia = () => {
 
   function salvar() {
     const ocorrenciaRequest = {
-      tipoOcorrencia: tipoOcorrencia,
       descricao: descricao,
       cidade: cidade,
       bairro: bairro,
@@ -186,6 +186,7 @@ const Ocorrencia = () => {
       midia: midia,
       geolocalizacao: geolocalizacao,
       usuarioId: usuarioId,
+      categoriaId: categoriaId
     };
     //console.log(JSON.stringify(ocorrenciaRequest));
     axios
@@ -306,7 +307,7 @@ const Ocorrencia = () => {
                         <TipoOcorrenciaSelect
                           lista={tipoOcorrenciaLista}
                           className="border rounded-[6px] p-3 w-full mb-4 text-black"
-                          handleSelect={handleSelect}
+                          handleChange={handleChange}
                         />
                       ) : (
                         <input
