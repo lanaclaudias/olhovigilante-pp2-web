@@ -13,9 +13,12 @@ const TipoOcorrenciaSelect = (props) => {
         onChange={props.handleChange}
       >
         <option value="">Selecione Uma Categoria</option>
-        {props.lista && props.lista.map((elem) => (
-          <option key={elem.nome} value={elem.id}>{elem.nome}</option>
-        ))}
+        {props.lista &&
+          props.lista.map((elem) => (
+            <option key={elem.nome} value={elem.id}>
+              {elem.nome}
+            </option>
+          ))}
       </select>
     </>
   );
@@ -148,8 +151,7 @@ const Ocorrencia = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [showModalOcorrencia, setShowModalOcorrencia] = useState(false);
-  const [tipoOcorrenciaLista, setTipoOcorrenciaLista] =
-    useState([]);
+  const [tipoOcorrenciaLista, setTipoOcorrenciaLista] = useState([]);
   const [tipoOcorrencia, setTipoOcorrencia] = useState();
   const [descricao, setDescricao] = useState();
   const [cidade, setCidade] = useState();
@@ -163,18 +165,15 @@ const Ocorrencia = () => {
 
   useEffect((props) => {
     axios
-    .get("http://localhost:8082/api/categoriaocorrencia")
-    .then(
-      (res) => {
+      .get("http://localhost:8082/api/categoriaocorrencia")
+      .then((res) => {
         setTipoOcorrenciaLista(res.data);
-      }
-    ).catch(
-      (err) => {
+      })
+      .catch((err) => {
         setTipoOcorrenciaLista([{ nome: "Vazia" }]);
-        console.log("Nenhuma categoria de ocorrência encontrada.")
-      }
-    )
-  },[]);
+        console.log("Nenhuma categoria de ocorrência encontrada.");
+      });
+  }, []);
 
   function salvar() {
     const ocorrenciaRequest = {
@@ -186,7 +185,7 @@ const Ocorrencia = () => {
       midia: midia,
       geolocalizacao: geolocalizacao,
       usuarioId: usuarioId,
-      categoriaId: categoriaId
+      categoriaId: categoriaId,
     };
     //console.log(JSON.stringify(ocorrenciaRequest));
     axios
@@ -275,22 +274,29 @@ const Ocorrencia = () => {
           </div>
           <div className="flex-1 hover:cursor-pointer">
             {ocorrencias.map(
-              ({
+              (
+                /* {
                 tipoOcorrencia,
                 id,
                 dataHoraOcorrencia,
                 geolocalizacao,
                 bairro,
                 cidade,
-              }) => {
+              } */ elem
+              ) => {
                 return (
                   <div
-                    onClick={() => handleClickOcorrencia(id)}
-                    key={id}
+                    onClick={() => handleClickOcorrencia(elem.id)}
+                    key={elem.id}
                     className="mt-4 p-4 rounded border border-gray-300 flex flex-col"
                   >
-                    <p className="font-semibold">{tipoOcorrencia}</p>
-                    <p className="text-gray-600">{dataHoraOcorrencia}</p>
+                    <p className="font-semibold">{elem.categoria.nome}</p>
+                    <div className="flex gap-4 justify-between">
+                      <p className="text-gray-600">
+                        {elem.bairro}, {elem.cidade}
+                      </p>
+                      <p className="text-gray-600">{elem.dataHoraOcorrencia}</p>
+                    </div>
                   </div>
                 );
               }
@@ -313,7 +319,7 @@ const Ocorrencia = () => {
                   NOVA OCORRÊNCIA
                 </h1>
                 <div className="relative p-6 flex-auto">
-                  {fields.map(({ label, type, values, handleChange}) => (
+                  {fields.map(({ label, type, values, handleChange }) => (
                     <div key={label}>
                       <label className="block text-black font-bold">
                         {label}
@@ -402,15 +408,19 @@ const Ocorrencia = () => {
                 DETALHES DA OCORRÊNCIA
               </h1>
               <div className="relative p-6 flex-auto">
-                <h2 className="font-bold text-[24px]">
-                  Tipo de ocorrência: {ocorrenciaUnica.tipoOcorrencia}
+                <h2 className="text-[24px]">
+                  Tipo: {ocorrenciaUnica.categoria.nome}
                 </h2>
                 <div className="pt-[12px] flex flex-col gap-2">
-                  <p>Descrição: {ocorrenciaUnica.descricao}</p>
-                  <div>
-                    <p>Cidade: {ocorrenciaUnica.cidade}</p>
-                    <p>Bairro: {ocorrenciaUnica.bairro}</p>
-                  </div>
+                  <p className="pt-1 pb-1">
+                    <strong>Descrição:</strong> {ocorrenciaUnica.descricao}
+                  </p>
+                  <p className="pt-1 pb-1">
+                    <strong>Cidade:</strong> {ocorrenciaUnica.cidade}
+                  </p>
+                  <p className="pt-1 pb-1">
+                    <strong>Bairro:</strong> {ocorrenciaUnica.bairro}
+                  </p>
                 </div>
               </div>
               {/*footer*/}

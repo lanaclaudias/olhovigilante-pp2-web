@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Abas = ({ color }) => {
+const Abas = ({ color }, ) => {
   const [openTab, setOpenTab] = React.useState(1);
   return (
     <>
@@ -114,7 +114,7 @@ const Abas = ({ color }) => {
 export default function TabsRender() {
   return (
     <>
-      return <Abas color="teal" />;
+      <Abas color="teal" />;
     </>
   );
 }
