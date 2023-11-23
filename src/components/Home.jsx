@@ -1,5 +1,6 @@
 import React from 'react';
 import Header from "./Header/Header";
+import { Link } from 'react-router-dom';
 
 const Home = () => {
   return (
@@ -20,10 +21,11 @@ const Home = () => {
                 vizinhos, sua cidade, e ajudar a tornar sua comunidade mais
                 segura. Junte-se a nós!
               </p>
-
-              <button className="bg-black text-white font-bold py-5 px-9 flex items-center rounded">
+              <a href="/cadastro">
+                <button className="bg-black text-white font-bold py-5 px-9 flex items-center rounded">
                 CADASTRE-SE
               </button>
+              </a>
 
             </div>
           </div>

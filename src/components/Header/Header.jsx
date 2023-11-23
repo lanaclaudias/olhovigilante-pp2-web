@@ -90,6 +90,19 @@ const Header = () => {
                 </a>
               </li>
             ))}
+            {/* Item Temporário enquanto não for implementado o login */}
+            <li>
+              <a href={navUserBtns[0].link}>
+                <img
+                  src={
+                    activeUrl == navUserBtns[0].link
+                      ? navUserBtns[0].icon.slice(0, -4) + "-active.svg"
+                      : navUserBtns[0].icon
+                  }
+                />
+                <p>{navUserBtns[0].text}</p>
+              </a>
+            </li>
           </ul>
         </nav>
         <div className="userButtons flex gap-6">

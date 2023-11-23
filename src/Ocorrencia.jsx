@@ -100,7 +100,7 @@ const Ocorrencia = () => {
       label: "Tipo de Ocorrência",
       type: "select",
       handleChange: (e) => setCategoriaId(e.target.value),
-    }, // implementar select
+    },
     {
       label: "Descrição",
       type: "textarea",
@@ -269,7 +269,7 @@ const Ocorrencia = () => {
           </div>
         </div>
 
-        <div className="flex pb-[1000px] relative justify-between gap-10 items-start pt-10">
+        <div className="flex relative justify-between gap-10 items-start pt-10">
           <div className="sticky top-0">
             <img src={Mapa} />
           </div>
@@ -313,7 +313,7 @@ const Ocorrencia = () => {
                   NOVA OCORRÊNCIA
                 </h1>
                 <div className="relative p-6 flex-auto">
-                  {fields.map(({ label, type, values, handleChange, handleSelect }) => (
+                  {fields.map(({ label, type, values, handleChange}) => (
                     <div key={label}>
                       <label className="block text-black font-bold">
                         {label}
