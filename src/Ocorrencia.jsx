@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
-import Mapa from "./assets/mapa.png";
-import Header from "./components/Header/Header";
-import axios from "axios";
+import { useState, useEffect } from 'react';
+import Mapa from './assets/mapa.png';
+import Header from './components/Header/Header';
+import axios from 'axios';
 
 const TipoOcorrenciaSelect = (props) => {
   return (
@@ -100,51 +100,51 @@ const Ocorrencia = () => {
   ]; */
   const fields = [
     {
-      label: "Tipo de Ocorrência",
-      type: "select",
+      label: 'Tipo de Ocorrência',
+      type: 'select',
       handleChange: (e) => setCategoriaId(e.target.value),
     },
     {
-      label: "Descrição",
-      type: "textarea",
+      label: 'Descrição',
+      type: 'textarea',
       placeholder:
-        "Descrição base e informações adicionais como presença policial, ação policial, motivação, quantidade de vítimas, etc.",
+        'Descrição base e informações adicionais como presença policial, ação policial, motivação, quantidade de vítimas, etc.',
       handleChange: (e) => setDescricao(e.target.value),
     },
     {
-      label: "Cidade",
-      type: "text",
+      label: 'Cidade',
+      type: 'text',
       handleChange: (e) => setCidade(e.target.value),
     },
     {
-      label: "Bairro",
-      type: "text",
+      label: 'Bairro',
+      type: 'text',
       handleChange: (e) => setBairro(e.target.value),
     },
     {
-      label: "Data",
-      type: "date",
+      label: 'Data',
+      type: 'date',
       handleChange: (e) => setData(e.target.value),
     },
     {
-      label: "Hora",
-      type: "time",
+      label: 'Hora',
+      type: 'time',
       handleChange: (e) => setHora(e.target.value),
     },
     {
-      label: "Midia",
-      type: "file",
+      label: 'Midia',
+      type: 'file',
       handleChange: (e) => setMidia(e.target.value),
     }, // implementação apropriada para múltiplos arquivos pendente e necessita integrar com a API de Mídia já configurada com suas associações
     {
-      label: "Geolocalização",
-      type: "text",
+      label: 'Geolocalização',
+      type: 'text',
       handleChange: (e) => setGeolocalizacao(e.target.value),
     }, // aguardando a integração com a API do Google Maps
     {
       label:
-        "ID do Usuário (campo temporário pela falta de implementação de login)",
-      type: "text",
+        'ID do Usuário (campo temporário pela falta de implementação de login)',
+      type: 'text',
       handleChange: (e) => setUsuarioId(parseInt(e.target.value)),
     }, // campo temporário até a implementação do login de usuário
   ];
@@ -159,19 +159,19 @@ const Ocorrencia = () => {
   const [data, setData] = useState();
   const [hora, setHora] = useState();
   const [midia, setMidia] = useState();
-  const [geolocalizacao, setGeolocalizacao] = useState("");
+  const [geolocalizacao, setGeolocalizacao] = useState('');
   const [usuarioId, setUsuarioId] = useState();
   const [categoriaId, setCategoriaId] = useState();
 
   useEffect((props) => {
     axios
-      .get("http://localhost:8082/api/categoriaocorrencia")
+      .get('http://localhost:8082/api/categoriaocorrencia')
       .then((res) => {
         setTipoOcorrenciaLista(res.data);
       })
       .catch((err) => {
-        setTipoOcorrenciaLista([{ nome: "Vazia" }]);
-        console.log("Nenhuma categoria de ocorrência encontrada.");
+        setTipoOcorrenciaLista([{ nome: 'Vazia' }]);
+        console.log('Nenhuma categoria de ocorrência encontrada.');
       });
   }, []);
 
@@ -189,12 +189,12 @@ const Ocorrencia = () => {
     };
     //console.log(JSON.stringify(ocorrenciaRequest));
     axios
-      .post("http://localhost:8082/api/ocorrencia", ocorrenciaRequest)
+      .post('http://localhost:8082/api/ocorrencia', ocorrenciaRequest)
       .then((r) => {
-        alert("Ocorrência cadastrada com sucesso.");
+        alert('Ocorrência cadastrada com sucesso.');
       })
       .catch((e) => {
-        alert("Falha ao cadastrar ocorrência.\n" + e.name + " - " + e.message);
+        alert('Falha ao cadastrar ocorrência.\n' + e.name + ' - ' + e.message);
       });
   }
 
@@ -202,7 +202,7 @@ const Ocorrencia = () => {
 
   const listaOcorrencias = () => {
     axios
-      .get("http://localhost:8082/api/ocorrencia")
+      .get('http://localhost:8082/api/ocorrencia')
       .then((response) => {
         setOcorrencias(response.data);
         return response.data;
@@ -253,7 +253,7 @@ const Ocorrencia = () => {
             </button>
           </div>
           <div className="flex space-x-4 justify-end pr-4">
-            {" "}
+            {' '}
             {/* Adicionando a classe pr-4 para margem direita */}
             <div className="flex">
               <input
@@ -282,7 +282,7 @@ const Ocorrencia = () => {
                 geolocalizacao,
                 bairro,
                 cidade,
-              } */ elem
+              } */ elem,
               ) => {
                 return (
                   <div
@@ -299,7 +299,7 @@ const Ocorrencia = () => {
                     </div>
                   </div>
                 );
-              }
+              },
             )}
           </div>
         </div>
@@ -315,7 +315,7 @@ const Ocorrencia = () => {
             <div className="relative min-w-[550px] my-6 mx-auto max-w-3xl">
               {/*content*/}
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                <h1 className="text-black text-[24px] font-bold text-center pt-4">
+                <h1 className="text-black font-sora text-[24px] font-bold text-center pt-4">
                   NOVA OCORRÊNCIA
                 </h1>
                 <div className="relative p-6 flex-auto">
@@ -324,13 +324,13 @@ const Ocorrencia = () => {
                       <label className="block text-black font-bold">
                         {label}
                       </label>
-                      {type === "textarea" ? (
+                      {type === 'textarea' ? (
                         <textarea
                           placeholder={label}
                           onChange={handleChange}
                           className="border rounded-[6px] p-3 w-full mb-4 text-black"
                         />
-                      ) : type === "radio" ? (
+                      ) : type === 'radio' ? (
                         <div className="flex">
                           {values.map((value, index) => (
                             <div key={index} className="mr-4">
@@ -347,13 +347,13 @@ const Ocorrencia = () => {
                             </div>
                           ))}
                         </div>
-                      ) : type === "file" ? (
+                      ) : type === 'file' ? (
                         <input
                           type="file"
                           onChange={handleChange}
                           className="border rounded-[6px] p-3 w-full mb-4 text-black"
                         />
-                      ) : type === "select" ? (
+                      ) : type === 'select' ? (
                         <TipoOcorrenciaSelect
                           lista={tipoOcorrenciaLista}
                           className="border rounded-[6px] p-3 w-full mb-4 text-black"

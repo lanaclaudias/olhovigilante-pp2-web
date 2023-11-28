@@ -1,55 +1,55 @@
-import { useState } from "react";
-import { useLocation } from "react-router-dom";
-import logo from "/mini-logo.png";
-import { useEffect } from "react";
+import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import logo from '/mini-logo.png';
+import { useEffect } from 'react';
 
 const navMenuItems = [
   {
-    icon: "/icon-inicio.svg",
-    text: "Início",
-    link: "/",
+    icon: '/icon-inicio.svg',
+    text: 'Início',
+    link: '/',
   },
   {
-    icon: "/icon-ocorrencias.svg",
-    text: "Ocorrências",
-    link: "/ocorrencia",
+    icon: '/icon-ocorrencias.svg',
+    text: 'Ocorrências',
+    link: '/ocorrencia',
   },
   {
-    icon: "/icon-comunidade.svg",
-    text: "Comunidade",
-    link: "/comunidade",
+    icon: '/icon-comunidade.svg',
+    text: 'Comunidade',
+    link: '/comunidade',
   },
   {
-    icon: "/icon-megaphone2.svg",
-    text: "Onde Denunciar",
-    link: "/denunciar",
+    icon: '/icon-megaphone2.svg',
+    text: 'Onde Denunciar',
+    link: '/denunciar',
   },
 ];
 const navUserBtns = [
   {
-    icon: "/icon-usuario.svg",
-    text: "Perfil",
-    link: "/perfil",
+    icon: '/icon-usuario.svg',
+    text: 'Perfil',
+    link: '/perfil',
   },
   {
-    icon: "btn-entrar.svg",
+    icon: 'btn-entrar.svg',
     //text: "",
-    link: "/login",
+    link: '/login',
   },
   {
-    icon: "btn-cadastrar.svg",
+    icon: 'btn-cadastrar.svg',
     // text: "",
-    link: "/cadastro",
+    link: '/cadastro',
   },
 ];
 const icons = {
-  perfil: "/icon-usuario.svg",
-  login: "/btn-entrar.svg",
-  cadastro: "/btn-cadastrar.svg",
+  perfil: '/icon-usuario.svg',
+  login: '/btn-entrar.svg',
+  cadastro: '/btn-cadastrar.svg',
 };
 
 const Header = () => {
-  const [activeUrl, setActiveUrl] = useState("");
+  const [activeUrl, setActiveUrl] = useState('');
   const [user, setUser] = useState({});
   const location = useLocation();
 
@@ -74,12 +74,15 @@ const Header = () => {
           <ul className="menu flex items-center gap-12">
             {navMenuItems.map((elem) => (
               <li key={elem.icon.slice(5, -4)}>
-                <a href={elem.link} className="flex text-white flex-col">
+                <a
+                  href={elem.link}
+                  className="flex font-sora text-white flex-col"
+                >
                   <img
                     // src={elem.icon}
                     src={
                       activeUrl == elem.link
-                        ? elem.icon.slice(0, -4) + "-active.svg"
+                        ? elem.icon.slice(0, -4) + '-active.svg'
                         : elem.icon
                     }
                     /* src={ icons.home.slice(0, -4) + "-active.svg"} */
@@ -96,7 +99,7 @@ const Header = () => {
                 <img
                   src={
                     activeUrl == navUserBtns[0].link
-                      ? navUserBtns[0].icon.slice(0, -4) + "-active.svg"
+                      ? navUserBtns[0].icon.slice(0, -4) + '-active.svg'
                       : navUserBtns[0].icon
                   }
                 />
@@ -108,11 +111,11 @@ const Header = () => {
         <div className="userButtons flex gap-6">
           {/* {console.log(user)} */}
           {navUserBtns.map((elem) => (
-            <div key={elem.icon.slice(5, -4)} className="flex flex-col">
-              {Object.keys(user).length == 0 && elem.text == "Perfil" ? (
-                ""
+            <div key={elem.icon.slice(5, -4)} className="flexflex-col">
+              {Object.keys(user).length == 0 && elem.text == 'Perfil' ? (
+                ''
               ) : (
-                <a href={elem.link} className="self-center">
+                <a href={elem.link} className="self-center ">
                   {/* Acrescentar highlights para quando estiver em hover */}
                   <img src={elem.icon} alt="" />
                   <p>{elem.text}</p>
