@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import Mapa from './assets/mapa.png';
-import Header from './components/Header/Header';
-import axios from 'axios';
+import { useState, useEffect } from "react";
+import Mapa from "./assets/mapa.png";
+import Header from "./components/Header/Header";
+import axios from "axios";
 
 const TipoOcorrenciaSelect = (props) => {
   return (
@@ -100,51 +100,51 @@ const Ocorrencia = () => {
   ]; */
   const fields = [
     {
-      label: 'Tipo de Ocorrência',
-      type: 'select',
+      label: "Tipo de Ocorrência",
+      type: "select",
       handleChange: (e) => setCategoriaId(e.target.value),
     },
     {
-      label: 'Descrição',
-      type: 'textarea',
+      label: "Descrição",
+      type: "textarea",
       placeholder:
-        'Descrição base e informações adicionais como presença policial, ação policial, motivação, quantidade de vítimas, etc.',
+        "Descrição base e informações adicionais como presença policial, ação policial, motivação, quantidade de vítimas, etc.",
       handleChange: (e) => setDescricao(e.target.value),
     },
     {
-      label: 'Cidade',
-      type: 'text',
+      label: "Cidade",
+      type: "text",
       handleChange: (e) => setCidade(e.target.value),
     },
     {
-      label: 'Bairro',
-      type: 'text',
+      label: "Bairro",
+      type: "text",
       handleChange: (e) => setBairro(e.target.value),
     },
     {
-      label: 'Data',
-      type: 'date',
+      label: "Data",
+      type: "date",
       handleChange: (e) => setData(e.target.value),
     },
     {
-      label: 'Hora',
-      type: 'time',
+      label: "Hora",
+      type: "time",
       handleChange: (e) => setHora(e.target.value),
     },
     {
-      label: 'Midia',
-      type: 'file',
+      label: "Midia",
+      type: "file",
       handleChange: (e) => setMidia(e.target.value),
     }, // implementação apropriada para múltiplos arquivos pendente e necessita integrar com a API de Mídia já configurada com suas associações
     {
-      label: 'Geolocalização',
-      type: 'text',
+      label: "Geolocalização",
+      type: "text",
       handleChange: (e) => setGeolocalizacao(e.target.value),
     }, // aguardando a integração com a API do Google Maps
     {
       label:
-        'ID do Usuário (campo temporário pela falta de implementação de login)',
-      type: 'text',
+        "ID do Usuário (campo temporário pela falta de implementação de login)",
+      type: "text",
       handleChange: (e) => setUsuarioId(parseInt(e.target.value)),
     }, // campo temporário até a implementação do login de usuário
   ];
@@ -159,70 +159,66 @@ const Ocorrencia = () => {
   const [data, setData] = useState();
   const [hora, setHora] = useState();
   const [midia, setMidia] = useState();
-  const [geolocalizacao, setGeolocalizacao] = useState('');
+  const [geolocalizacao, setGeolocalizacao] = useState("");
   const [usuarioId, setUsuarioId] = useState();
   const [categoriaId, setCategoriaId] = useState();
 
   useEffect((props) => {
     axios
-      .get('http://localhost:8082/api/categoriaocorrencia')
+      .get("http://localhost:8082/api/categoriaocorrencia")
       .then((res) => {
         setTipoOcorrenciaLista(res.data);
       })
       .catch((err) => {
-        setTipoOcorrenciaLista([{ nome: 'Vazia' }]);
-        console.log('Nenhuma categoria de ocorrência encontrada.');
+        setTipoOcorrenciaLista([{ nome: "Vazia" }]);
+        console.log("Nenhuma categoria de ocorrência encontrada.");
       });
   }, []);
-
-  function salvar() {
-    const ocorrenciaRequest = {
-      descricao: descricao,
-      cidade: cidade,
-      bairro: bairro,
-      dataHoraOcorrencia: data,
-      hora: hora,
-      midia: midia,
-      geolocalizacao: geolocalizacao,
-      usuarioId: usuarioId,
-      categoriaId: categoriaId,
-    };
-    //console.log(JSON.stringify(ocorrenciaRequest));
-    axios
-      .post('http://localhost:8082/api/ocorrencia', ocorrenciaRequest)
-      .then((r) => {
-        alert('Ocorrência cadastrada com sucesso.');
-      })
-      .catch((e) => {
-        alert('Falha ao cadastrar ocorrência.\n' + e.name + ' - ' + e.message);
-      });
-  }
 
   const [ocorrencias, setOcorrencias] = useState([]);
 
-  const listaOcorrencias = () => {
-    axios
-      .get('http://localhost:8082/api/ocorrencia')
-      .then((response) => {
-        setOcorrencias(response.data);
-        return response.data;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const listaOcorrencias = async () => {
+    try {
+      const response = await fetch("http://localhost:8082/api/ocorrencia");
+      const data = await response.json();
+      setOcorrencias(data);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   useEffect(() => {
-    if (ocorrencias !== null) {
-      listaOcorrencias();
-    }
+    listaOcorrencias();
   }, []);
 
-  function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    salvar();
-    setShowModal(false);
-  }
+    const ocorrenciaRequest = {
+      descricao,
+      cidade,
+      bairro,
+      dataHoraOcorrencia: data,
+      hora,
+      // midia,
+      geolocalizacao,
+      usuarioId,
+      categoriaId,
+    };
+
+    try {
+      const response = await fetch(`http://localhost:8082/api/ocorrencia`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(ocorrenciaRequest),
+      });
+      console.log(response);
+      setShowModal(false);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const [ocorrenciaUnica, setOcorrenciaUnica] = useState();
 
@@ -253,8 +249,6 @@ const Ocorrencia = () => {
             </button>
           </div>
           <div className="flex space-x-4 justify-end pr-4">
-            {' '}
-            {/* Adicionando a classe pr-4 para margem direita */}
             <div className="flex">
               <input
                 type="text"
@@ -273,34 +267,26 @@ const Ocorrencia = () => {
             <img src={Mapa} />
           </div>
           <div className="flex-1 hover:cursor-pointer">
-            {ocorrencias.map(
-              (
-                /* {
-                tipoOcorrencia,
-                id,
-                dataHoraOcorrencia,
-                geolocalizacao,
-                bairro,
-                cidade,
-              } */ elem,
-              ) => {
-                return (
-                  <div
-                    onClick={() => handleClickOcorrencia(elem.id)}
-                    key={elem.id}
-                    className="mt-4 p-4 rounded border border-gray-300 flex flex-col"
-                  >
-                    <p className="font-semibold">{elem.categoria.nome}</p>
-                    <div className="flex gap-4 justify-between">
-                      <p className="text-gray-600">
-                        {elem.bairro}, {elem.cidade}
-                      </p>
-                      <p className="text-gray-600">{elem.dataHoraOcorrencia}</p>
+            {ocorrencias &&
+              ocorrencias.map(
+                ({ id, categoria, bairro, cidade, dataHoraOcorrencia }) => {
+                  return (
+                    <div
+                      onClick={() => handleClickOcorrencia(id)}
+                      key={id}
+                      className="mt-4 p-4 rounded border font border-gray-300 flex flex-col"
+                    >
+                      <p className="font-semibold">{categoria.nome}</p>
+                      <div className="flex gap-4 justify-between">
+                        <p className="text-gray-600">
+                          {bairro}, {cidade}
+                        </p>
+                        <p className="text-gray-600">{dataHoraOcorrencia}</p>
+                      </div>
                     </div>
-                  </div>
-                );
-              },
-            )}
+                  );
+                }
+              )}
           </div>
         </div>
       </div>
@@ -309,8 +295,8 @@ const Ocorrencia = () => {
       {showModal ? (
         <>
           <form
-            className="justify-center items-start flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
             onSubmit={handleSubmit}
+            className="justify-center items-start flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
           >
             <div className="relative min-w-[550px] my-6 mx-auto max-w-3xl">
               {/*content*/}
@@ -324,13 +310,13 @@ const Ocorrencia = () => {
                       <label className="block text-black font-bold">
                         {label}
                       </label>
-                      {type === 'textarea' ? (
+                      {type === "textarea" ? (
                         <textarea
                           placeholder={label}
                           onChange={handleChange}
                           className="border rounded-[6px] p-3 w-full mb-4 text-black"
                         />
-                      ) : type === 'radio' ? (
+                      ) : type === "radio" ? (
                         <div className="flex">
                           {values.map((value, index) => (
                             <div key={index} className="mr-4">
@@ -347,13 +333,13 @@ const Ocorrencia = () => {
                             </div>
                           ))}
                         </div>
-                      ) : type === 'file' ? (
+                      ) : type === "file" ? (
                         <input
                           type="file"
                           onChange={handleChange}
                           className="border rounded-[6px] p-3 w-full mb-4 text-black"
                         />
-                      ) : type === 'select' ? (
+                      ) : type === "select" ? (
                         <TipoOcorrenciaSelect
                           lista={tipoOcorrenciaLista}
                           className="border rounded-[6px] p-3 w-full mb-4 text-black"
@@ -382,10 +368,6 @@ const Ocorrencia = () => {
                   <button
                     className="font-bold bg-blue-400 px-[52px] py-[12px] rounded-lg mt-3"
                     type="submit"
-                    /*onClick={() => {
-                    salvar();
-                    setShowModal(false);
-                  }}*/
                   >
                     SALVAR
                   </button>
