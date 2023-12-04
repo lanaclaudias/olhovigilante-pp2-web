@@ -6,8 +6,8 @@ import {
   useMapEvents,
 } from "react-leaflet";
 import { useState } from "react";
-
 import "leaflet/dist/leaflet.css";
+
 
 const boundsCenter = [-8.0456, -34.8981]; // Centraliza inicialmente em Recife - geo:-8.0456,-34.8981
 // Pendente - Limitar mapa às coordenadas dentro da região
