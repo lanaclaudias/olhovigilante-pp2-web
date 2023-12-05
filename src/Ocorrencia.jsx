@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Mapa from "./assets/mapa.png";
 import Header from "./components/Header/Header";
 import axios from "axios";
+import MyMap from "./MyMap";
 
 const TipoOcorrenciaSelect = (props) => {
   return (
@@ -270,7 +271,8 @@ const Ocorrencia = () => {
 
         <div className="flex relative justify-between gap-10 items-start pt-10">
           <div className="sticky top-0">
-            <img src={Mapa} />
+            {/* <img src={Mapa} /> */}
+            <MyMap/>
           </div>
           <div className="flex-1 hover:cursor-pointer">
             {ocorrencias.map(
