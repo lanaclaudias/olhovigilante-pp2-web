@@ -6,7 +6,6 @@ import { MapContainer, TileLayer, useMap } from "react-leaflet";
 import L from "leaflet";
 import * as opencage from "opencage-api-client";
 import { GeoSearchControl, MapBoxProvider } from "leaflet-geosearch";
-
 import { SearchBox } from "@mapbox/search-js-react";
 
 import MyMap from "./MyMap";
