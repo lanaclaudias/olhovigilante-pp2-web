@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Mapa from "./assets/mapa.png";
 import Header from "./components/Header/Header";
 import axios from "axios";
@@ -164,6 +164,8 @@ const Ocorrencia = () => {
   const [usuarioId, setUsuarioId] = useState();
   const [categoriaId, setCategoriaId] = useState();
 
+  const mapRef = useRef(null);
+
   useEffect((props) => {
     axios
       .get("http://localhost:8082/api/categoriaocorrencia")
@@ -271,8 +273,8 @@ const Ocorrencia = () => {
 
         <div className="flex relative justify-between gap-10 items-start pt-10">
           <div className="sticky top-0">
-            {/* <img src={Mapa} /> */}
-            <MyMap/>
+            {/* Mapa listando todas as ocorrências */}
+            <MyMap />
           </div>
           <div className="flex-1 hover:cursor-pointer">
             {ocorrencias.map(
@@ -309,7 +311,9 @@ const Ocorrencia = () => {
       {/* MODAL */}
 
       {showModal ? (
-        <>
+        <div className="flex justify-between"> {/* Align map and form */}
+          {/* Mapa para Novas Ocorrências */}
+          <MyMap ref={mapRef} className="" />
           <form
             className="justify-center items-start flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
             onSubmit={handleSubmit}
@@ -396,7 +400,7 @@ const Ocorrencia = () => {
             </div>
           </form>
           <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
-        </>
+        </div>
       ) : null}
 
       {/* MODAL DETALHES OCORRENCIA*/}

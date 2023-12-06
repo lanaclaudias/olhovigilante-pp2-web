@@ -11,8 +11,8 @@ const SearchField = ({ apiKey }) => {
   const [markerQ, setMarkerQ] = useState();
   const [state, setState] = useState("");
 
-  map.setView(initialCenter, 10,);
-  
+  map.setView(initialCenter, 10);
+
   const provider = new MapBoxProvider({
     params: {
       access_token: apiKey,
@@ -28,20 +28,23 @@ const SearchField = ({ apiKey }) => {
   });
 
   // Bug: Marcador inicial não é arrastável
-  // fixar casas ponto flutuante em 7 antes de fazer queries
+  // fixar ponto flutuante em 7 antes de fazer queries
   map.on("click", (e) => {
     if (marker) {
       marker.removeFrom(map);
     }
-    
-    let mrk = L.marker(e.latlng, { draggable: true, autoPan: true }).on("dragend", (e) =>
-      console.log(e.target._latlng)
+
+    let mrk = L.marker(e.latlng, { draggable: true, autoPan: true }).on(
+      "dragend",
+      (e) => {
+        /* console.log(e.target._latlng) */
+      }
     );
     setMarker(mrk);
   });
   marker.addTo(map);
   map.setView(marker.getLatLng(), 20);
-  console.log(marker.getLatLng())
+  //console.log(marker.getLatLng())
 
   // Geocoder
   //let geocoder = new Geocoder({ defaultMarkGeocode: false })
@@ -52,7 +55,7 @@ const SearchField = ({ apiKey }) => {
 
   useEffect(() => {
     map.addControl(searchControl);
-    return () => map.removeControl(searchControl); 
+    return () => map.removeControl(searchControl);
   }, []);
 
   return null;
