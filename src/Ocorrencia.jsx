@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Mapa from "./assets/mapa.png";
 import Header from "./components/Header/Header";
 import axios from "axios";
+import MyMap from "./MyMap";
 
 const TipoOcorrenciaSelect = (props) => {
   return (
@@ -98,6 +99,9 @@ const Ocorrencia = () => {
     "DIFAMAÇÃO POR VIOLÊNCIA DOMÉSTICA/FAMILIAR",
     "INJURIA",
   ]; */
+  
+  // Acrescentar value: {state} ao array de fields para os inputs
+  // e incluir value como atributo durante a iteração para o render condicional?
   const fields = [
     {
       label: "Tipo de Ocorrência",
@@ -162,6 +166,8 @@ const Ocorrencia = () => {
   const [geolocalizacao, setGeolocalizacao] = useState("");
   const [usuarioId, setUsuarioId] = useState();
   const [categoriaId, setCategoriaId] = useState();
+
+  const mapRef = useRef(null);
 
   useEffect((props) => {
     axios
@@ -230,6 +236,20 @@ const Ocorrencia = () => {
     setShowModalOcorrencia(true);
   };
 
+  const [markerLocation, setMarkerLocation] = useState();
+  
+  const handleMarkerLocation = (marker) => {
+    //console.log("actual marker location: ", marker.latlng);
+    console.log(marker);
+    setMarkerLocation(marker);
+    return marker;
+  }
+  
+  // Test
+  useEffect(() => {
+    console.log(markerLocation)
+  }, [/* markerLocation */])
+
   return (
     <>
       <Header />
@@ -264,7 +284,8 @@ const Ocorrencia = () => {
 
         <div className="flex relative justify-between gap-10 items-start pt-10">
           <div className="sticky top-0">
-            <img src={Mapa} />
+            {/* Mapa listando todas as ocorrências */}
+            <MyMap markerLocation={getMarkerLocation} />
           </div>
           <div className="flex-1 hover:cursor-pointer">
             {ocorrencias &&
@@ -293,7 +314,11 @@ const Ocorrencia = () => {
       {/* MODAL */}
 
       {showModal ? (
-        <>
+        <div className="flex justify-between"> {/* Align map and form */}
+          
+          {/* Mapa para Novas Ocorrências */}
+          <MyMap setMarkerLocation1={handleMarkerLocation/* setMarkerLocation */} /* getMarkerLocation={handleMarkerLocation} */ />
+          
           <form
             onSubmit={handleSubmit}
             className="justify-center items-start flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
@@ -376,7 +401,7 @@ const Ocorrencia = () => {
             </div>
           </form>
           <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
-        </>
+        </div>
       ) : null}
 
       {/* MODAL DETALHES OCORRENCIA*/}

@@ -67,7 +67,7 @@ const Register = () => {
           .catch((err) => {
             console.log(err);
             bairroRef.current.value = "CEP Vazio ou Inválido";
-            cidadeRef.current.value = "";
+            cidadeRef.current.value = "CEP Vazio ou Inválido";
             setBairro(bairroRef.current.value);
             setCidade(cidadeRef.current.value);
             /*err.errors.map((e) => {
