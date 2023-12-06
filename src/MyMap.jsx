@@ -1,10 +1,10 @@
 import { GeoSearchControl, MapBoxProvider } from "leaflet-geosearch";
-import { MapContainer, useMap, TileLayer } from "react-leaflet";
-import { useEffect, useState } from "react";
+import { MapContainer, useMap, TileLayer, useMapEvent, useMapEvents } from "react-leaflet";
+import { useEffect, useRef, useState } from "react";
 import L, { marker } from "leaflet";
 import { Geocoder } from "leaflet-control-geocoder";
 
-const SearchField = ({ apiKey }) => {
+const SearchField = ({ apiKey, setMarkerLocation0 }) => {
   const initialCenter = [-8.0456, -34.8981];
   const map = useMap();
   const [marker, setMarker] = useState(L.marker(initialCenter));
@@ -29,6 +29,8 @@ const SearchField = ({ apiKey }) => {
 
   // Bug: Marcador inicial não é arrastável
   // fixar ponto flutuante em 7 antes de fazer queries
+  //console.log("before drag: ", marker.getLatLng());
+  
   map.on("click", (e) => {
     if (marker) {
       marker.removeFrom(map);
@@ -37,15 +39,22 @@ const SearchField = ({ apiKey }) => {
     let mrk = L.marker(e.latlng, { draggable: true, autoPan: true }).on(
       "dragend",
       (e) => {
-        /* console.log(e.target._latlng) */
+        /* console.log("dragend: ", e.target._latlng) */
+        //dragendlatlng = e.target._latlng;
+        mrk.setLatLng(e.target._latlng);
+        //setMarker(mrk);
+        //console.log("dragend: ", dragendlatlng) 
       }
     );
+    /* console.log("dragend: ", dragendlatlng)  */
     setMarker(mrk);
   });
+  //console.log("after drag: ", marker.getLatLng())
   marker.addTo(map);
   map.setView(marker.getLatLng(), 20);
-  //console.log(marker.getLatLng())
 
+  setMarkerLocation0 = () => {return marker};
+  
   // Geocoder
   //let geocoder = new Geocoder({ defaultMarkGeocode: false })
   //  .on('markgeocode', function (e) {
@@ -61,7 +70,11 @@ const SearchField = ({ apiKey }) => {
   return null;
 };
 
-const MyMap = () => {
+const MyMap = ({setMarkerLocation0, setMarkerLocation1}) => {
+  
+  setMarkerLocation1 = (location) => { console.log(location); return location; }
+
+  //props.marker = markerRef.current.marker
   return (
     <MapContainer style={{ height: "60vh", width: "60vh" }}>
       {/* {showSearch && <SearchField apiKey={import.meta.env.VITE_APP_MAPBOX_GEOSEARCH_API_TOKEN} />} */}
@@ -74,6 +87,8 @@ const MyMap = () => {
       >
         <SearchField
           apiKey={import.meta.env.VITE_APP_MAPBOX_GEOSEARCH_API_TOKEN}
+          setMarkerLocation0={setMarkerLocation1}
+          /* setMarkerLocation0={'test'} */
         />
       </form>
       <TileLayer
