@@ -287,7 +287,7 @@ const Ocorrencia = () => {
         <div className="flex relative justify-between gap-10 items-start pt-10">
           <div className="sticky top-0">
             {/* Mapa listando todas as ocorrências */}
-            {/* <MyMap markerLocation={getMarkerLocation} /> */}
+            <MyMap markerLocation={getMarkerLocation} />
           </div>
           <div className="flex-1 hover:cursor-pointer">
             {ocorrencias &&
