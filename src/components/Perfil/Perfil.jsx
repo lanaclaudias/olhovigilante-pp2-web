@@ -19,27 +19,55 @@ const Perfil = () => {
 
   // Usuário setado manualmente enquanto o login não estiver implementado
   const [user, setUser] = useState({});
-  const [userId, setUserId] = useState(10);
-  useEffect(() => {
+  const [userId, setUserId] = useState(1);
+
+  const getUser = () => {
     axios
       .get(`http://localhost:8082/api/usuario/${userId}`)
       .then((res) => {
         //console.log(res.data);
         setUser(res.data);
-        setNome(res.data.nome)
+        setNome(res.data.nome);
         setBairro(res.data.bairro);
         setCidade(res.data.cidade);
         setEmail(res.data.email);
         setCpf(res.data.cpf);
         setSenha(res.data.senha);
-        //return res.data;
+        return;
       })
       .catch((err) => {
         // corrigir tipo de return de acordo o
         setUser(null);
-        //return null;
+        return err;
       });
-  }, []);
+    console.log(user);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const usuarioRequest = {
+      nome: nome,
+      cpf: cpf,
+      email: email,
+      senha: senha,
+      bairro: bairro,
+      cidade: cidade,
+    };
+
+    axios
+      .put(`http://localhost:8082/api/usuario/${userId}`, usuarioRequest)
+      .then((res) => {
+        console.log(res.status);
+        setShowModal(false);
+        setUser(res.data);
+        getUser();
+      })
+      .catch((err) => console.log(err));
+  };
+
+  useEffect(() => {
+    getUser();
+  }, [userId]);
 
   const handleClick = () => {
     setShowModal(true);
@@ -61,13 +89,6 @@ const Perfil = () => {
       type: "text",
       handleChange: (e) => setBairro(e.target.value),
     },
-    /* {
-      label: "CEP",
-      type: "text",
-      placeholder: "00.000-000",
-      maxLength: 8,
-      handleChange: (e) => setCep(e.target.value),
-    } */,
     {
       label: "Email",
       type: "email",
@@ -77,7 +98,7 @@ const Perfil = () => {
       label: "CPF",
       type: "text",
       handleChange: (e) => setCpf(e.target.value),
-      maxLength: 11
+      maxLength: 11,
     },
     {
       label: "Redefinir senha",
@@ -86,26 +107,6 @@ const Perfil = () => {
     },
   ];
 
-  const handleSubmit = (e) => {
-    //e.preventDefault();
-    const usuarioRequest = {
-      nome: nome,
-      cpf: cpf,
-      email: email,
-      senha: senha,
-      bairro: bairro,
-      cidade: cidade,
-    };
-    
-    axios
-      .put(`http://localhost:8082/api/usuario/${userId}`, usuarioRequest)
-      .then((res) => {
-        console.log(res.status);
-        setShowModal(false);
-        //setUser(res.data);
-      })
-      .catch((err) => console.log(err));
-  };
   return (
     <>
       <Header />
@@ -153,39 +154,56 @@ const Perfil = () => {
                   Editar dados
                 </h1>
                 <div className="relative p-6 flex-auto">
-                  {fields.map(({ label, type, values, handleChange, maxLength }) => (
-                    <div key={label}>
-                      <label className="block text-black font-bold">
-                        {label}
-                      </label>
-                      {type === "radio" ? (
-                        <div className="flex">
-                          {values.map((value, index) => (
-                            <div key={index} className="mr-4">
-                              <input
-                                type={type}
-                                value={value}
-                                name={label}
-                                onChange={handleChange}
-                                className="mr-1"
-                              />
-                              <label htmlFor={value} className="text-black">
-                                {value}
-                              </label>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <input
-                          type={type}
-                          placeholder={label}
-                          onChange={handleChange}
-                          maxLength={maxLength}
-                          className="border rounded-[6px] p-3 w-full mb-4 text-black"
-                        />
-                      )}
-                    </div>
-                  ))}
+                  {fields.map(
+                    ({ label, type, values, handleChange, maxLength }) => (
+                      <div key={label}>
+                        <label className="block text-black font-bold">
+                          {label}
+                        </label>
+                        {type === "radio" ? (
+                          <div className="flex">
+                            {values.map((value, index) => (
+                              <div key={index} className="mr-4">
+                                <input
+                                  type={type}
+                                  value={value}
+                                  name={label}
+                                  onChange={handleChange}
+                                  className="mr-1"
+                                />
+                                <label htmlFor={value} className="text-black">
+                                  {value}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <input
+                            type={type}
+                            placeholder={label}
+                            onChange={handleChange}
+                            maxLength={maxLength}
+                            value={
+                              label === "Nome"
+                                ? nome
+                                : label === "Cidade"
+                                ? cidade
+                                : label === "Bairro"
+                                ? bairro
+                                : label === "Email"
+                                ? email
+                                : label === "CPF"
+                                ? cpf
+                                : label === "Redefinir senha"
+                                ? senha
+                                : ""
+                            }
+                            className="border rounded-[6px] p-3 w-full mb-4 text-black"
+                          />
+                        )}
+                      </div>
+                    )
+                  )}
                   <div>
                     <input
                       className="inline-block mr-2"

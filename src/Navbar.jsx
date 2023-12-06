@@ -8,25 +8,13 @@ export default function Navbar() {
       <Box bg="black" padding="0 20px">
         <Flex gap={"20"} alignItems={"center"}>
           <Image w={"40px"} src="logo.jpg"></Image>
-          <ChakraLink
-            fontWeight={"bold"}
-            textDecor={"none"}
-            color={"#FFF"}
-            as={ReactRouterLink}
-            to={"/"}
-          >
+          <Link color={"#FFF"} to={"/"}>
             Página Inicial
-          </ChakraLink>
+          </Link>
           <Spacer />
-          <ChakraLink
-            fontWeight={"bold"}
-            textDecor={"none"}
-            color={"#FFF"}
-            as={ReactRouterLink}
-            to={"/login"}
-          >
+          <Link color={"#FFF"} to={"/login"}>
             Entrar/Cadastrar-se
-          </ChakraLink>
+          </Link>
         </Flex>
       </Box>
     </>
