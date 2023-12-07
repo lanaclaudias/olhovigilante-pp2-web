@@ -33,76 +33,7 @@ const handleTempLatLng = (newState) => {
 };
 
 const Ocorrencia = () => {
-  /* Mapa */
-  const Map = ({ apiKey }) => {
-    const initialCenter = [-8.0456, -34.8981];
-    const map = useMap();
-    const [marker, setMarker] = useState(L.marker(initialCenter));
-
-    map.setView(initialCenter, 10);
-
-    const provider = new MapBoxProvider({
-      params: {
-        access_token: apiKey,
-      },
-    });
-
-    const searchControl = new GeoSearchControl({
-      provider: provider,
-      searchLabel: "Insira o endereço",
-      notFoundMessage: "Endereço não encontrado. Tente novamente.",
-      style: "bar",
-      //keepResult: true
-    });
-
-    // Bug: Marcador inicial não é arrastável
-    // fixar ponto flutuante em 7 antes de fazer queries
-    //console.log("before drag: ", marker.getLatLng());
-
-    map.on("click", (e) => {
-      if (marker) {
-        marker.removeFrom(map);
-      }
-
-      let mrk = L.marker(e.latlng, { draggable: true, autoPan: true }).on(
-        "dragend",
-        (e) => {
-          mrk.setLatLng(e.target._latlng);
-          setMarker(mrk);
-          handleTempLatLng(mrk);
-          /* console.log("temp after drag ", temp) */
-        }
-      );
-      setMarker(mrk);
-      handleTempLatLng(mrk);
-      /* console.log("temp after click ", temp) */
-    });
-    marker.addTo(map);
-    map.setView(marker.getLatLng(), 20);
-    handleTempLatLng(marker);
-    /* console.log("temp after click and drag: ", temp) */
-
-    useEffect(() => {
-      map.addControl(searchControl);
-      return () => map.removeControl(searchControl);
-    }, []);
-
-    return null;
-  };
-
-  const MyMap = () => {
-    return (
-      <>
-        <MapContainer style={{ height: "60vh", width: "60vh" }}>
-          <Map apiKey={import.meta.env.VITE_APP_MAPBOX_GEOSEARCH_API_TOKEN} />
-          <TileLayer
-            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-        </MapContainer>
-      </>
-    );
-  };
+  
 
   /* const tiposOcorrenciaArr = [
     "AMEAÇA",
@@ -200,6 +131,7 @@ const Ocorrencia = () => {
     {
       label: "Data",
       type: "date",
+      //pattern: "\d{1,2}/\d{1,2}/\d{4}",
       handleChange: (e) => setData(e.target.value),
     },
     {
@@ -212,13 +144,13 @@ const Ocorrencia = () => {
       type: "file",
       handleChange: (e) => setMidia(e.target.value),
     }, // implementação apropriada para múltiplos arquivos pendente e necessita integrar com a API de Mídia já configurada com suas associações
-    {
+    /* {
       label: "Geolocalização",
       type: "text",
       //value: temp,
       //handleChange: (e) => setGeolocalizacao(e.target.value),
       disabled: true,
-    },
+    }, */
     {
       label:
         "ID do Usuário (campo temporário pela falta de implementação de login)",
@@ -240,6 +172,98 @@ const Ocorrencia = () => {
   const [geolocalizacao, setGeolocalizacao] = useState(); //useState("");
   const [usuarioId, setUsuarioId] = useState();
   const [categoriaId, setCategoriaId] = useState();
+  const [ocorrencias, setOcorrencias] = useState([]);
+
+  /* Mapa */ // Investigar bug na reatividade dos mapas durante interação com os campos do formulário
+  const Map = ({ apiKey }) => {
+    const initialCenter = [-8.0456, -34.8981];
+    const map = useMap();
+    const [marker, setMarker] = useState(L.marker(initialCenter));
+    map.setView(initialCenter, 10);
+
+    if(ocorrencias) {
+      let icon = L.icon({
+        iconUrl: 'suspect.png',
+        iconSize: [50, 50],
+        iconAnchor: [22, 94],
+        popupAnchor: [-3, -76],
+        //shadowUrl: 'my-icon-shadow.png',
+        //shadowSize: [68, 95],
+        //shadowAnchor: [22, 94]
+    });
+      ocorrencias.map((elem) => {
+        if(elem.geolocalizacao && elem.geolocalizacao.length > 10) {
+          let latlng = elem.geolocalizacao.split(',');
+          //console.log(elem.geolocalizacao.split(','))
+          //let ocorrenciaMarker = L.marker(elem.geolocalizacao.split(',')).bindPopUp(elem.categoria.nome).addTo(map);
+          L.marker(latlng, {alt: elem.categoria.nome, icon: icon}).bindPopup(elem.categoria.nome, {}).addTo(map);
+          // .bindTooltip(elem.categoria.nome, {permanent: true}).addTo(map);
+        }
+      })
+    }
+
+    const provider = new MapBoxProvider({
+      params: {
+        access_token: apiKey,
+      },
+    });
+
+    const searchControl = new GeoSearchControl({
+      provider: provider,
+      searchLabel: "Insira o endereço",
+      notFoundMessage: "Não encontrado. Insira na ordem 'Rua, Bairro, Cidade'.",
+      style: "bar",
+      //keepResult: true
+    });
+
+    // Bug: Marcador inicial não é arrastável
+    // fixar ponto flutuante em 7 antes de fazer queries
+    //console.log("before drag: ", marker.getLatLng());
+
+    map.on("click", (e) => {
+      if (marker) {
+        marker.removeFrom(map);
+      }
+
+      let mrk = L.marker(e.latlng, { draggable: true, autoPan: true }).on(
+        "dragend",
+        (e) => {
+          mrk.setLatLng(e.target._latlng);
+          setMarker(mrk);
+          handleTempLatLng(mrk);
+          /* console.log("temp after drag ", temp) */
+        }
+      );
+      setMarker(mrk);
+      handleTempLatLng(mrk);
+      /* console.log("temp after click ", temp) */
+    });
+    marker.addTo(map);
+    map.setView(marker.getLatLng(), 20);
+    handleTempLatLng(marker);
+    /* console.log("temp after click and drag: ", temp) */
+
+    useEffect(() => {
+      map.addControl(searchControl);
+      return () => map.removeControl(searchControl);
+    }, []);
+
+    return null;
+  };
+
+  const MyMap = () => {
+    return (
+      <>
+        <MapContainer style={{ height: "60vh", width: "60vh" }}>
+          <Map apiKey={import.meta.env.VITE_APP_MAPBOX_GEOSEARCH_API_TOKEN} />
+          <TileLayer
+            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+        </MapContainer>
+      </>
+    );
+  };
 
   useEffect(() => {
     axios
@@ -262,12 +286,12 @@ const Ocorrencia = () => {
       dataHoraOcorrencia: data, // alterar formatação (data + hora)
       hora: hora,
       midia: midia,
-      geolocalizacao: temp,//geolocalizacao,
+      geolocalizacao: "" + temp.lat + "," + temp.lng,//geolocalizacao,
       usuarioId: usuarioId,
       categoriaId: categoriaId,
     };
-    
-    console.log(JSON.stringify(ocorrenciaRequest));
+
+    //console.log(JSON.stringify(ocorrenciaRequest));
 
     axios
       .post("http://localhost:8082/api/ocorrencia", ocorrenciaRequest)
@@ -278,8 +302,6 @@ const Ocorrencia = () => {
         alert("Falha ao cadastrar ocorrência.\n" + e.name + " - " + e.message);
       });
   }
-
-  const [ocorrencias, setOcorrencias] = useState([]);
 
   const listaOcorrencias = () => {
     axios
@@ -296,6 +318,7 @@ const Ocorrencia = () => {
   useEffect(() => {
     if (ocorrencias !== null) {
       listaOcorrencias();
+      
     }
   }, []);
 
