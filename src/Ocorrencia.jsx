@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from "react";
-import Mapa from "./assets/mapa.png";
 import Header from "./components/Header/Header";
 import axios from "axios";
-import MyMap from "./MyMap";
+//import MyMap from "./MyMap";
+import { GeoSearchControl, MapBoxProvider } from "leaflet-geosearch";
+import { MapContainer, useMap, TileLayer } from "react-leaflet";
+import L from "leaflet";
 
 const TipoOcorrenciaSelect = (props) => {
   return (
@@ -25,17 +27,13 @@ const TipoOcorrenciaSelect = (props) => {
   );
 };
 
+let temp;
+const handleTempLatLng = (newState) => {
+  temp = newState._latlng;
+};
+
 const Ocorrencia = () => {
-  /*useEffect((props) => {
-    axios
-    .get("http://localhost:8082/api/usuario")
-    .then(
-      (res) => {
-        setOcorrenciasLista(res.data);
-        console.log(ocorrenciasLista)
-      }
-    )
-  });*/
+  
 
   /* const tiposOcorrenciaArr = [
     "AMEAÇA",
@@ -102,11 +100,16 @@ const Ocorrencia = () => {
 
   // Acrescentar value: {state} ao array de fields para os inputs
   // e incluir value como atributo durante a iteração para o render condicional?
+  
   const fields = [
     {
       label: "Tipo de Ocorrência",
       type: "select",
       handleChange: (e) => setCategoriaId(e.target.value),
+      handleBlur: () => { // alterar para onClick no botão de submit se for necessário
+        console.log(temp)
+        setGeolocalizacao(temp);
+      },
     },
     {
       label: "Descrição",
@@ -128,6 +131,7 @@ const Ocorrencia = () => {
     {
       label: "Data",
       type: "date",
+      //pattern: "\d{1,2}/\d{1,2}/\d{4}",
       handleChange: (e) => setData(e.target.value),
     },
     {
@@ -140,11 +144,13 @@ const Ocorrencia = () => {
       type: "file",
       handleChange: (e) => setMidia(e.target.value),
     }, // implementação apropriada para múltiplos arquivos pendente e necessita integrar com a API de Mídia já configurada com suas associações
-    {
+    /* {
       label: "Geolocalização",
       type: "text",
-      handleChange: (e) => setGeolocalizacao(e.target.value),
-    }, // aguardando a integração com a API do Google Maps
+      //value: temp,
+      //handleChange: (e) => setGeolocalizacao(e.target.value),
+      disabled: true,
+    }, */
     {
       label:
         "ID do Usuário (campo temporário pela falta de implementação de login)",
@@ -156,18 +162,108 @@ const Ocorrencia = () => {
   const [showModal, setShowModal] = useState(false);
   const [showModalOcorrencia, setShowModalOcorrencia] = useState(false);
   const [tipoOcorrenciaLista, setTipoOcorrenciaLista] = useState([]);
-  const [tipoOcorrencia, setTipoOcorrencia] = useState();
+  //const [tipoOcorrencia, setTipoOcorrencia] = useState();
   const [descricao, setDescricao] = useState();
   const [cidade, setCidade] = useState();
   const [bairro, setBairro] = useState();
   const [data, setData] = useState();
   const [hora, setHora] = useState();
   const [midia, setMidia] = useState();
-  const [geolocalizacao, setGeolocalizacao] = useState("");
+  const [geolocalizacao, setGeolocalizacao] = useState(); //useState("");
   const [usuarioId, setUsuarioId] = useState();
   const [categoriaId, setCategoriaId] = useState();
   const [ocorrencias, setOcorrencias] = useState([]);
-  const mapRef = useRef(null);
+
+  /* Mapa */ // Investigar bug na reatividade dos mapas durante interação com os campos do formulário
+  const Map = ({ apiKey }) => {
+    const initialCenter = [-8.063153, -34.871140];
+    const map = useMap();
+    const [marker, setMarker] = useState(L.marker(initialCenter));
+    map.setView(initialCenter, 10);
+
+    if(ocorrencias) {
+      let icon = L.icon({
+        iconUrl: 'suspect.png',
+        iconSize: [50, 50],
+        iconAnchor: [22, 94],
+        popupAnchor: [-3, -76],
+        //shadowUrl: 'my-icon-shadow.png',
+        //shadowSize: [68, 95],
+        //shadowAnchor: [22, 94]
+    });
+      ocorrencias.map((elem) => {
+        if(elem.geolocalizacao && elem.geolocalizacao.length > 10) {
+          let latlng = elem.geolocalizacao.split(',');
+          //console.log(elem.geolocalizacao.split(','))
+          //let ocorrenciaMarker = L.marker(elem.geolocalizacao.split(',')).bindPopUp(elem.categoria.nome).addTo(map);
+          L.marker(latlng, {alt: elem.categoria.nome, icon: icon}).bindPopup(elem.categoria.nome, {}).addTo(map);
+          // .bindTooltip(elem.categoria.nome, {permanent: true}).addTo(map);
+        }
+      })
+    }
+
+    const provider = new MapBoxProvider({
+      params: {
+        access_token: apiKey,
+      },
+    });
+
+    const searchControl = new GeoSearchControl({
+      provider: provider,
+      searchLabel: "Insira o endereço",
+      notFoundMessage: "Não encontrado. Insira na ordem 'Rua, Bairro, Cidade'.",
+      style: "bar",
+      //keepResult: true
+    });
+
+    // Bug: Marcador inicial não é arrastável
+    // fixar ponto flutuante em 7 antes de fazer queries
+    //console.log("before drag: ", marker.getLatLng());
+
+    map.on("click", (e) => {
+      if (marker) {
+        marker.removeFrom(map);
+      }
+
+      let mrk = L.marker(e.latlng, { draggable: true, autoPan: true }).on(
+        "dragend",
+        (e) => {
+          mrk.setLatLng(e.target._latlng);
+          setMarker(mrk);
+          handleTempLatLng(mrk);
+          /* console.log("temp after drag ", temp) */
+        }
+      );
+      setMarker(mrk);
+      handleTempLatLng(mrk);
+      /* console.log("temp after click ", temp) */
+    });
+    marker.addTo(map);
+    map.setView(marker.getLatLng(), 20);
+    handleTempLatLng(marker);
+    /* console.log("temp after click and drag: ", temp) */
+
+    useEffect(() => {
+      map.addControl(searchControl);
+      return () => map.removeControl(searchControl);
+    }, []);
+
+    return null;
+  };
+
+  const MyMap = () => {
+    return (
+      <>
+        <MapContainer style={{ height: "60vh", width: "60vh" }}>
+          <Map apiKey={import.meta.env.VITE_APP_MAPBOX_GEOSEARCH_API_TOKEN} />
+          <TileLayer
+            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+        </MapContainer>
+      </>
+    );
+  };
 
   const getCategoriasOcorrencias = () => {
     axios
@@ -176,7 +272,7 @@ const Ocorrencia = () => {
         setTipoOcorrenciaLista(res.data);
       })
       .catch((err) => {
-        setTipoOcorrenciaLista([{ nome: "Vazia" }]);
+        setTipoOcorrenciaLista([{ nome: "Lista Vazia" }]);
         console.log("Nenhuma categoria de ocorrência encontrada.");
       });
   };
@@ -204,14 +300,14 @@ const Ocorrencia = () => {
       descricao,
       cidade,
       bairro,
-      dataHoraOcorrencia: data,
+      dataHoraOcorrencia: data, // alterar formatação (data + hora)
       hora,
-      // midia,
-      geolocalizacao,
+      midia,
+      geolocalizacao: "" + temp.lat + "," + temp.lng,
       usuarioId,
       categoriaId,
     };
-
+    
     axios
       .post("http://localhost:8082/api/ocorrencia", ocorrenciaRequest)
       .then((response) => {
@@ -219,7 +315,7 @@ const Ocorrencia = () => {
         alert("Ocorrencia cadastrada com sucesso.");
       })
       .catch((err) => {
-        alert("Falha ao cadastrar a ocorrência.", err);
+        alert("Falha ao cadastrar a ocorrência.", err.message);
       });
   };
 
@@ -229,28 +325,9 @@ const Ocorrencia = () => {
     axios
       .get(`http://localhost:8082/api/ocorrencia/${id}`)
       .then((response) => setOcorrenciaUnica(response.data))
-      .catch((error) => console.log(error));
+      .catch((error) => console.log(error.message));
     setShowModalOcorrencia(true);
   };
-
-  const [markerLocation, setMarkerLocation] = useState();
-
-  const handleMarkerLocation = (marker) => {
-    //console.log("actual marker location: ", marker.latlng);
-    console.log(marker);
-    setMarkerLocation(marker);
-    return marker;
-  };
-
-  // Test
-  useEffect(
-    () => {
-      console.log(markerLocation);
-    },
-    [
-      /* markerLocation */
-    ]
-  );
 
   return (
     <>
@@ -287,7 +364,7 @@ const Ocorrencia = () => {
         <div className="flex relative justify-between gap-10 items-start pt-10">
           <div className="sticky top-0">
             {/* Mapa listando todas as ocorrências */}
-            <MyMap markerLocation={getMarkerLocation} />
+            <MyMap />
           </div>
           <div className="flex-1 hover:cursor-pointer">
             {ocorrencias &&
@@ -319,16 +396,14 @@ const Ocorrencia = () => {
         <div className="flex justify-between">
           {" "}
           {/* Align map and form */}
-          {/* Mapa para Novas Ocorrências */}
-          <MyMap
-            setMarkerLocation1={
-              handleMarkerLocation /* setMarkerLocation */
-            } /* getMarkerLocation={handleMarkerLocation} */
-          />
           <form
             onSubmit={handleSubmit}
             className="justify-center items-start flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
           >
+            {/* <div className="relative min-w-[550px] my-6 mx-auto max-w-3xl">
+            <MyMap />
+            </div> */}
+
             <div className="relative min-w-[550px] my-6 mx-auto max-w-3xl">
               {/*content*/}
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
@@ -336,56 +411,61 @@ const Ocorrencia = () => {
                   NOVA OCORRÊNCIA
                 </h1>
                 <div className="relative p-6 flex-auto">
-                  {fields.map(({ label, type, values, handleChange }) => (
-                    <div key={label}>
-                      <label className="block text-black font-bold">
-                        {label}
-                      </label>
-                      {type === "textarea" ? (
-                        <textarea
-                          placeholder={label}
-                          onChange={handleChange}
-                          className="border rounded-[6px] p-3 w-full mb-4 text-black"
-                        />
-                      ) : type === "radio" ? (
-                        <div className="flex">
-                          {values.map((value, index) => (
-                            <div key={index} className="mr-4">
-                              <input
-                                type={type}
-                                value={value}
-                                name={label}
-                                onChange={handleChange}
-                                className="mr-1"
-                              />
-                              <label htmlFor={value} className="text-black">
-                                {value}
-                              </label>
-                            </div>
-                          ))}
-                        </div>
-                      ) : type === "file" ? (
-                        <input
-                          type="file"
-                          onChange={handleChange}
-                          className="border rounded-[6px] p-3 w-full mb-4 text-black"
-                        />
-                      ) : type === "select" ? (
-                        <TipoOcorrenciaSelect
-                          lista={tipoOcorrenciaLista}
-                          className="border rounded-[6px] p-3 w-full mb-4 text-black"
-                          handleChange={handleChange}
-                        />
-                      ) : (
-                        <input
-                          type={type}
-                          placeholder={label}
-                          onChange={handleChange}
-                          className="border rounded-[6px] p-3 w-full mb-4 text-black"
-                        />
-                      )}
-                    </div>
-                  ))}
+                  {fields.map(
+                    ({ label, type, values, disabled, handleChange, handleBlur }) => (
+                      <div key={label}>
+                        <label className="block text-black font-bold">
+                          {label}
+                        </label>
+                        {type === "textarea" ? (
+                          <textarea
+                            placeholder={label}
+                            onChange={handleChange}
+                            className="border rounded-[6px] p-3 w-full mb-4 text-black"
+                          />
+                        ) : type === "radio" ? (
+                          <div className="flex">
+                            {values.map((value, index) => (
+                              <div key={index} className="mr-4">
+                                <input
+                                  type={type}
+                                  value={value}
+                                  name={label}
+                                  onChange={handleChange}
+                                  className="mr-1"
+                                />
+                                <label htmlFor={value} className="text-black">
+                                  {value}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        ) : type === "file" ? (
+                          <input
+                            type="file"
+                            onChange={handleChange}
+                            className="border rounded-[6px] p-3 w-full mb-4 text-black"
+                          />
+                        ) : type === "select" ? (
+                          <TipoOcorrenciaSelect
+                            lista={tipoOcorrenciaLista}
+                            className="border rounded-[6px] p-3 w-full mb-4 text-black"
+                            handleChange={handleChange}
+                            // handleBlur={handleBlur}
+                          />
+                        ) : (
+                          <input
+                            type={type}
+                            placeholder={label}
+                            onChange={handleChange}
+                            disabled={disabled}
+                            className="border rounded-[6px] p-3 w-full mb-4 text-black"
+                          />
+                        )}
+                      </div>
+                    )
+                  )}
+                  <MyMap/>
                 </div>
                 {/*footer*/}
                 <div className="flex gap-[20px] items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b text-white">
