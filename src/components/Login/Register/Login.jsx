@@ -1,6 +1,33 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../../Header/Header";
 
 function Login() {
+
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+
+  const entrar = () => {
+    if (email !== '' && senha !== '') {
+
+      let authenticationRequest = {
+          email: email,
+          senha: senha,
+      }
+
+      axios.post("http://localhost:8080/api/login", authenticationRequest)
+      .then((response) => {
+          // registerSuccessfulLoginForJwt(response.data.token, response.data.expiration);
+          navigate("/");
+      })
+      .catch((error) => {
+        console.log(error);
+          // notifyError('Usuário não encontrado');
+      })
+  }
+  }
+
   return (
     <>
       <Header />
