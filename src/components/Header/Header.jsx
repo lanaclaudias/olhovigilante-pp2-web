@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import logo from "/mini-logo.png";
 import { useEffect } from "react";
 
@@ -67,14 +67,17 @@ const Header = () => {
   return (
     <header className="bg-black text-white">
       <div className="container flex justify-between items-center flex-wrap">
-        <a href="/">
+        <Link to="/">
           <img src={logo} alt="" className="minilogo mt-1" />
-        </a>
+        </Link>
         <nav>
           <ul className="menu flex items-center gap-12">
             {navMenuItems.map((elem) => (
               <li key={elem.icon.slice(5, -4)}>
-                <a href={elem.link} className="flex text-white flex-col">
+                <Link
+                  to={elem.link}
+                  className="flex font-sora text-white flex-col"
+                >
                   <img
                     // src={elem.icon}
                     src={
@@ -87,12 +90,12 @@ const Header = () => {
                     className="self-center w-8 h-8"
                   />
                   <p>{elem.text}</p>
-                </a>
+                </Link>
               </li>
             ))}
             {/* Item Temporário enquanto não for implementado o login */}
             <li>
-              <a href={navUserBtns[0].link}>
+              <Link to={navUserBtns[0].link}>
                 <img
                   src={
                     activeUrl == navUserBtns[0].link
@@ -101,29 +104,29 @@ const Header = () => {
                   }
                 />
                 <p>{navUserBtns[0].text}</p>
-              </a>
+              </Link>
             </li>
           </ul>
         </nav>
         <div className="userButtons flex gap-6">
           {/* {console.log(user)} */}
           {navUserBtns.map((elem) => (
-            <div key={elem.icon.slice(5, -4)} className="flex flex-col">
+            <div key={elem.icon.slice(5, -4)} className="flexflex-col">
               {Object.keys(user).length == 0 && elem.text == "Perfil" ? (
                 ""
               ) : (
-                <a href={elem.link} className="self-center">
+                <Link to={elem.link} className="self-center ">
                   {/* Acrescentar highlights para quando estiver em hover */}
                   <img src={elem.icon} alt="" />
                   <p>{elem.text}</p>
-                </a>
+                </Link>
               )}
             </div>
           ))}
-          {/* <a href="/perfil" className="flex flex-col">
+          {/* <Link to="/perfil" className="flex flex-col">
           <img src={icons.perfil} alt="" className="self-center w-8 h-8" />
           <p>Perfil</p>
-        </a> */}
+        </Link> */}
         </div>
       </div>
     </header>
