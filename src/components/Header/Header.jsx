@@ -1,7 +1,6 @@
-import { useState } from "react";
-import { useLocation, Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import logo from "/mini-logo.png";
-import { useEffect } from "react";
 
 const navMenuItems = [
   {
@@ -70,7 +69,9 @@ const Header = () => {
         <Link to="/">
           <img src={logo} alt="" className="minilogo mt-1" />
         </Link>
-        <nav>
+
+        {/* MENU DESKTOP */}
+        <nav className="max-lg:hidden">
           <ul className="menu flex items-center gap-12">
             {navMenuItems.map((elem) => (
               <li key={elem.icon.slice(5, -4)}>
@@ -108,7 +109,20 @@ const Header = () => {
             </li>
           </ul>
         </nav>
-        <div className="userButtons flex gap-6">
+
+        {/* MENU MOBILE */}
+        <div className="lg:hidden">
+          <button>Menu</button>
+          <nav>
+            <ul>
+                <li><a href="">Item 1</a></li>
+                <li><a href="">Item 2</a></li>
+                <li><a href="">Item 3</a></li>
+            </ul>
+          </nav>
+        </div>
+
+        <div className="userButtons max-lg:hidden flex gap-6">
           {/* {console.log(user)} */}
           {navUserBtns.map((elem) => (
             <div key={elem.icon.slice(5, -4)} className="flexflex-col">

@@ -10,7 +10,7 @@ export default {
       container: {
         center: true,
         screens: {
-          xl: '1084px',
+          xl: '1104px',
         },
       },
     },
