@@ -176,7 +176,7 @@ const Ocorrencia = () => {
 
   /* Mapa */ // Investigar bug na reatividade dos mapas durante interação com os campos do formulário
   const Map = ({ apiKey }) => {
-    const initialCenter = [-8.0456, -34.8981];
+    const initialCenter = [-8.063153, -34.871140];
     const map = useMap();
     const [marker, setMarker] = useState(L.marker(initialCenter));
     map.setView(initialCenter, 10);
@@ -318,7 +318,6 @@ const Ocorrencia = () => {
   useEffect(() => {
     if (ocorrencias !== null) {
       listaOcorrencias();
-      
     }
   }, []);
 
