@@ -83,7 +83,6 @@ const SearchField = (apiKey, map) => {
 };
 
 export default function MapDemo() {
-  const mapRef = useRef();
 
   return (
     <>
