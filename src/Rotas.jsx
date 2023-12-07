@@ -5,6 +5,7 @@ import Home from './components/Home';
 import Ocorrencia from './Ocorrencia';
 import Login from './components/Login/Register/Login';
 import Perfil from './components/Perfil/Perfil';
+import MapDemo from './MapDemo';
 
 function Rotas() {
   return (
@@ -15,6 +16,7 @@ function Rotas() {
         <Route path="cadastro" element={<Cadastro />} />
         <Route path="ocorrencia" element={<Ocorrencia />} />
         <Route path="perfil" element={<Perfil />} />
+        <Route path="mapdemo" element={<MapDemo />} />
         <Route path="*" element={<NotFound />} /> {/* Página 404 */}
       </Routes>
     </>

@@ -19,7 +19,7 @@ const Perfil = () => {
 
   // Usuário setado manualmente enquanto o login não estiver implementado
   const [user, setUser] = useState({});
-  const [userId, setUserId] = useState(60);
+  const [userId, setUserId] = useState(10);
   useEffect(() => {
     axios
       .get(`http://localhost:8082/api/usuario/${userId}`)
@@ -87,7 +87,7 @@ const Perfil = () => {
   ];
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    //e.preventDefault();
     const usuarioRequest = {
       nome: nome,
       cpf: cpf,
@@ -101,6 +101,7 @@ const Perfil = () => {
       .put(`http://localhost:8082/api/usuario/${userId}`, usuarioRequest)
       .then((res) => {
         console.log(res.status);
+        setShowModal(false);
         //setUser(res.data);
       })
       .catch((err) => console.log(err));
