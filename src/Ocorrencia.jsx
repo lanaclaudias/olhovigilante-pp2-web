@@ -201,7 +201,6 @@ const Ocorrencia = () => {
         }
       })
     }
-
     const provider = new MapBoxProvider({
       params: {
         access_token: apiKey,
