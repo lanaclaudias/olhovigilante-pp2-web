@@ -20,6 +20,10 @@ export default defineConfig(({ command, mode }) => {
 
   return {
     plugins: [react()],
+    server: {
+      host: true, //"127.0.0.1",
+      port: 5175
+    },
     build: {
       assetsDir: "assets",
     },
