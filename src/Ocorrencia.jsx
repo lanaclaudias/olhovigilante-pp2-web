@@ -201,7 +201,6 @@ const Ocorrencia = () => {
         }
       })
     }
-
     const provider = new MapBoxProvider({
       params: {
         access_token: apiKey,
@@ -265,7 +264,7 @@ const Ocorrencia = () => {
     );
   };
 
-  useEffect(() => {
+  const getCategoriasOcorrencias = () => {
     axios
       .get("http://localhost:8082/api/categoriaocorrencia")
       .then((res) => {
@@ -275,57 +274,49 @@ const Ocorrencia = () => {
         setTipoOcorrenciaLista([{ nome: "Lista Vazia" }]);
         console.log("Nenhuma categoria de ocorrência encontrada.");
       });
-  }, []);
+  };
 
-  function salvar() {
-    const ocorrenciaRequest = {
-      descricao: descricao,
-      cidade: cidade,
-      bairro: bairro,
-      //data: data,
-      dataHoraOcorrencia: data, // alterar formatação (data + hora)
-      hora: hora,
-      midia: midia,
-      geolocalizacao: "" + temp.lat + "," + temp.lng,//geolocalizacao,
-      usuarioId: usuarioId,
-      categoriaId: categoriaId,
-    };
-
-    //console.log(JSON.stringify(ocorrenciaRequest));
-
-    axios
-      .post("http://localhost:8082/api/ocorrencia", ocorrenciaRequest)
-      .then((r) => {
-        alert("Ocorrência cadastrada com sucesso.");
-      })
-      .catch((e) => {
-        alert("Falha ao cadastrar ocorrência.\n" + e.name + " - " + e.message);
-      });
-  }
-
-  const listaOcorrencias = () => {
+  const getOcorrencias = () => {
     axios
       .get("http://localhost:8082/api/ocorrencia")
-      .then((response) => {
-        setOcorrencias(response.data);
-        return response.data;
+      .then((res) => {
+        setOcorrencias(res.data);
+        console.log(ocorrencias);
       })
-      .catch((error) => {
-        console.log(error.message);
+      .catch((err) => {
+        console.log(err);
       });
   };
 
   useEffect(() => {
-    if (ocorrencias !== null) {
-      listaOcorrencias();
-    }
+    getCategoriasOcorrencias();
+    getOcorrencias();
   }, []);
 
-  function handleSubmit(e) {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    salvar();
-    setShowModal(false);
-  }
+    const ocorrenciaRequest = {
+      descricao,
+      cidade,
+      bairro,
+      dataHoraOcorrencia: data, // alterar formatação (data + hora)
+      hora,
+      midia,
+      geolocalizacao: "" + temp.lat + "," + temp.lng,
+      usuarioId,
+      categoriaId,
+    };
+    
+    axios
+      .post("http://localhost:8082/api/ocorrencia", ocorrenciaRequest)
+      .then((response) => {
+        setOcorrencias([...ocorrencias, response.data]);
+        alert("Ocorrencia cadastrada com sucesso.");
+      })
+      .catch((err) => {
+        alert("Falha ao cadastrar a ocorrência.", err.message);
+      });
+  };
 
   const [ocorrenciaUnica, setOcorrenciaUnica] = useState();
 
@@ -356,8 +347,6 @@ const Ocorrencia = () => {
             </button>
           </div>
           <div className="flex space-x-4 justify-end pr-4">
-            {" "}
-            {/* Adicionando a classe pr-4 para margem direita */}
             <div className="flex">
               <input
                 type="text"
@@ -377,34 +366,26 @@ const Ocorrencia = () => {
             <MyMap />
           </div>
           <div className="flex-1 hover:cursor-pointer">
-            {ocorrencias.map(
-              (
-                /* {
-                tipoOcorrencia,
-                id,
-                dataHoraOcorrencia,
-                geolocalizacao,
-                bairro,
-                cidade,
-              } */ elem
-              ) => {
-                return (
-                  <div
-                    onClick={() => handleClickOcorrencia(elem.id)}
-                    key={elem.id}
-                    className="mt-4 p-4 rounded border border-gray-300 flex flex-col"
-                  >
-                    <p className="font-semibold">{elem.categoria.nome}</p>
-                    <div className="flex gap-4 justify-between">
-                      <p className="text-gray-600">
-                        {elem.bairro}, {elem.cidade}
-                      </p>
-                      <p className="text-gray-600">{elem.dataHoraOcorrencia}</p>
+            {ocorrencias &&
+              ocorrencias.map(
+                ({ id, categoria, bairro, cidade, dataHoraOcorrencia }) => {
+                  return (
+                    <div
+                      onClick={() => handleClickOcorrencia(id)}
+                      key={id}
+                      className="mt-4 p-4 rounded border font border-gray-300 flex flex-col"
+                    >
+                      <p className="font-semibold">{categoria.nome}</p>
+                      <div className="flex gap-4 justify-between">
+                        <p className="text-gray-600">
+                          {bairro}, {cidade}
+                        </p>
+                        <p className="text-gray-600">{dataHoraOcorrencia}</p>
+                      </div>
                     </div>
-                  </div>
-                );
-              }
-            )}
+                  );
+                }
+              )}
           </div>
         </div>
       </div>
@@ -415,8 +396,8 @@ const Ocorrencia = () => {
           {" "}
           {/* Align map and form */}
           <form
-            className="justify-center items-start flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
             onSubmit={handleSubmit}
+            className="justify-center items-start flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
           >
             {/* <div className="relative min-w-[550px] my-6 mx-auto max-w-3xl">
             <MyMap />
@@ -425,7 +406,7 @@ const Ocorrencia = () => {
             <div className="relative min-w-[550px] my-6 mx-auto max-w-3xl">
               {/*content*/}
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                <h1 className="text-black text-[24px] font-bold text-center pt-4">
+                <h1 className="text-black font-sora text-[24px] font-bold text-center pt-4">
                   NOVA OCORRÊNCIA
                 </h1>
                 <div className="relative p-6 flex-auto">
@@ -497,10 +478,6 @@ const Ocorrencia = () => {
                   <button
                     className="font-bold bg-blue-400 px-[52px] py-[12px] rounded-lg mt-3"
                     type="submit"
-                    /*onClick={() => {
-                    salvar();
-                    setShowModal(false);
-                  }}*/
                   >
                     SALVAR
                   </button>
@@ -518,35 +495,53 @@ const Ocorrencia = () => {
         <>
           <div className="justify-center items-start flex overflow-x-hidden overflow-y-auto inset-0 z-50 outline-none focus:outline-none fixed min-w-[550px] my-6 mx-auto max-w-3xl">
             {/*content*/}
-            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-              <h1 className="text-black text-[24px] font-bold text-center pt-4">
-                DETALHES DA OCORRÊNCIA
-              </h1>
-              <div className="relative p-6 flex-auto">
-                <h2 className="text-[24px]">
-                  Tipo: {ocorrenciaUnica.categoria.nome}
-                </h2>
-                <div className="pt-[12px] flex flex-col gap-2">
-                  <p className="pt-1 pb-1">
-                    <strong>Descrição:</strong> {ocorrenciaUnica.descricao}
-                  </p>
-                  <p className="pt-1 pb-1">
-                    <strong>Cidade:</strong> {ocorrenciaUnica.cidade}
-                  </p>
-                  <p className="pt-1 pb-1">
-                    <strong>Bairro:</strong> {ocorrenciaUnica.bairro}
-                  </p>
-                </div>
-              </div>
-              {/*footer*/}
-              <div className="flex gap-[20px] items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
+            <div className="border-0 p-[20px] rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+              <div className="flex justify-between items-center">
+                <h1 className="text-black text-[24px] font-sora font-bold text-left">
+                  Detalhes da ocorrência
+                </h1>
                 <button
-                  className="font-bold px-[52px] py-[12px] rounded-lg mt-3 bg-red-600"
+                  className="font-normal px-[20px] font-rubik text-[14px] py-[5px] rounded-lg bg-black text-white"
                   type="button"
                   onClick={() => setShowModalOcorrencia(false)}
                 >
                   FECHAR
                 </button>
+              </div>
+              <div className="h-[1px] w-full mt-[18px] bg-slate-400"></div>
+              <div className="pt-[35px] font-rubik">
+                <h2 className="text-[18px] font-bold">
+                  Tipo de delito:{" "}
+                  <span className="font-normal">
+                    {ocorrenciaUnica.categoria.nome}
+                  </span>
+                </h2>
+                <div className="pt-[12px] font-[18px] flex flex-col gap-2">
+                  <div className="h-[1px] w-full bg-slate-200"></div>
+                  <p className="pt-1 font-bold text-[18px] pb-1">
+                    Cidade:{" "}
+                    <span className="font-normal">
+                      {ocorrenciaUnica.cidade}
+                    </span>
+                  </p>
+                  <div className="h-[1px] w-full bg-slate-200"></div>
+                  <p className="pt-1 font-bold text-[18px] pb-1">
+                    Bairro:{" "}
+                    <span className="font-normal">
+                      {ocorrenciaUnica.bairro}
+                    </span>
+                  </p>
+                  <div className="h-[1px] w-full bg-slate-200"></div>
+                </div>
+              </div>
+              {/*footer*/}
+              <div className="bg-[#f1f1f1] mt-[20px] rounded-[8px] px-1 pt-2 pb-10">
+                <p className="pt-1 pl-[12px] font-rubik font-bold text-[18px] pb-1">
+                  Descrição:{" "}
+                  <span className="font-normal">
+                    {ocorrenciaUnica.descricao}
+                  </span>
+                </p>
               </div>
             </div>
           </div>
