@@ -65,12 +65,12 @@ export const getUserId = /*  async */ () => {
     .get(`http://localhost:8082/api/usuario/u/${username}`)
     .then((res) => {
       id = res.data;
-    })
-    .catch((error) => {
+      //console.log(id)
+      return id;
+    }).catch((error) => {
       notifyError("Usuário inválido. Logue-se novamente.");
+      return id;
     });
-
-  return id;
   /* try {
         id = await axios.get(`http://localhost:8082/api/usuario/u/${username}`);
     } catch (error) {
