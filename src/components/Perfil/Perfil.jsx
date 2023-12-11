@@ -3,9 +3,11 @@ import Abas from "./Abas";
 import fotoPerfil from "/foto-perfil.png";
 import banner from "/banner.png";
 import engrenagem from "/engrenagem.svg";
-import { useState } from "react";
+import { memo, useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
+import { getUserId } from "../../util/AuthenticationService";
+import { notifyError } from "../../util/Util";
 
 const Perfil = () => {
   const [showModal, setShowModal] = useState(false);
@@ -19,8 +21,9 @@ const Perfil = () => {
 
   // Usuário setado manualmente enquanto o login não estiver implementado
   const [user, setUser] = useState({});
-  const [userId, setUserId] = useState(1);
-
+  const [userId, setUserId] = useState(24);
+  //setUserId(getUserId());
+  
   const getUser = () => {
     axios
       .get(`http://localhost:8082/api/usuario/${userId}`)
@@ -36,11 +39,11 @@ const Perfil = () => {
         return;
       })
       .catch((err) => {
-        // corrigir tipo de return de acordo o
+        console.log(err)
+        notifyError(err)
         setUser(null);
-        return err;
       });
-    console.log(user);
+    //console.log(user);
   };
 
   const handleSubmit = (e) => {
@@ -66,8 +69,17 @@ const Perfil = () => {
   };
 
   useEffect(() => {
+    //console.log(getUserId())
+    //console.log(userId)
     getUser();
-  }, [userId]);
+    /* getUserId().then((res) => {
+      console.log(res);
+      setUserId(res);
+    }).catch(
+      (e) => notifyError("Falha ao carregar perfil do usuário.")
+    ); */
+    
+  }, [userId, user]);
 
   const handleClick = () => {
     setShowModal(true);
@@ -122,7 +134,7 @@ const Perfil = () => {
         </button>
         <div className="flex items-center flex-col">
           <div className="top-[100px] absolute">
-            <img src={fotoPerfil} alt="" />
+            <img src={fotoPerfil} style={{ width: 164, height: 164 }} alt="" />
           </div>
           <div className="mt-[94px]">
             <h2 className="text-center text-[18px] text-black font-bold">

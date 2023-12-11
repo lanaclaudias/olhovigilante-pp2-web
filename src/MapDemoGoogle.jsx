@@ -1,5 +1,10 @@
 import React from "react";
-import { GoogleMap, useJsApiLoader, Marker, InfoBox } from "@react-google-maps/api";
+import {
+  GoogleMap,
+  useJsApiLoader,
+  Marker,
+  InfoBox,
+} from "@react-google-maps/api";
 
 const containerStyle = {
   width: "30vw", // width: '623px',
@@ -14,12 +19,12 @@ const center = {
 function MyComponent() {
   const { isLoaded } = useJsApiLoader({
     id: "e7908772ecd09578", //'google-map-script',
-    googleMapsApiKey: "", //import.meta.env.VITE_MAPS_JS_API_KEY
+    googleMapsApiKey: import.meta.env.VITE_MAPS_JS_API_KEY, //""
   });
 
   const [map, setMap] = React.useState(null);
   const [marker, setMarker] = React.useState(null);
-  const markerRef = React.useRef()
+  const markerRef = React.useRef(null);
 
   const onLoad = React.useCallback(function callback(map) {
     const bounds = new window.google.maps.LatLngBounds(center);
@@ -32,21 +37,23 @@ function MyComponent() {
     setMap(null);
   }, []);
 
-  const handleMarkerClick = () => {
+  const handleMarkerClick = (ref) => {
     //setMarker(() => )
-    let contentString = "Test Content"
+    console.log(ref?.current)
+    let contentString = "Centro do Recife";
     const infowindow = new google.maps.InfoWindow({
       content: contentString,
-      ariaLabel: "Uluru",
+      ariaLabel: "Recife",
+      //position: markerRef.current.props.position
     });
+    infowindow.open(map);
+    /* infowindow.open(
+      map,
+      anchor
+    ); */
+  };
 
-    infowindow.open({
-      anchor: markerRef.current,
-      map
-    }
-    )
-  }
-
+  
   return isLoaded ? (
     <GoogleMap
       mapContainerStyle={containerStyle}
@@ -56,12 +63,13 @@ function MyComponent() {
       onUnmount={onUnmount}
     >
       {/* Child components, such as markers, info windows, etc. */}
-      <Marker position={center} label={"Test Marker"}
-      onClick={handleMarkerClick}
-      ref={markerRef}
-      >
-        
-      </Marker>
+      <Marker
+        position={center}
+        label={"Test Marker"}
+        draggable={true}
+        onClick={handleMarkerClick}
+        ref={markerRef}
+      ></Marker>
     </GoogleMap>
   ) : (
     <></>
