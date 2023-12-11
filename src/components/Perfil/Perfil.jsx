@@ -18,10 +18,9 @@ const Perfil = () => {
   const [email, setEmail] = useState();
   const [cpf, setCpf] = useState();
   const [senha, setSenha] = useState();
-
-  // Usuário setado manualmente enquanto o login não estiver implementado
   const [user, setUser] = useState({});
-  const [userId, setUserId] = useState(24);
+  console.log(localStorage)
+  const [userId, setUserId] = useState(parseInt(localStorage.id));
   //setUserId(getUserId());
   
   const getUser = () => {

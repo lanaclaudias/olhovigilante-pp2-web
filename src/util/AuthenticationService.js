@@ -4,13 +4,22 @@ import { notifyError } from "./Util";
 export const TOKEN_SESSION_ATTRIBUTE_NAME = "token";
 export const EXPIRATION_SESSION_ATTRIBUTE_NAME = "expiration";
 export const USERNAME_SESSION_ATTRIBUTE_NAME = "username";
+export const USERID_SESSION_ATTRIBUTE_NAME = "id";
 
 export const registerSuccessfulLoginForJwt = (username, token, expiration) => {
   localStorage.setItem(USERNAME_SESSION_ATTRIBUTE_NAME, username);
   localStorage.setItem(TOKEN_SESSION_ATTRIBUTE_NAME, token);
   localStorage.setItem(EXPIRATION_SESSION_ATTRIBUTE_NAME, expiration);
 
-  setupAxiosInterceptors();
+  // Infelizmente, tenho que passar o id do usuário de forma insegura por aqui
+  getUserId().then(
+    id => {
+      localStorage.setItem(USERID_SESSION_ATTRIBUTE_NAME, id);
+      setupAxiosInterceptors();
+    }
+  )
+
+  //setupAxiosInterceptors();
 };
 
 export const setupAxiosInterceptors = () => {
@@ -55,28 +64,22 @@ export const getToken = () => {
   return token;
 };
 
-export const getUserId = /*  async */ () => {
+export const getUserId = () => {
   let token = localStorage.getItem(TOKEN_SESSION_ATTRIBUTE_NAME);
   let username = localStorage.getItem(USERNAME_SESSION_ATTRIBUTE_NAME);
-  //console.log(username)
-  let id = 0;
+  let userid = 0;
   if (token === null) return "";
-  axios
+  return axios
     .get(`http://localhost:8082/api/usuario/u/${username}`)
     .then((res) => {
-      id = res.data;
-      //console.log(id)
-      return id;
-    }).catch((error) => {
-      notifyError("Usuário inválido. Logue-se novamente.");
-      return id;
+      //userid = res.data;
+      //console.log(userid)
+      //localStorage.setItem(USERID_SESSION_ATTRIBUTE_NAME, res.data);
+      return res.data; //userid;
+    })
+    .catch((error) => {
+      notifyError("Usuário inválido. Falha na busca.");
+      return error; // userid;
     });
-  /* try {
-        id = await axios.get(`http://localhost:8082/api/usuario/u/${username}`);
-    } catch (error) {
-        notifyError("Usuário inválido. Logue-se novamente.")
-        return '';
-    } */
-
-  /* return id.data; */
+  return "fail";
 };

@@ -1,15 +1,15 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo, useContext } from "react";
 import Header from "./components/Header/Header";
 import axios from "axios";
 //import MyMap from "./MyMap";
 import { GeoSearchControl, MapBoxProvider } from "leaflet-geosearch";
 import { MapContainer, useMap, TileLayer } from "react-leaflet";
 import L from "leaflet";
-import { isUserLoggedIn } from "./util/AuthenticationService";
+import { isUserLoggedIn, getUserId, USERID_SESSION_ATTRIBUTE_NAME } from "./util/AuthenticationService";
 
 import TestVideo from "/testvideo.mp4";
 import centerMarkerIcon from "/centermarker.png";
-import dangerMarkerIcon from "/danger-icon.png"
+import dangerMarkerIcon from "/danger-icon.png";
 import { notifyError, notifySuccess } from "./util/Util";
 
 const TipoOcorrenciaSelect = (props) => {
@@ -48,10 +48,6 @@ const Ocorrencia = () => {
       label: "Tipo de Ocorrência",
       type: "select",
       handleChange: (e) => setCategoriaId(e.target.value),
-      //handleBlur: () => { // alterar para onClick no botão de submit se for necessário
-      //  //console.log(temp)
-      //  setGeolocalizacao(temp);
-      //},
     },
     {
       label: "Descrição",
@@ -93,12 +89,12 @@ const Ocorrencia = () => {
       //handleChange: (e) => setGeolocalizacao(e.target.value),
       disabled: true,
     }, */
-    {
+    /* {
       label:
         "ID do Usuário (campo temporário pela falta de implementação de login)",
       type: "text",
       handleChange: (e) => setUsuarioId(parseInt(e.target.value)),
-    }, // campo temporário até a implementação do login de usuário
+    }, // campo temporário até a implementação do login de usuário */
   ];
 
   const [showModal, setShowModal] = useState(false);
@@ -112,7 +108,7 @@ const Ocorrencia = () => {
   const [hora, setHora] = useState();
   const [midia, setMidia] = useState();
   const [geolocalizacao, setGeolocalizacao] = useState(); //useState("");
-  const [usuarioId, setUsuarioId] = useState();
+  const [usuarioId, setUsuarioId] = useState(parseInt(localStorage.getItem(USERID_SESSION_ATTRIBUTE_NAME)));
   const [categoriaId, setCategoriaId] = useState();
   const [ocorrencias, setOcorrencias] = useState([]);
 
@@ -126,7 +122,6 @@ const Ocorrencia = () => {
     map.setView(initialCenter, 10);
 
     if (ocorrencias) {
-      
       let icon = L.icon({
         iconUrl: dangerMarkerIcon,
         iconSize: [30, 30],
@@ -295,6 +290,7 @@ const Ocorrencia = () => {
 
             <button
               onClick={() => {
+                //console.log(usuarioId)
                 setShowModal(true);
               }}
               className="bg-black text-white font-bold py-2 px-4 rounded"
