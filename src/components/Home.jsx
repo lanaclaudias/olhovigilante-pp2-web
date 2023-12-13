@@ -41,25 +41,36 @@ const Home = () => {
               </p>
 
 <div className='flex gap-1 h-[170px]'>
-
+<div>
 <button className="bg-white text-black font-bold py-2 px-4 rounded w-[200px] h-[116px]">
-              PESQUISAR
+              INÍCIO
+            
               </button>
+              </div>
+
+              <div>
               <button className="bg-white text-black font-bold py-2 px-4 rounded w-[200px] h-[116px]">
               COLABOARAÇÃO
               </button>
+              </div>
+
+              <div>
               <button className="bg-white text-black font-bold py-2 px-4 rounded w-[200px] h-[116px]">
               OCORRÊNCIAS
               </button>
+              </div>
+
+              <div>
               <button className="bg-white text-black font-bold py-2 px-4 rounded w-[200px] h-[116px]">
               COMUNIDADE
               </button>
-              <button className="bg-white text-black font-bold py-2 px-4 rounded w-[200px] h-[116px]">
-              ARTIGOS
-              </button>
+              </div>
+
+              <div>
               <button className="bg-white text-black font-bold py-2 px-4 rounded w-[200px] h-[116px]">
               FALAR CONOSCO
               </button>
+              </div>
 
 
 </div>
@@ -69,7 +80,7 @@ const Home = () => {
 
   <div className='container flex gap-1 justify-between pt-20 text-[20px]'>
 
-<div className=' ' > 
+<div> 
 <p>
 Rua Jurema, 10 - Centro, Jaboatão Dos Guararapes/PE
 </p>
