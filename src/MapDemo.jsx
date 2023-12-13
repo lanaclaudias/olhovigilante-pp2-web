@@ -96,7 +96,8 @@ export default function MapDemo() {
           <MapWithGeocodeDemo />
           
         </MapContainer> */}
-        <MyMap />
+        {/* <MyMap /> */}
+        <MapDemoGoogle />
       </div>
     </>
   );
