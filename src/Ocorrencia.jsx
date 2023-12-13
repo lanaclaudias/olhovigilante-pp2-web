@@ -119,8 +119,9 @@ const Ocorrencia = () => {
   );
   const [categoriaId, setCategoriaId] = useState();
   const [ocorrencias, setOcorrencias] = useState([]);
-  const [filtro, setFiltro] = useState(false);
-
+  const [ocorrenciasFiltradas, setOcorrenciasFiltradas] = useState([]);
+  const [ocorrenciasOriginais, setOcorrenciasOriginais] = useState([]);
+  const inputFiltro = useRef();
   /* Mapa */ // Investigar bug na reatividade dos mapas durante interação com os campos do formulário
   const Map = ({ apiKey }) => {
     const initialCenter = [-8.063153, -34.87114];
@@ -201,6 +202,23 @@ const Ocorrencia = () => {
     return null;
   };
 
+  const buscarPorBairro = () => {
+    const termoFiltro = inputFiltro.current.value.toLowerCase();
+
+    // Verificar se o campo de filtro está vazio
+    if (termoFiltro === "") {
+      // Se estiver vazio, exibir todas as ocorrências
+      setOcorrencias(ocorrenciasOriginais);
+    } else {
+      // Caso contrário, aplicar o filtro
+      const ocorrenciasFiltradas = ocorrenciasOriginais.filter((ocorrencia) => {
+        return termoFiltro === ocorrencia.bairro.toLowerCase();
+      });
+
+      setOcorrencias(ocorrenciasFiltradas);
+    }
+  };
+
   const MyMap = () => {
     return (
       <>
@@ -234,6 +252,7 @@ const Ocorrencia = () => {
       .get("http://localhost:8082/api/ocorrencia")
       .then((res) => {
         setOcorrencias(res.data);
+        setOcorrenciasOriginais(res.data);
         //console.log(ocorrencias);
       })
       .catch((err) => {
@@ -326,11 +345,15 @@ const Ocorrencia = () => {
           <div className="flex space-x-4 justify-end pr-4">
             <div className="flex">
               <input
+                ref={inputFiltro}
                 type="text"
-                placeholder="Buscar"
+                placeholder="Buscar por bairro"
                 className="border-2 border-blue-500 rounded-tl-none px-10 py-2 focus:outline-none focus:ring focus:border-blue-800"
               />
-              <button className="bg-blue-500 hover-bg-blue-700 text-white font-bold py-2 px-4 rounded-r">
+              <button
+                onClick={buscarPorBairro}
+                className="bg-blue-500 hover-bg-blue-700 text-white font-bold py-2 px-4 rounded-r"
+              >
                 Buscar
               </button>
             </div>
@@ -343,9 +366,9 @@ const Ocorrencia = () => {
             <MyMap />
           </div>
           {/* FILTRO */}
-          <div
+          {/*  <div
             onClick={() => setFiltro((filtro) => !filtro)}
-            className="flex absolute right-0 top-0 items-center justify-center p-4"
+            className="flex  items-center justify-center p-4"
           >
             <button
               id="dropdownDefault"
@@ -358,7 +381,7 @@ const Ocorrencia = () => {
             {filtro ? null : (
               <div
                 id="dropdown"
-                className="z-10 absolute top-0 w-60 p-3 bg-white rounded-lg shadow dark:bg-gray-700"
+                className="z-10 w-60 hidden p-3 bg-white rounded-lg shadow dark:bg-gray-700"
               >
                 <h6 className="mb-3 text-sm font-medium text-gray-900 dark:text-white">
                   Filtrar por bairros
@@ -400,31 +423,56 @@ const Ocorrencia = () => {
                   </li>
                 </ul>
               </div>
-            )}
-          </div>
+            )} 
+          </div>*/}
           {/* Listagem de Ocorrências */}
-          <div className="flex-1 hover:cursor-pointer">
-            {ocorrencias &&
-              ocorrencias.map(
-                ({ id, categoria, bairro, cidade, dataHoraOcorrencia }) => {
-                  return (
-                    <div
-                      onClick={() => handleClickOcorrencia(id)}
-                      key={id}
-                      className="mt-4 p-4 rounded border font border-gray-300 flex flex-col"
-                    >
-                      <p className="font-semibold">{categoria.nome}</p>
-                      <div className="flex gap-4 justify-between">
-                        <p className="text-gray-600">
-                          {bairro}, {cidade}
-                        </p>
-                        <p className="text-gray-600">{dataHoraOcorrencia}</p>
+          {ocorrenciasFiltradas != [] ? (
+            <div className="flex-1 hover:cursor-pointer">
+              {ocorrencias &&
+                ocorrencias.map(
+                  ({ id, categoria, bairro, cidade, dataHoraOcorrencia }) => {
+                    return (
+                      <div
+                        onClick={() => handleClickOcorrencia(id)}
+                        key={id}
+                        className="mt-4 p-4 rounded border font border-gray-300 flex flex-col"
+                      >
+                        <p className="font-semibold">{categoria.nome}</p>
+                        <div className="flex gap-4 justify-between">
+                          <p className="text-gray-600">
+                            {bairro}, {cidade}
+                          </p>
+                          <p className="text-gray-600">{dataHoraOcorrencia}</p>
+                        </div>
                       </div>
-                    </div>
-                  );
-                }
-              )}
-          </div>
+                    );
+                  }
+                )}
+            </div>
+          ) : (
+            <div className="flex-1 hover:cursor-pointer">
+              {ocorrenciasFiltradas &&
+                ocorrenciasFiltradas.map(
+                  ({ id, categoria, bairro, cidade, dataHoraOcorrencia }) => {
+                    return (
+                      <div
+                        onClick={() => handleClickOcorrencia(id)}
+                        key={id}
+                        className="mt-4 p-4 rounded border font border-gray-300 flex flex-col"
+                      >
+                        <p className="font-semibold">{categoria.nome}</p>
+                        <div className="flex gap-4 justify-between">
+                          <p className="text-gray-600">
+                            {bairro}, {cidade}
+                          </p>
+                          <p className="text-gray-600">{dataHoraOcorrencia}</p>
+                        </div>
+                      </div>
+                    );
+                  }
+                )}
+            </div>
+          )}
         </div>
       </div>
       {/* MODAL */}
@@ -468,6 +516,482 @@ const Ocorrencia = () => {
                             onChange={handleChange}
                             className="border rounded-[6px] p-3 w-full mb-4 text-black"
                           /> /*: type === "radio" ? (
+                          <div className="flex">
+                            {values.map((value, index) => (
+                              <div key={index} className="mr-4">
+                                <input
+                                  type={type}
+                                  value={value}
+                                  name={label}
+                                  onChange={handleChange}
+                                  className="mr-1"
+                                />
+                                <label htmlFor={value} className="text-black">
+                                  {value}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        ) */ /*: type === "radio" ? (
+                          <div className="flex">
+                            {values.map((value, index) => (
+                              <div key={index} className="mr-4">
+                                <input
+                                  type={type}
+                                  value={value}
+                                  name={label}
+                                  onChange={handleChange}
+                                  className="mr-1"
+                                />
+                                <label htmlFor={value} className="text-black">
+                                  {value}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        ) */ /*: type === "radio" ? (
+                          <div className="flex">
+                            {values.map((value, index) => (
+                              <div key={index} className="mr-4">
+                                <input
+                                  type={type}
+                                  value={value}
+                                  name={label}
+                                  onChange={handleChange}
+                                  className="mr-1"
+                                />
+                                <label htmlFor={value} className="text-black">
+                                  {value}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        ) */ /*: type === "radio" ? (
+                          <div className="flex">
+                            {values.map((value, index) => (
+                              <div key={index} className="mr-4">
+                                <input
+                                  type={type}
+                                  value={value}
+                                  name={label}
+                                  onChange={handleChange}
+                                  className="mr-1"
+                                />
+                                <label htmlFor={value} className="text-black">
+                                  {value}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        ) */ /*: type === "radio" ? (
+                          <div className="flex">
+                            {values.map((value, index) => (
+                              <div key={index} className="mr-4">
+                                <input
+                                  type={type}
+                                  value={value}
+                                  name={label}
+                                  onChange={handleChange}
+                                  className="mr-1"
+                                />
+                                <label htmlFor={value} className="text-black">
+                                  {value}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        ) */ /*: type === "radio" ? (
+                          <div className="flex">
+                            {values.map((value, index) => (
+                              <div key={index} className="mr-4">
+                                <input
+                                  type={type}
+                                  value={value}
+                                  name={label}
+                                  onChange={handleChange}
+                                  className="mr-1"
+                                />
+                                <label htmlFor={value} className="text-black">
+                                  {value}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        ) */ /*: type === "radio" ? (
+                          <div className="flex">
+                            {values.map((value, index) => (
+                              <div key={index} className="mr-4">
+                                <input
+                                  type={type}
+                                  value={value}
+                                  name={label}
+                                  onChange={handleChange}
+                                  className="mr-1"
+                                />
+                                <label htmlFor={value} className="text-black">
+                                  {value}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        ) */ /*: type === "radio" ? (
+                          <div className="flex">
+                            {values.map((value, index) => (
+                              <div key={index} className="mr-4">
+                                <input
+                                  type={type}
+                                  value={value}
+                                  name={label}
+                                  onChange={handleChange}
+                                  className="mr-1"
+                                />
+                                <label htmlFor={value} className="text-black">
+                                  {value}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        ) */ /*: type === "radio" ? (
+                          <div className="flex">
+                            {values.map((value, index) => (
+                              <div key={index} className="mr-4">
+                                <input
+                                  type={type}
+                                  value={value}
+                                  name={label}
+                                  onChange={handleChange}
+                                  className="mr-1"
+                                />
+                                <label htmlFor={value} className="text-black">
+                                  {value}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        ) */ /*: type === "radio" ? (
+                          <div className="flex">
+                            {values.map((value, index) => (
+                              <div key={index} className="mr-4">
+                                <input
+                                  type={type}
+                                  value={value}
+                                  name={label}
+                                  onChange={handleChange}
+                                  className="mr-1"
+                                />
+                                <label htmlFor={value} className="text-black">
+                                  {value}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        ) */ /*: type === "radio" ? (
+                          <div className="flex">
+                            {values.map((value, index) => (
+                              <div key={index} className="mr-4">
+                                <input
+                                  type={type}
+                                  value={value}
+                                  name={label}
+                                  onChange={handleChange}
+                                  className="mr-1"
+                                />
+                                <label htmlFor={value} className="text-black">
+                                  {value}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        ) */ /*: type === "radio" ? (
+                          <div className="flex">
+                            {values.map((value, index) => (
+                              <div key={index} className="mr-4">
+                                <input
+                                  type={type}
+                                  value={value}
+                                  name={label}
+                                  onChange={handleChange}
+                                  className="mr-1"
+                                />
+                                <label htmlFor={value} className="text-black">
+                                  {value}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        ) */ /*: type === "radio" ? (
+                          <div className="flex">
+                            {values.map((value, index) => (
+                              <div key={index} className="mr-4">
+                                <input
+                                  type={type}
+                                  value={value}
+                                  name={label}
+                                  onChange={handleChange}
+                                  className="mr-1"
+                                />
+                                <label htmlFor={value} className="text-black">
+                                  {value}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        ) */ /*: type === "radio" ? (
+                          <div className="flex">
+                            {values.map((value, index) => (
+                              <div key={index} className="mr-4">
+                                <input
+                                  type={type}
+                                  value={value}
+                                  name={label}
+                                  onChange={handleChange}
+                                  className="mr-1"
+                                />
+                                <label htmlFor={value} className="text-black">
+                                  {value}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        ) */ /*: type === "radio" ? (
+                          <div className="flex">
+                            {values.map((value, index) => (
+                              <div key={index} className="mr-4">
+                                <input
+                                  type={type}
+                                  value={value}
+                                  name={label}
+                                  onChange={handleChange}
+                                  className="mr-1"
+                                />
+                                <label htmlFor={value} className="text-black">
+                                  {value}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        ) */ /*: type === "radio" ? (
+                          <div className="flex">
+                            {values.map((value, index) => (
+                              <div key={index} className="mr-4">
+                                <input
+                                  type={type}
+                                  value={value}
+                                  name={label}
+                                  onChange={handleChange}
+                                  className="mr-1"
+                                />
+                                <label htmlFor={value} className="text-black">
+                                  {value}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        ) */ /*: type === "radio" ? (
+                          <div className="flex">
+                            {values.map((value, index) => (
+                              <div key={index} className="mr-4">
+                                <input
+                                  type={type}
+                                  value={value}
+                                  name={label}
+                                  onChange={handleChange}
+                                  className="mr-1"
+                                />
+                                <label htmlFor={value} className="text-black">
+                                  {value}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        ) */ /*: type === "radio" ? (
+                          <div className="flex">
+                            {values.map((value, index) => (
+                              <div key={index} className="mr-4">
+                                <input
+                                  type={type}
+                                  value={value}
+                                  name={label}
+                                  onChange={handleChange}
+                                  className="mr-1"
+                                />
+                                <label htmlFor={value} className="text-black">
+                                  {value}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        ) */ /*: type === "radio" ? (
+                          <div className="flex">
+                            {values.map((value, index) => (
+                              <div key={index} className="mr-4">
+                                <input
+                                  type={type}
+                                  value={value}
+                                  name={label}
+                                  onChange={handleChange}
+                                  className="mr-1"
+                                />
+                                <label htmlFor={value} className="text-black">
+                                  {value}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        ) */ /*: type === "radio" ? (
+                          <div className="flex">
+                            {values.map((value, index) => (
+                              <div key={index} className="mr-4">
+                                <input
+                                  type={type}
+                                  value={value}
+                                  name={label}
+                                  onChange={handleChange}
+                                  className="mr-1"
+                                />
+                                <label htmlFor={value} className="text-black">
+                                  {value}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        ) */ /*: type === "radio" ? (
+                          <div className="flex">
+                            {values.map((value, index) => (
+                              <div key={index} className="mr-4">
+                                <input
+                                  type={type}
+                                  value={value}
+                                  name={label}
+                                  onChange={handleChange}
+                                  className="mr-1"
+                                />
+                                <label htmlFor={value} className="text-black">
+                                  {value}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        ) */ /*: type === "radio" ? (
+                          <div className="flex">
+                            {values.map((value, index) => (
+                              <div key={index} className="mr-4">
+                                <input
+                                  type={type}
+                                  value={value}
+                                  name={label}
+                                  onChange={handleChange}
+                                  className="mr-1"
+                                />
+                                <label htmlFor={value} className="text-black">
+                                  {value}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        ) */ /*: type === "radio" ? (
+                          <div className="flex">
+                            {values.map((value, index) => (
+                              <div key={index} className="mr-4">
+                                <input
+                                  type={type}
+                                  value={value}
+                                  name={label}
+                                  onChange={handleChange}
+                                  className="mr-1"
+                                />
+                                <label htmlFor={value} className="text-black">
+                                  {value}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        ) */ /*: type === "radio" ? (
+                          <div className="flex">
+                            {values.map((value, index) => (
+                              <div key={index} className="mr-4">
+                                <input
+                                  type={type}
+                                  value={value}
+                                  name={label}
+                                  onChange={handleChange}
+                                  className="mr-1"
+                                />
+                                <label htmlFor={value} className="text-black">
+                                  {value}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        ) */ /*: type === "radio" ? (
+                          <div className="flex">
+                            {values.map((value, index) => (
+                              <div key={index} className="mr-4">
+                                <input
+                                  type={type}
+                                  value={value}
+                                  name={label}
+                                  onChange={handleChange}
+                                  className="mr-1"
+                                />
+                                <label htmlFor={value} className="text-black">
+                                  {value}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        ) */ /*: type === "radio" ? (
+                          <div className="flex">
+                            {values.map((value, index) => (
+                              <div key={index} className="mr-4">
+                                <input
+                                  type={type}
+                                  value={value}
+                                  name={label}
+                                  onChange={handleChange}
+                                  className="mr-1"
+                                />
+                                <label htmlFor={value} className="text-black">
+                                  {value}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        ) */ /*: type === "radio" ? (
+                          <div className="flex">
+                            {values.map((value, index) => (
+                              <div key={index} className="mr-4">
+                                <input
+                                  type={type}
+                                  value={value}
+                                  name={label}
+                                  onChange={handleChange}
+                                  className="mr-1"
+                                />
+                                <label htmlFor={value} className="text-black">
+                                  {value}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        ) */ /*: type === "radio" ? (
+                          <div className="flex">
+                            {values.map((value, index) => (
+                              <div key={index} className="mr-4">
+                                <input
+                                  type={type}
+                                  value={value}
+                                  name={label}
+                                  onChange={handleChange}
+                                  className="mr-1"
+                                />
+                                <label htmlFor={value} className="text-black">
+                                  {value}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        ) */ /*: type === "radio" ? (
                           <div className="flex">
                             {values.map((value, index) => (
                               <div key={index} className="mr-4">
