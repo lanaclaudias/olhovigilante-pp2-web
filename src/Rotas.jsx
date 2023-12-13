@@ -8,6 +8,8 @@ import Perfil from "./components/Perfil/Perfil";
 import MapDemo from "./MapDemo";
 import { ProtectedRoute } from "./util/ProtectedRoute";
 import Comunidade from "./Comunidade";
+import FileUploader from "./util/FileUploader";
+import DropZone from "./util/DropZone";
 
 function Rotas() {
   return (
@@ -27,6 +29,7 @@ function Rotas() {
         />
         {/* <Route path="mapdemo" element={<MapDemo />} /> */}
         <Route path="comunidade" element={<Comunidade />} />
+        <Route path="uploader" element={<DropZone />} />
         <Route path="*" element={<NotFound />} /> {/* Página 404 */}
       </Routes>
     </>

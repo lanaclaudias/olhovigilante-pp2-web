@@ -19,7 +19,7 @@ const Perfil = () => {
   const [cpf, setCpf] = useState();
   const [senha, setSenha] = useState();
   const [user, setUser] = useState({});
-  console.log(localStorage)
+  //console.log(localStorage)
   const [userId, setUserId] = useState(parseInt(localStorage.id));
   //setUserId(getUserId());
   

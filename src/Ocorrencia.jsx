@@ -11,6 +11,8 @@ import TestVideo from "/testvideo.mp4";
 import centerMarkerIcon from "/centermarker.png";
 import dangerMarkerIcon from "/danger-icon.png";
 import { notifyError, notifySuccess } from "./util/Util";
+import FileUploader from "./util/FileUploader";
+import DropZone from "./util/DropZone";
 
 const TipoOcorrenciaSelect = (props) => {
   return (
@@ -250,7 +252,7 @@ const Ocorrencia = () => {
       bairro,
       dataHoraOcorrencia: data, // alterar formatação (data + hora)
       hora,
-      midia,
+      //midia,
       geolocalizacao: "" + temp.lat + "," + temp.lng,
       usuarioId,
       categoriaId,
@@ -259,9 +261,25 @@ const Ocorrencia = () => {
     axios
       .post("http://localhost:8082/api/ocorrencia", ocorrenciaRequest)
       .then((response) => {
+        // Nova implementação
+        /* //const midiaUrls = response.data.,
+        const ocorrenciaId = response.data.id
+        const [urls, Urls] = useState({});
+        //  let urls = [
+        //   {midiaUrl: }
+        // ]
+
+        const midiaRequest = {
+          midiaUrl,
+          ocorrenciaId,
+
+        }
+        axios.post('http://localhost:8082/api/midia', midiaRequest); */
+        
+        // Implementação funcional antiga abaixo
         setOcorrencias([...ocorrencias, response.data]);
         notifySuccess("Ocorrencia cadastrada com sucesso.");
-        setShowModal(false);
+        setShowModal(false);        
       })
       .catch((err) => {
         notifyError("Falha ao cadastrar a ocorrência.", err.message);
@@ -384,7 +402,7 @@ const Ocorrencia = () => {
                             onChange={handleChange}
                             className="border rounded-[6px] p-3 w-full mb-4 text-black"
                           />
-                        ) : type === "radio" ? (
+                        ) /*: type === "radio" ? (
                           <div className="flex">
                             {values.map((value, index) => (
                               <div key={index} className="mr-4">
@@ -401,12 +419,14 @@ const Ocorrencia = () => {
                               </div>
                             ))}
                           </div>
-                        ) : type === "file" ? (
-                          <input
+                        ) */ : type === "file" ? (
+                          //< FileUploader />
+                          <DropZone />
+                          /* <input
                             type="file"
                             onChange={handleChange}
                             className="border rounded-[6px] p-3 w-full mb-4 text-black"
-                          />
+                          /> */
                         ) : type === "select" ? (
                           <TipoOcorrenciaSelect
                             lista={tipoOcorrenciaLista}
