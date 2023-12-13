@@ -46,15 +46,17 @@ const options = {
     }
 };
 
-const DropZone = ( /* { setMidiaUrl } */ ) => (
+const DropZone = ({ onPost }) => (
     <UploadDropzone uploader={uploader}
         options={options}
         onUpdate={
-            files => files.map(
+            (files) => onPost(files)
+            /* files => files.map(
                 ({ filePath, fileUrl }) => {
                     console.log('path: ', filePath, 'url: ', fileUrl); // Don't use file path because there is no urlbuilder available for proper handling as of now
-                    /* setMidiaUrl(fileUrl); */
-                })
+                    // setMidiaUrl(fileUrl);
+                }) */
+            // Alternativa: fazer as requisições na API de midia diretamente por aqui e retornar os valores para componente pai
         }
         width="560px"
         height="187.5px" />

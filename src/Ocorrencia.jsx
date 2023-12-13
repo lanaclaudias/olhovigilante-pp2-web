@@ -82,7 +82,7 @@ const Ocorrencia = () => {
     {
       label: "Midia",
       type: "file",
-      handleChange: (e) => setMidia(e.target.value),
+      handleChange: (e) => { setMidia(e.target.value) },
     }, // implementação apropriada para múltiplos arquivos pendente e necessita integrar com a API de Mídia já configurada com suas associações
     /* {
       label: "Geolocalização",
@@ -113,6 +113,7 @@ const Ocorrencia = () => {
   const [usuarioId, setUsuarioId] = useState(parseInt(localStorage.getItem(USERID_SESSION_ATTRIBUTE_NAME)));
   const [categoriaId, setCategoriaId] = useState();
   const [ocorrencias, setOcorrencias] = useState([]);
+  const [midiasArr, setMidiasArr] = useState([]);
 
   /* Mapa */ // Investigar bug na reatividade dos mapas durante interação com os campos do formulário
   const Map = ({ apiKey }) => {
@@ -243,8 +244,15 @@ const Ocorrencia = () => {
       /* ocorrencias, tipoOcorrenciaLista */
     ]
   );
-
+  
+  // Sharing states between components
+  const handlePost = ( midias ) => {
+    // iterar por todas as mídias para fazer as requisições de da api de mídia
+    console.log(midias);
+    setMidiasArr(midias);
+  }
   const handleSubmit = (e) => {
+    //console.log(midiasArr);
     e.preventDefault();
     const ocorrenciaRequest = {
       descricao,
@@ -262,24 +270,17 @@ const Ocorrencia = () => {
       .post("http://localhost:8082/api/ocorrencia", ocorrenciaRequest)
       .then((response) => {
         // Nova implementação
-        /* //const midiaUrls = response.data.,
-        const ocorrenciaId = response.data.id
-        const [urls, Urls] = useState({});
-        //  let urls = [
-        //   {midiaUrl: }
-        // ]
+        const midiaRequest = { ocorrenciaId: response.id, midiaUrl: response.fileUrl }
+        axios.post('http://localhost:8082/api/midia', midiaRequest).then(
+          (res) => {
+            //console.log(res)
+          }
+        ).catch(err => console.log("Erro: ", err));
 
-        const midiaRequest = {
-          midiaUrl,
-          ocorrenciaId,
-
-        }
-        axios.post('http://localhost:8082/api/midia', midiaRequest); */
-        
         // Implementação funcional antiga abaixo
         setOcorrencias([...ocorrencias, response.data]);
         notifySuccess("Ocorrencia cadastrada com sucesso.");
-        setShowModal(false);        
+        setShowModal(false);
       })
       .catch((err) => {
         notifyError("Falha ao cadastrar a ocorrência.", err.message);
@@ -309,7 +310,10 @@ const Ocorrencia = () => {
             <button
               onClick={() => {
                 //console.log(usuarioId)
-                setShowModal(true);
+                if (!localStorage?.id) { notifyError("Faça seu login para registrar uma ocorrência.") } else {
+                  setShowModal(true);
+                }
+                //if(localStorage)
               }}
               className="bg-black text-white font-bold py-2 px-4 rounded"
             >
@@ -420,29 +424,29 @@ const Ocorrencia = () => {
                             ))}
                           </div>
                         ) */ : type === "file" ? (
-                          //< FileUploader />
-                          <DropZone />
-                          /* <input
-                            type="file"
-                            onChange={handleChange}
-                            className="border rounded-[6px] p-3 w-full mb-4 text-black"
-                          /> */
-                        ) : type === "select" ? (
-                          <TipoOcorrenciaSelect
-                            lista={tipoOcorrenciaLista}
-                            className="border rounded-[6px] p-3 w-full mb-4 text-black"
-                            handleChange={handleChange}
+                            //< FileUploader />
+                            <DropZone onPost={ handlePost } />
+                            /* <input
+                              type="file"
+                              onChange={handleChange}
+                              className="border rounded-[6px] p-3 w-full mb-4 text-black"
+                            /> */
+                          ) : type === "select" ? (
+                            <TipoOcorrenciaSelect
+                              lista={tipoOcorrenciaLista}
+                              className="border rounded-[6px] p-3 w-full mb-4 text-black"
+                              handleChange={handleChange}
                             // handleBlur={handleBlur}
-                          />
-                        ) : (
-                          <input
-                            type={type}
-                            placeholder={label}
-                            onChange={handleChange}
-                            disabled={disabled}
-                            className="border rounded-[6px] p-3 w-full mb-4 text-black"
-                          />
-                        )}
+                            />
+                          ) : (
+                            <input
+                              type={type}
+                              placeholder={label}
+                              onChange={handleChange}
+                              disabled={disabled}
+                              className="border rounded-[6px] p-3 w-full mb-4 text-black"
+                            />
+                          )}
                       </div>
                     )
                   )}

@@ -3,6 +3,7 @@ import axios from "axios";
 import cepPromise from "cep-promise";
 import Header from "../../Header/Header";
 import { notifyError, notifySuccess } from "../../../util/Util"
+import { redirect, useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [nome, setNome] = useState();
@@ -128,6 +129,7 @@ const Register = () => {
     salvar();
   }
 
+  const navigate = useNavigate();
   function salvar() {
     const usuarioRequest = {
       nome: nome,
@@ -148,7 +150,11 @@ const Register = () => {
         .post("http://localhost:8082/api/usuario", usuarioRequest)
         .then(
           //(res) => console.log("Usuário cadastrado com sucesso.")
-          () => notifySuccess("Usuário cadastrado com sucesso.")
+          () => {
+            notifySuccess("Usuário cadastrado com sucesso.");
+            //redirect("/login");
+            navigate("/login");
+          }
         )
         .catch(
           (e) => notifyError("Falha ao cadastrar.\n" + e.name + " - " + e.message)
