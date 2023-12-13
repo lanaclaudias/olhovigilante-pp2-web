@@ -15,7 +15,7 @@ const Home = () => {
         <div className='container'>
             
             <div className="container">
-              <p className="text-sky w-[750px] text-[35px] font-bold pt-[30px] pb-5">
+              <p className="text-sky w-[670px] text-[35px] font-bold pt-[10px] pb-3">
               No Olho Vigilante, proporcionamos uma experiência intuitiva e eficiente para conduzir pesquisas relacionadas a incidentes, estatísticas e informações relevantes. Nossa plataforma robusta permite que os usuários realizem pesquisas abrangentes, filtrando dados específicos e obtendo insights valiosos para melhor compreensão e consciência da segurança em suas comunidades.
               </p>
 
