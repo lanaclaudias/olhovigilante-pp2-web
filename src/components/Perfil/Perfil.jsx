@@ -38,8 +38,8 @@ const Perfil = () => {
         return;
       })
       .catch((err) => {
-        console.log(err)
-        notifyError(err)
+        //console.log(err)
+        notifyError("Falha no carregamento do perfil")
         setUser(null);
       });
     //console.log(user);
@@ -78,7 +78,7 @@ const Perfil = () => {
       (e) => notifyError("Falha ao carregar perfil do usuário.")
     ); */
     
-  }, [userId, user]);
+  }, [/* userId, user */]);
 
   const handleClick = () => {
     setShowModal(true);
