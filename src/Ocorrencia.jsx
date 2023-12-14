@@ -5,7 +5,11 @@ import axios from "axios";
 import { GeoSearchControl, MapBoxProvider } from "leaflet-geosearch";
 import { MapContainer, useMap, TileLayer } from "react-leaflet";
 import L from "leaflet";
-import { isUserLoggedIn, getUserId, USERID_SESSION_ATTRIBUTE_NAME } from "./util/AuthenticationService";
+import {
+  isUserLoggedIn,
+  getUserId,
+  USERID_SESSION_ATTRIBUTE_NAME,
+} from "./util/AuthenticationService";
 
 import TestVideo from "/testvideo.mp4";
 import centerMarkerIcon from "/centermarker.png";
@@ -82,7 +86,9 @@ const Ocorrencia = () => {
     {
       label: "Midia",
       type: "file",
-      handleChange: (e) => { setMidia(e.target.value) },
+      handleChange: (e) => {
+        setMidia(e.target.value);
+      },
     }, // implementação apropriada para múltiplos arquivos pendente e necessita integrar com a API de Mídia já configurada com suas associações
     /* {
       label: "Geolocalização",
@@ -110,7 +116,9 @@ const Ocorrencia = () => {
   const [hora, setHora] = useState();
   const [midia, setMidia] = useState();
   const [geolocalizacao, setGeolocalizacao] = useState(); //useState("");
-  const [usuarioId, setUsuarioId] = useState(parseInt(localStorage.getItem(USERID_SESSION_ATTRIBUTE_NAME)));
+  const [usuarioId, setUsuarioId] = useState(
+    parseInt(localStorage.getItem(USERID_SESSION_ATTRIBUTE_NAME))
+  );
   const [categoriaId, setCategoriaId] = useState();
   const [ocorrencias, setOcorrencias] = useState([]);
   const [midiasArr, setMidiasArr] = useState([]);
@@ -244,15 +252,17 @@ const Ocorrencia = () => {
       /* ocorrencias, tipoOcorrenciaLista */
     ]
   );
-  
+
+  const [ocorrenciaId, setOcorrenciaId] = useState(0);
   // Sharing states between components
-  const handlePost = ( midias ) => {
+  const handleUpload = (midias) => {
     // iterar por todas as mídias para fazer as requisições de da api de mídia
-    console.log(midias);
-    setMidiasArr(midias);
-  }
+    //console.log("midias: ", midias);
+    setMidiasArr(midias /* [...midias, midias] */);
+  };
+
   const handleSubmit = (e) => {
-    //console.log(midiasArr);
+    //console.log("midiasArr: ", midiasArr);
     e.preventDefault();
     const ocorrenciaRequest = {
       descricao,
@@ -270,17 +280,23 @@ const Ocorrencia = () => {
       .post("http://localhost:8082/api/ocorrencia", ocorrenciaRequest)
       .then((response) => {
         // Nova implementação
-        const midiaRequest = { ocorrenciaId: response.id, midiaUrl: response.fileUrl }
-        axios.post('http://localhost:8082/api/midia', midiaRequest).then(
-          (res) => {
-            //console.log(res)
-          }
-        ).catch(err => console.log("Erro: ", err));
+        //console.log("midiasArr: ", midiasArr, "\nOcorrencia ID: ", response.data.id)
+        midiasArr.map(({ fileUrl }) => {
+          const midiaRequest = {
+            ocorrenciaId: response.data.id,
+            midiaUrl: fileUrl,
+          };
+          axios
+            .post("http://localhost:8082/api/midia", midiaRequest)
+            .then((res) => {
+              //console.log("Midia cadastrada: ", res.data)
+            })
+            .catch((err) => notifyError("Falha no upload dos arquivos."));
+        });
 
-        // Implementação funcional antiga abaixo
         setOcorrencias([...ocorrencias, response.data]);
-        notifySuccess("Ocorrencia cadastrada com sucesso.");
         setShowModal(false);
+        notifySuccess("Ocorrencia cadastrada com sucesso.");
       })
       .catch((err) => {
         notifyError("Falha ao cadastrar a ocorrência.", err.message);
@@ -310,7 +326,9 @@ const Ocorrencia = () => {
             <button
               onClick={() => {
                 //console.log(usuarioId)
-                if (!localStorage?.id) { notifyError("Faça seu login para registrar uma ocorrência.") } else {
+                if (!localStorage?.id) {
+                  notifyError("Faça seu login para registrar uma ocorrência.");
+                } else {
                   setShowModal(true);
                 }
                 //if(localStorage)
@@ -401,12 +419,11 @@ const Ocorrencia = () => {
                           {label}
                         </label>
                         {type === "textarea" ? (
-                          <textarea
+                          (<textarea
                             placeholder={label}
                             onChange={handleChange}
                             className="border rounded-[6px] p-3 w-full mb-4 text-black"
-                          />
-                        ) /*: type === "radio" ? (
+                          /> /*: type === "radio" ? (
                           <div className="flex">
                             {values.map((value, index) => (
                               <div key={index} className="mr-4">
@@ -423,30 +440,68 @@ const Ocorrencia = () => {
                               </div>
                             ))}
                           </div>
-                        ) */ : type === "file" ? (
-                            //< FileUploader />
-                            <DropZone onPost={ handlePost } />
-                            /* <input
+                        ) */ /*: type === "radio" ? (
+                          <div className="flex">
+                            {values.map((value, index) => (
+                              <div key={index} className="mr-4">
+                                <input
+                                  type={type}
+                                  value={value}
+                                  name={label}
+                                  onChange={handleChange}
+                                  className="mr-1"
+                                />
+                                <label htmlFor={value} className="text-black">
+                                  {value}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        ) */ /*: type === "radio" ? (
+                          <div className="flex">
+                            {values.map((value, index) => (
+                              <div key={index} className="mr-4">
+                                <input
+                                  type={type}
+                                  value={value}
+                                  name={label}
+                                  onChange={handleChange}
+                                  className="mr-1"
+                                />
+                                <label htmlFor={value} className="text-black">
+                                  {value}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        ) */)
+                        ) : type === "file" ? (
+                          //< FileUploader />
+                          <DropZone
+                            onUpload={handleUpload}
+                            ocorrenciaId={ocorrenciaId}
+                          />
+                        ) : /* <input
                               type="file"
                               onChange={handleChange}
                               className="border rounded-[6px] p-3 w-full mb-4 text-black"
                             /> */
-                          ) : type === "select" ? (
-                            <TipoOcorrenciaSelect
-                              lista={tipoOcorrenciaLista}
-                              className="border rounded-[6px] p-3 w-full mb-4 text-black"
-                              handleChange={handleChange}
+                        type === "select" ? (
+                          <TipoOcorrenciaSelect
+                            lista={tipoOcorrenciaLista}
+                            className="border rounded-[6px] p-3 w-full mb-4 text-black"
+                            handleChange={handleChange}
                             // handleBlur={handleBlur}
-                            />
-                          ) : (
-                            <input
-                              type={type}
-                              placeholder={label}
-                              onChange={handleChange}
-                              disabled={disabled}
-                              className="border rounded-[6px] p-3 w-full mb-4 text-black"
-                            />
-                          )}
+                          />
+                        ) : (
+                          <input
+                            type={type}
+                            placeholder={label}
+                            onChange={handleChange}
+                            disabled={disabled}
+                            className="border rounded-[6px] p-3 w-full mb-4 text-black"
+                          />
+                        )}
                       </div>
                     )
                   )}
@@ -534,14 +589,31 @@ const Ocorrencia = () => {
               <div className="bg-[#f1f1f1] mt-[20px] rounded-[8px] px-1 pt-2 pb-10 flex flex-col justify-center gap-3 items-center">
                 <p className="pt-1 pl-[12px] font-rubik font-bold text-[18px] pb-1">
                   Fotos e Vídeos
+                  {/* {console.log(ocorrenciaUnica.midias)} */}
                 </p>
-                <video
+                {ocorrenciaUnica.midias.map(({ midiaUrl, id }) =>
+                  midiaUrl.slice(-3) == "mp4" ? (
+                    <video
+                    key={id}  
+                    style={{ width: "50hw", height: "50vh" }}
+                      controls
+                      loop
+                      className="mt-1 mb-3"
+                    >
+                      <source src={midiaUrl} type="video/mp4" />
+                    </video>
+                  ) : (
+                    <img src={midiaUrl} alt="" className="mt-1 mb-3 w-3/4" />
+                  )
+                )}
+                {/* explicitar no DropZone que apenas upload de mp4 é possível para vídeos para facilitar quando usar a api de midia em listagens */}
+                {/* <video
                   style={{ width: "50hw", height: "50vh" }}
                   controls
-                  loop /* className="mt-1 mb-3" */
+                  loop // className="mt-1 mb-3"
                 >
                   <source src={TestVideo} type="video/mp4" />
-                </video>
+                </video> */}
               </div>
             </div>
           </div>
