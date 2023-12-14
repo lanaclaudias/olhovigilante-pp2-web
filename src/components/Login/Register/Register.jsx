@@ -1,8 +1,9 @@
-//<script src="http://localhost:8097"></script>
 import { useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
 import cepPromise from "cep-promise";
 import Header from "../../Header/Header";
+import { notifyError, notifySuccess } from "../../../util/Util"
+import { redirect, useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [nome, setNome] = useState();
@@ -33,7 +34,7 @@ const Register = () => {
         });
     }
   });*/
-
+  
   const fields = [
     {
       label: "NOME *",
@@ -128,6 +129,7 @@ const Register = () => {
     salvar();
   }
 
+  const navigate = useNavigate();
   function salvar() {
     const usuarioRequest = {
       nome: nome,
@@ -136,22 +138,26 @@ const Register = () => {
       bairro: bairro,
       email: email,
       cpf: cpf,
+      password: senha,
       senha: senha,
       confirmaSenha: confirmaSenha,
     };
-    console.log(usuarioRequest);
-    if (senha != confirmaSenha) {
-      alert("A senha e a confirmação não são iguais.");
+    //console.log(usuarioRequest);
+    if (senha !== confirmaSenha) {
+      notifyError("A senha e a confirmação estão diferentes.");
     } else {
       axios
         .post("http://localhost:8082/api/usuario", usuarioRequest)
         .then(
           //(res) => console.log("Usuário cadastrado com sucesso.")
-          (r) => alert("Usuário cadastrado com sucesso.")
+          () => {
+            notifySuccess("Usuário cadastrado com sucesso.");
+            //redirect("/login");
+            navigate("/login");
+          }
         )
         .catch(
-          //(err) => console.log("Erro ao cadastrar usuário.")
-          (e) => alert("Falha ao cadastrar.\n" + e.name + " - " + e.message)
+          (e) => notifyError("Falha ao cadastrar.\n" + e.name + " - " + e.message)
         );
     }
   }
