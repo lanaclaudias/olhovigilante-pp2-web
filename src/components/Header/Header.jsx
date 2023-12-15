@@ -85,7 +85,9 @@ const Header = () => {
         <Link to="/">
           <img src={logo} alt="" className="minilogo mt-1" />
         </Link>
-        <nav>
+
+        {/* MENU DESKTOP */}
+        <nav className="max-lg:hidden">
           <ul className="menu flex items-center gap-12">
             {navMenuItems.map((elem) => (
               <li key={elem.icon.slice(5, -4)}>
@@ -109,28 +111,32 @@ const Header = () => {
             ))}
           </ul>
         </nav>
-        {/* userState */isUserLoggedIn() && (
-          <div className="userButtons flex gap-6">
-            {/* <div className="flex"> */}
-            <Link to={"/perfil"} className="flex font-sora text-white flex-col">
-              <img
-                src={
-                  isUrlActive(navUserBtns[0])
-                    ? navUserBtns[0].icon.slice(0, -4) + "-active.svg"
-                    : navUserBtns[0].icon
-                }
-              />
-              <p>{navUserBtns[0].text}</p>
-            </Link>
-            <Link
-              //className="flex font-sora text-white flex-col"
-              onClick={handleLogout}
-            >
-              <img src={navUserBtns[3].icon} />
-              <p>{navUserBtns[3].text}</p>
-            </Link>
-            {/* </div> */}
-            {/* {navUserBtns.map((elem) => (
+        {
+          /* userState */ isUserLoggedIn() && (
+            <div className="userButtons flex gap-6">
+              {/* <div className="flex"> */}
+              <Link
+                to={"/perfil"}
+                className="flex font-sora text-white flex-col"
+              >
+                <img
+                  src={
+                    isUrlActive(navUserBtns[0])
+                      ? navUserBtns[0].icon.slice(0, -4) + "-active.svg"
+                      : navUserBtns[0].icon
+                  }
+                />
+                <p>{navUserBtns[0].text}</p>
+              </Link>
+              <Link
+                //className="flex font-sora text-white flex-col"
+                onClick={handleLogout}
+              >
+                <img src={navUserBtns[3].icon} />
+                <p>{navUserBtns[3].text}</p>
+              </Link>
+              {/* </div> */}
+              {/* {navUserBtns.map((elem) => (
             <div key={elem.icon.slice(5, -4)} className="flex">
               {
                 userState ? (
@@ -162,22 +168,27 @@ const Header = () => {
               }
             </div>
           ))} */}
-            {/* <Link to="/perfil" className="flex flex-col">
+              {/* <Link to="/perfil" className="flex flex-col">
           <img src={icons.perfil} alt="" className="self-center w-8 h-8" />
           <p>Perfil</p>
         </Link> */}
-          </div>
-        )}
-        {/* !userState */!isUserLoggedIn() && <div className="userButtons flex gap-6">
-          <Link to={navUserBtns[1].link} className="self-center ">
-            <img src={navUserBtns[1].icon} alt="" />
-            <p>{navUserBtns[1].text}</p>
-          </Link>
-          <Link to={navUserBtns[2].link} className="self-center ">
-            <img src={navUserBtns[2].icon} alt="" />
-            <p>{navUserBtns[2].text}</p>
-          </Link>
-        </div>}
+            </div>
+          )
+        }
+        {
+          /* !userState */ !isUserLoggedIn() && (
+            <div className="userButtons flex gap-6">
+              <Link to={navUserBtns[1].link} className="self-center ">
+                <img src={navUserBtns[1].icon} alt="" />
+                <p>{navUserBtns[1].text}</p>
+              </Link>
+              <Link to={navUserBtns[2].link} className="self-center ">
+                <img src={navUserBtns[2].icon} alt="" />
+                <p>{navUserBtns[2].text}</p>
+              </Link>
+            </div>
+          )
+        }
       </div>
     </header>
   );

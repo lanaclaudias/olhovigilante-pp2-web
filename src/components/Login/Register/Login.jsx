@@ -1,9 +1,9 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../../Header/Header";
 import { mensagemErro, notifyError, notifySuccess } from "../../../util/Util";
 import { registerSuccessfulLoginForJwt } from "../../../util/AuthenticationService";
-import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 function FormLogin() {
   const [email, setEmail] = useState("");
@@ -23,7 +23,11 @@ function FormLogin() {
         if (res?.data) {
           //const id = await axios.get(`http://localhost:8082/api/usuario/u/${res.data.username}`);
           //localStorage.setItem("userId", res.data);
-          registerSuccessfulLoginForJwt(res.data.username, res.data.token, res.data.refresh);
+          registerSuccessfulLoginForJwt(
+            res.data.username,
+            res.data.token,
+            res.data.refresh
+          );
           navigate("/");
           notifySuccess("Login realizado com sucesso!");
         }
@@ -84,6 +88,30 @@ function FormLogin() {
 }
 
 function Login() {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+
+  const entrar = () => {
+    if (email !== "" && senha !== "") {
+      let authenticationRequest = {
+        email: email,
+        senha: senha,
+      };
+
+      axios
+        .post("http://localhost:8080/api/login", authenticationRequest)
+        .then((response) => {
+          // registerSuccessfulLoginForJwt(response.data.token, response.data.expiration);
+          navigate("/");
+        })
+        .catch((error) => {
+          console.log(error);
+          // notifyError('Usuário não encontrado');
+        });
+    }
+  };
+
   return (
     <>
       <Header />

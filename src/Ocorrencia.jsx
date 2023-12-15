@@ -123,6 +123,12 @@ const Ocorrencia = () => {
   const [ocorrencias, setOcorrencias] = useState([]);
   const [midiasArr, setMidiasArr] = useState([]);
 
+  const [ocorrenciasFiltradas, setOcorrenciasFiltradas] = useState([]);
+  const [ocorrenciasOriginais, setOcorrenciasOriginais] = useState([]);
+  const bairroRef = useRef();
+  const [timer, setTimer] = useState(null);
+  const [selectedBairro, setSelectedBairro] = useState("");
+  const inputFiltro = useRef();
   /* Mapa */ // Investigar bug na reatividade dos mapas durante interação com os campos do formulário
   const Map = ({ apiKey }) => {
     const initialCenter = [-8.063153, -34.87114];
@@ -203,6 +209,47 @@ const Ocorrencia = () => {
     return null;
   };
 
+  const selectBairro = (valor) => {
+    if (!valor) {
+      setOcorrencias(ocorrenciasOriginais);
+    } else {
+      const ocorrenciasFiltradas = ocorrenciasOriginais.filter((ocorrencia) => {
+        return valor === ocorrencia.bairro.toLowerCase();
+      });
+      console.log(ocorrenciasFiltradas);
+      setOcorrencias(ocorrenciasFiltradas);
+    }
+  };
+
+  const cancelFiltro = () => {
+    console.log(bairroRef.current);
+    setSelectedBairro("Selecione");
+    bairroRef.current.value = selectedBairro;
+    setOcorrencias(ocorrenciasOriginais); // Reset to original occurrences
+  };
+
+  // const debounce = (func, delay) => {
+  //   clearTimeout(timer);
+  //   setTimer(setTimeout(func, delay));
+  // };
+
+  // const buscarPorBairro = () => {
+  //   const termoFiltro = inputFiltro.current.value.toLowerCase();
+  //   if (termoFiltro === "") {
+  //     setOcorrencias(ocorrenciasOriginais);
+  //   } else {
+  //     const ocorrenciasFiltradas = ocorrenciasOriginais.filter((ocorrencia) => {
+  //       return termoFiltro === ocorrencia.bairro.toLowerCase();
+  //     });
+
+  //     setOcorrencias(ocorrenciasFiltradas);
+  //   }
+  // };
+
+  // const handleInputChange = () => {
+  //   debounce(buscarPorBairro, 300); // Ajuste o tempo de debounce conforme necessário (300ms neste exemplo)
+  // };
+
   const MyMap = () => {
     return (
       <>
@@ -236,6 +283,7 @@ const Ocorrencia = () => {
       .get("http://localhost:8082/api/ocorrencia")
       .then((res) => {
         setOcorrencias(res.data);
+        setOcorrenciasOriginais(res.data);
         //console.log(ocorrencias);
       })
       .catch((err) => {
@@ -316,13 +364,12 @@ const Ocorrencia = () => {
   return (
     <>
       <Header />
-      <div className="container ">
+      <div className="container">
         <div className="flex space-x-4 justify-between items-center mt-6">
           <div className="flex gap-10">
             <button className="bg-black text-white font-bold py-2 px-4 rounded">
               Minhas Ocorrências
             </button>
-
             <button
               onClick={() => {
                 //console.log(usuarioId)
@@ -339,16 +386,23 @@ const Ocorrencia = () => {
             </button>
           </div>
           <div className="flex space-x-4 justify-end pr-4">
-            <div className="flex">
-              <input
-                type="text"
-                placeholder="Buscar"
-                className="border-2 border-blue-500 rounded-tl-none px-10 py-2 focus:outline-none focus:ring focus:border-blue-800"
-              />
-              <button className="bg-blue-500 hover-bg-blue-700 text-white font-bold py-2 px-4 rounded-r">
-                Buscar
-              </button>
+            <div className="relative h-10 min-w-[200px]">
+              <select
+                onChange={(e) => selectBairro(e.target.value)}
+                className="peer h-full w-full rounded-[7px] border border-blue-gray-200 border-t-transparent bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 empty:!bg-gray-900 focus:border-2 focus:border-gray-900 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+              >
+                <option ref={bairroRef} value="selecione">
+                  Selecione
+                </option>
+                <option value="cavaleiro">Cavaleiro</option>
+                <option value="boa viagem">Boa Viagem</option>
+                <option value="vila rica">Vila Rica</option>
+              </select>
+              <label className="before:content[' '] after:content[' '] pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none text-[11px] font-normal leading-tight text-blue-gray-400 transition-all before:pointer-events-none before:mt-[6.5px] before:mr-1 before:box-border before:block before:h-1.5 before:w-2.5 before:rounded-tl-md before:border-t before:border-l before:border-blue-gray-200 before:transition-all after:pointer-events-none after:mt-[6.5px] after:ml-1 after:box-border after:block after:h-1.5 after:w-2.5 after:flex-grow after:rounded-tr-md after:border-t after:border-r after:border-blue-gray-200 after:transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-blue-gray-500 peer-placeholder-shown:before:border-transparent peer-placeholder-shown:after:border-transparent peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-gray-900 peer-focus:before:border-t-2 peer-focus:before:border-l-2 peer-focus:before:border-gray-900 peer-focus:after:border-t-2 peer-focus:after:border-r-2 peer-focus:after:border-gray-900 peer-disabled:text-transparent peer-disabled:before:border-transparent peer-disabled:after:border-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
+                Selecione um bairro
+              </label>
             </div>
+            <button onClick={cancelFiltro}>Cancelar Filtro</button>
           </div>
         </div>
 
@@ -357,17 +411,16 @@ const Ocorrencia = () => {
             {/* Mapa listando todas as ocorrências */}
             <MyMap />
           </div>
-
           {/* Listagem de Ocorrências */}
-          <div className="flex-1 hover:cursor-pointer">
-            {ocorrencias &&
-              ocorrencias.map(
+          {ocorrenciasFiltradas != [] ? (
+            <div className="flex-1 hover:cursor-pointer">
+              {ocorrencias.map(
                 ({ id, categoria, bairro, cidade, dataHoraOcorrencia }) => {
                   return (
                     <div
                       onClick={() => handleClickOcorrencia(id)}
                       key={id}
-                      className="mt-4 p-4 rounded border font border-gray-300 flex flex-col"
+                      className="mt-4 bg-blue-100 hover:bg-blue-200 p-4 rounded border font border-gray-300 flex flex-col"
                     >
                       <p className="font-semibold">{categoria.nome}</p>
                       <div className="flex gap-4 justify-between">
@@ -380,7 +433,31 @@ const Ocorrencia = () => {
                   );
                 }
               )}
-          </div>
+            </div>
+          ) : (
+            <div className="flex-1 bg-blue-100 hover:bg-blue-200 hover:cursor-pointer">
+              {ocorrenciasFiltradas &&
+                ocorrenciasFiltradas.map(
+                  ({ id, categoria, bairro, cidade, dataHoraOcorrencia }) => {
+                    return (
+                      <div
+                        onClick={() => handleClickOcorrencia(id)}
+                        key={id}
+                        className="mt-4 p-4 rounded border font border-gray-300 flex flex-col"
+                      >
+                        <p className="font-semibold">{categoria.nome}</p>
+                        <div className="flex gap-4 justify-between">
+                          <p className="text-gray-600">
+                            {bairro}, {cidade}
+                          </p>
+                          <p className="text-gray-600">{dataHoraOcorrencia}</p>
+                        </div>
+                      </div>
+                    );
+                  }
+                )}
+            </div>
+          )}
         </div>
       </div>
       {/* MODAL */}
