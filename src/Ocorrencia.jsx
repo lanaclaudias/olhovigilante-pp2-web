@@ -17,6 +17,7 @@ import dangerMarkerIcon from "/danger-icon.png";
 import { notifyError, notifySuccess } from "./util/Util";
 import FileUploader from "./util/FileUploader";
 import DropZone from "./util/DropZone";
+import { Footer } from "./Footer";
 
 const TipoOcorrenciaSelect = (props) => {
   return (
@@ -408,7 +409,7 @@ const Ocorrencia = () => {
 
         <div className="flex relative justify-between gap-10 items-start pt-10">
           <div className="sticky top-0">
-            {/* Mapa listando todas as ocorrências */}
+            {/* Mapa da listagem de ocorrências */}
             <MyMap />
           </div>
           {/* Listagem de Ocorrências */}
@@ -423,11 +424,30 @@ const Ocorrencia = () => {
                       className="mt-4 bg-blue-100 hover:bg-blue-200 p-4 rounded border font border-gray-300 flex flex-col"
                     >
                       <p className="font-semibold">{categoria.nome}</p>
+                      {/* Avaliação por Votos */}
+                      <div className="voting self-end flex gap-3">
+                        <div className="counters">
+                          upvotes <br /> downvotes
+                        </div>
+                        <div className="arrows">
+                          arrowup <br /> arrowdown
+                        </div>
+                      </div>
                       <div className="flex gap-4 justify-between">
-                        <p className="text-gray-600">
-                          {bairro}, {cidade}
-                        </p>
-                        <p className="text-gray-600">{dataHoraOcorrencia}</p>
+                        <div className="regiao">
+                          <p className="text-gray-600 flex justify-between gap-2">
+                            <span>icon</span> {bairro}
+                            <br />
+                            {cidade}
+                          </p>
+                        </div>
+                        <div className="horario">
+                          <p className="text-gray-600 flex justify-between gap-2">
+                            <span>icon</span> {dataHoraOcorrencia}
+                            <br />
+                            hora
+                          </p>
+                        </div>
                       </div>
                     </div>
                   );
@@ -496,74 +516,18 @@ const Ocorrencia = () => {
                           {label}
                         </label>
                         {type === "textarea" ? (
-                          (<textarea
+                          <textarea
                             placeholder={label}
                             onChange={handleChange}
                             className="border rounded-[6px] p-3 w-full mb-4 text-black"
-                          /> /*: type === "radio" ? (
-                          <div className="flex">
-                            {values.map((value, index) => (
-                              <div key={index} className="mr-4">
-                                <input
-                                  type={type}
-                                  value={value}
-                                  name={label}
-                                  onChange={handleChange}
-                                  className="mr-1"
-                                />
-                                <label htmlFor={value} className="text-black">
-                                  {value}
-                                </label>
-                              </div>
-                            ))}
-                          </div>
-                        ) */ /*: type === "radio" ? (
-                          <div className="flex">
-                            {values.map((value, index) => (
-                              <div key={index} className="mr-4">
-                                <input
-                                  type={type}
-                                  value={value}
-                                  name={label}
-                                  onChange={handleChange}
-                                  className="mr-1"
-                                />
-                                <label htmlFor={value} className="text-black">
-                                  {value}
-                                </label>
-                              </div>
-                            ))}
-                          </div>
-                        ) */ /*: type === "radio" ? (
-                          <div className="flex">
-                            {values.map((value, index) => (
-                              <div key={index} className="mr-4">
-                                <input
-                                  type={type}
-                                  value={value}
-                                  name={label}
-                                  onChange={handleChange}
-                                  className="mr-1"
-                                />
-                                <label htmlFor={value} className="text-black">
-                                  {value}
-                                </label>
-                              </div>
-                            ))}
-                          </div>
-                        ) */)
+                          />
                         ) : type === "file" ? (
                           //< FileUploader />
                           <DropZone
                             onUpload={handleUpload}
                             ocorrenciaId={ocorrenciaId}
                           />
-                        ) : /* <input
-                              type="file"
-                              onChange={handleChange}
-                              className="border rounded-[6px] p-3 w-full mb-4 text-black"
-                            /> */
-                        type === "select" ? (
+                        ) : type === "select" ? (
                           <TipoOcorrenciaSelect
                             lista={tipoOcorrenciaLista}
                             className="border rounded-[6px] p-3 w-full mb-4 text-black"
@@ -671,8 +635,8 @@ const Ocorrencia = () => {
                 {ocorrenciaUnica.midias.map(({ midiaUrl, id }) =>
                   midiaUrl.slice(-3) == "mp4" ? (
                     <video
-                    key={id}  
-                    style={{ width: "50hw", height: "50vh" }}
+                      key={id}
+                      style={{ width: "50hw", height: "50vh" }}
                       controls
                       loop
                       className="mt-1 mb-3"
@@ -695,72 +659,11 @@ const Ocorrencia = () => {
             </div>
           </div>
           <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
-          
         </>
       ) : null}
-  <br /> <br /> <br /> <br /> <br /> <br />
-  <br /> <br />
-      <div className='h-[275px] text-white bg-black'>
-
-<div className='container flex gap-1 justify-between pt-20 text-[20px]'>
-
-<div> 
-<p>
-Rua Jurema, 10 - Centro, Jaboatão Dos Guararapes/PE
-</p>
-
-<p>
-CEP: 50000-111
-
-</p>
-<p>
-CNPJ: 00.000.000/0001-00
-</p>
-
-</div>
-
-<div>
-
-<p className="container text-white">
-contato@olhovigilante.com.br
-</p>
-
-<p>
-(81) 9 0800-0800
-</p>
-
-</div>
-
-<div>
-<a href="/">
-<p>
-Inicio
-</p></a>
-<a href="/ocorrencia">
-<p>
-Ocorrências
-</p></a>
-<a href="/comunidade">
-<p>
-Comunidade
-</p></a>
-<a href="/denunciar">
-<p>
-Onde Denunciar
-</p></a>
-
-</div>
-</div>
-
-
-<div className='flex justify-center pt-10'>
-<p className='text-white w-[599px] text-left text-[20px] mx-10px'>
-
-© 2023  Olho Vigilante | Todos os direitos reservados.
-</p>
-</div>
-</div>
-      
+      <div className="mt-40">
+        <Footer />
+      </div>
     </>
   );
 };
