@@ -2,7 +2,7 @@ import {
   GeoSearchControl,
   MapBoxProvider,
   GoogleProvider,
-  AlgoliaProvider
+  AlgoliaProvider,
 } from "leaflet-geosearch";
 import {
   MapContainer,
@@ -19,6 +19,15 @@ import React, {
   forwardRef,
 } from "react";
 import L, { marker } from "leaflet";
+delete L.Icon.Default.prototype._getIconUrl;
+import retinaIcon from "leaflet/dist/images/marker-icon-2x.png";
+import icnUrl from "leaflet/dist/images/marker-icon.png";
+import shadowUrl from "leaflet/dist/images/marker-shadow.png";
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: retinaIcon,
+  iconUrl: icnUrl,
+  shadowUrl: shadowUrl,
+});
 import { Geocoder } from "leaflet-control-geocoder";
 
 const SearchField = ({ apiKey }) => {
@@ -42,14 +51,17 @@ const SearchField = ({ apiKey }) => {
       access_token: apiKey,
     },
   });
-/* 
+  /* 
   const provider = new AlgoliaProvider({params}); */
 
   const searchControl = new GeoSearchControl({
     provider: provider,
-    searchLabel: "Insira o endereço",
-    notFoundMessage: "Endereço não encontrado. Tente novamente.",
+    searchLabel:
+      "Recomendamos buscar seguindo a ordem: rua, bairro, cidade...'",
+    notFoundMessage:
+      "Não encontrado. Tente seguindo a ordem: rua, bairro, cidade.",
     style: "bar",
+
     //keepResult: true
   });
 

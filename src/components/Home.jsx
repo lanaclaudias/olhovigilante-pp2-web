@@ -47,7 +47,7 @@ const Home = () => {
               melhorar sua experiência.
             </p>
 
-            <div className="flex gap-1 h-[170px]">
+            <div className="flex gap-1 h-[170px] justify-evenly">
               <div>
                 <button className="bg-white text-black font-bold py-2 px-4 rounded w-[200px] h-[116px]">
                   INÍCIO

@@ -5,19 +5,29 @@ import axios from "axios";
 import { GeoSearchControl, MapBoxProvider } from "leaflet-geosearch";
 import { MapContainer, useMap, TileLayer } from "react-leaflet";
 import L from "leaflet";
+delete L.Icon.Default.prototype._getIconUrl;
+import retinaIcon from "leaflet/dist/images/marker-icon-2x.png";
+import icnUrl from "leaflet/dist/images/marker-icon.png";
+import shadowUrl from "leaflet/dist/images/marker-shadow.png";
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: retinaIcon,
+  iconUrl: icnUrl,
+  shadowUrl: shadowUrl,
+});
 import {
   isUserLoggedIn,
   getUserId,
   USERID_SESSION_ATTRIBUTE_NAME,
 } from "./util/AuthenticationService";
 
-import TestVideo from "/testvideo.mp4";
 import centerMarkerIcon from "/centermarker.png";
 import dangerMarkerIcon from "/danger-icon.png";
 import { notifyError, notifySuccess } from "./util/Util";
 import FileUploader from "./util/FileUploader";
 import DropZone from "./util/DropZone";
 import { Footer } from "./Footer";
+import VoteOcorrencia from "./VoteOcorrencia";
+import DeletarOcorrencia from "./DeletarOcorrencia";
 
 const TipoOcorrenciaSelect = (props) => {
   return (
@@ -85,7 +95,7 @@ const Ocorrencia = () => {
       handleChange: (e) => setHora(e.target.value),
     },
     {
-      label: "Midia",
+      label: "Mídia",
       type: "file",
       handleChange: (e) => {
         setMidia(e.target.value);
@@ -169,8 +179,10 @@ const Ocorrencia = () => {
 
     const searchControl = new GeoSearchControl({
       provider: provider,
-      searchLabel: "Insira o endereço",
-      notFoundMessage: "Não encontrado. Insira na ordem 'Rua, Bairro, Cidade'.",
+      searchLabel:
+        "Recomendamos buscar seguindo a ordem: rua, bairro, cidade...'",
+      notFoundMessage:
+        "Não encontrado. Tente seguindo a ordem: rua, bairro, cidade.",
       style: "bar",
       //keepResult: true
     });
@@ -198,7 +210,7 @@ const Ocorrencia = () => {
       /* console.log("temp after click ", temp) */
     });
     marker.addTo(map);
-    map.setView(marker.getLatLng(), 20);
+    //map.setView(marker.getLatLng(), 20); // centralização inicial
     handleTempLatLng(marker);
     /* console.log("temp after click and drag: ", temp) */
 
@@ -358,7 +370,7 @@ const Ocorrencia = () => {
     axios
       .get(`http://localhost:8082/api/ocorrencia/${id}`)
       .then((response) => setOcorrenciaUnica(response.data))
-      .catch((error) => notifyError(error.message));
+      .catch((error) => notifyError("Falha na exibição da ocorrência."));
     setShowModalOcorrencia(true);
   };
 
@@ -416,7 +428,15 @@ const Ocorrencia = () => {
           {ocorrenciasFiltradas != [] ? (
             <div className="flex-1 hover:cursor-pointer">
               {ocorrencias.map(
-                ({ id, categoria, bairro, cidade, dataHoraOcorrencia }) => {
+                ({
+                  id,
+                  categoria,
+                  bairro,
+                  cidade,
+                  dataHoraOcorrencia,
+                  hora,
+                  avaliacao,
+                }) => {
                   return (
                     <div
                       onClick={() => handleClickOcorrencia(id)}
@@ -424,29 +444,36 @@ const Ocorrencia = () => {
                       className="mt-4 bg-blue-100 hover:bg-blue-200 p-4 rounded border font border-gray-300 flex flex-col"
                     >
                       <p className="font-semibold">{categoria.nome}</p>
-                      {/* Avaliação por Votos */}
-                      <div className="voting self-end flex gap-3">
-                        <div className="counters">
-                          upvotes <br /> downvotes
-                        </div>
-                        <div className="arrows">
-                          arrowup <br /> arrowdown
-                        </div>
-                      </div>
-                      <div className="flex gap-4 justify-between">
+                      {/*-- Avaliação por Votos */}
+                      <VoteOcorrencia
+                        userId={usuarioId}
+                        ocorrId={id}
+                        avaliacao={avaliacao}
+                      />
+                      {/*Avaliação por Votos -- */}
+                      <div className="flex gap-4 justify-around">
                         <div className="regiao">
-                          <p className="text-gray-600 flex justify-between gap-2">
-                            <span>icon</span> {bairro}
+                          <p className="text-gray-600 flex gap-2">
+                            <span className="self-center bg-pin-icon w-4 h-5"></span>
+                            {bairro}
                             <br />
                             {cidade}
                           </p>
                         </div>
                         <div className="horario">
-                          <p className="text-gray-600 flex justify-between gap-2">
-                            <span>icon</span> {dataHoraOcorrencia}
+                          <p className="text-gray-600 flex gap-2">
+                            <span className="self-center bg-clock-icon w-4 h-3.5"></span>
+                            {dataHoraOcorrencia}
                             <br />
-                            hora
+                            {hora}
                           </p>
+                        </div>
+                        <div className="self-end">
+                          <DeletarOcorrencia
+                            idOcorr={id}
+                            ocorrs={ocorrencias}
+                            setOcorrList={setOcorrencias}
+                          />
                         </div>
                       </div>
                     </div>
@@ -498,10 +525,20 @@ const Ocorrencia = () => {
             <div className="relative min-w-[550px] my-6 mx-auto max-w-3xl">
               {/*content*/}
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                <h1 className="text-black font-sora text-[24px] font-bold text-center pt-4">
-                  NOVA OCORRÊNCIA
-                </h1>
-                <div className="relative p-6 flex-auto">
+                <div className="px-6 flex justify-between items-center">
+                  <h1 className="text-black font-sora text-[24px] font-bold pt-4">
+                    Nova Ocorrência
+                  </h1>
+                  <button
+                    className="font-normal px-[20px] font-rubik text-[14px] py-[5px] rounded-lg bg-black text-white"
+                    type="button"
+                    onClick={() => setShowModal(false)}
+                  >
+                    FECHAR
+                  </button>
+                </div>
+
+                <div className="relative p-6 flex-auto overflow-hidden">
                   {fields.map(
                     ({
                       label,
@@ -523,10 +560,12 @@ const Ocorrencia = () => {
                           />
                         ) : type === "file" ? (
                           //< FileUploader />
-                          <DropZone
-                            onUpload={handleUpload}
-                            ocorrenciaId={ocorrenciaId}
-                          />
+                          <div className="flex justify-center">
+                            <DropZone
+                              onUpload={handleUpload}
+                              ocorrenciaId={ocorrenciaId}
+                            />
+                          </div>
                         ) : type === "select" ? (
                           <TipoOcorrenciaSelect
                             lista={tipoOcorrenciaLista}
@@ -547,7 +586,7 @@ const Ocorrencia = () => {
                     )
                   )}
                   {/* Mapa de Registro de Ocorrência */}
-                  <MyMap />
+                  <MyMap  />
                 </div>
                 {/*footer*/}
                 <div className="flex gap-[20px] items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b text-white">
@@ -581,7 +620,7 @@ const Ocorrencia = () => {
             <div className="border-0 p-[20px] rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
               <div className="flex justify-between items-center">
                 <h1 className="text-black text-[24px] font-sora font-bold text-left">
-                  Detalhes da ocorrência
+                  Detalhes da Ocorrência
                 </h1>
                 <button
                   className="font-normal px-[20px] font-rubik text-[14px] py-[5px] rounded-lg bg-black text-white"
