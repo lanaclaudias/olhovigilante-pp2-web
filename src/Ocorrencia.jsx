@@ -77,7 +77,7 @@ const Ocorrencia = () => {
         "Descrição base e informações adicionais como presença policial, ação policial, motivação, quantidade de vítimas, etc.",
       handleChange: (e) => setDescricao(e.target.value),
     },
-    {
+    /* {
       label: "Cidade",
       type: "text",
       handleChange: (e) => setCidade(e.target.value),
@@ -86,7 +86,7 @@ const Ocorrencia = () => {
       label: "Bairro",
       type: "text",
       handleChange: (e) => setBairro(e.target.value),
-    },
+    }, */
     {
       label: "Data",
       type: "date",
@@ -341,7 +341,73 @@ const Ocorrencia = () => {
     //console.log("midiasArr: ", midiasArr);
     e.preventDefault();
     // console.log(reportMarker.getLatLng().lng)
-    const ocorrenciaRequest = {
+    axios
+      .get(
+        `https://api.geoapify.com/v1/geocode/reverse?lat=${
+          reportMarker.getLatLng().lat
+        }&lon=${
+          reportMarker.getLatLng().lng
+        }&type=street&lang=pt&limit=1&format=json&apiKey=${
+          import.meta.env.VITE_APP_GEOAPIFY_API_KEY
+        }`,
+        {
+          withCredentials: false
+        }
+      )
+      .then((result) => {
+        /* console.log(
+          "cidade: ",
+          result.data.results[0].city,
+          "bairro: ",
+          result.data.results[0].suburb
+        ); */
+        const ocorrenciaRequest = {
+          descricao,
+          cidade: result.data.results[0].city,
+          bairro: result.data.results[0].suburb,
+          dataHoraOcorrencia: data, // alterar formatação (data + hora)
+          hora,
+          //midia,
+          //geolocalizacao: "" + temp.lat + "," + temp.lng, //anterior com componentes locais
+          geolocalizacao:
+            "" +
+            reportMarker.getLatLng().lat +
+            "," +
+            reportMarker.getLatLng().lng, //atual com componente NovaOcorrenciaMap
+          usuarioId,
+          categoriaId,
+        };
+
+        axios
+          .post("http://localhost:8082/api/ocorrencia", ocorrenciaRequest)
+          .then((response) => {
+            // Nova implementação
+            //console.log("midiasArr: ", midiasArr, "\nOcorrencia ID: ", response.data.id)
+            midiasArr.map(({ fileUrl }) => {
+              const midiaRequest = {
+                ocorrenciaId: response.data.id,
+                midiaUrl: fileUrl,
+              };
+              axios
+                .post("http://localhost:8082/api/midia", midiaRequest)
+                .then((res) => {
+                  //console.log("Midia cadastrada: ", res.data)
+                })
+                .catch((err) => notifyError("Falha no upload dos arquivos."));
+            });
+
+            setOcorrencias([...ocorrencias, response.data]);
+            setShowModal(false);
+            notifySuccess("Ocorrencia cadastrada com sucesso.");
+          })
+          .catch((err) => {
+            notifyError("Falha ao cadastrar a ocorrência.", err.message);
+          });
+      })
+      .catch((error) =>
+        notifyError("Erro ao processar a localização informada.")
+      );
+    /* const ocorrenciaRequest = {
       descricao,
       cidade,
       bairro,
@@ -379,7 +445,7 @@ const Ocorrencia = () => {
       })
       .catch((err) => {
         notifyError("Falha ao cadastrar a ocorrência.", err.message);
-      });
+      }); */
   };
 
   const [ocorrenciaUnica, setOcorrenciaUnica] = useState();
@@ -574,13 +640,14 @@ const Ocorrencia = () => {
                         </label>
                         {type === "textarea" ? (
                           <textarea
+                            key={label}
                             placeholder={label}
                             onChange={handleChange}
                             className="border rounded-[6px] p-3 w-full mb-4 text-black"
                           />
                         ) : type === "file" ? (
                           //< FileUploader />
-                          <div className="flex justify-center">
+                          <div key={label} className="flex justify-center">
                             <DropZone
                               onUpload={handleUpload}
                               ocorrenciaId={ocorrenciaId}
@@ -588,6 +655,7 @@ const Ocorrencia = () => {
                           </div>
                         ) : type === "select" ? (
                           <TipoOcorrenciaSelect
+                            key={label}
                             lista={tipoOcorrenciaLista}
                             className="border rounded-[6px] p-3 w-full mb-4 text-black"
                             handleChange={handleChange}
@@ -595,6 +663,7 @@ const Ocorrencia = () => {
                           />
                         ) : (
                           <input
+                            key={label}
                             type={type}
                             placeholder={label}
                             onChange={handleChange}
