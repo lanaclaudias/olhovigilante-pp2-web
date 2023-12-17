@@ -28,6 +28,10 @@ import DropZone from "./util/DropZone";
 import { Footer } from "./Footer";
 import VoteOcorrencia from "./VoteOcorrencia";
 import DeletarOcorrencia from "./DeletarOcorrencia";
+import NovaOcorrenciaModal from "./NovaOcorrenciaModal";
+import NewMap from "./NewMap";
+import OcorrenciasMap from "./OcorrenciasMap";
+import NovaOcorrenciaMap from "./NovaOcorrenciaMap";
 
 const TipoOcorrenciaSelect = (props) => {
   return (
@@ -59,7 +63,7 @@ const handleTempLatLng = (newState) => {
 const Ocorrencia = () => {
   // Acrescentar value: {state} ao array de fields para os inputs
   // e incluir value como atributo durante a iteração para o render condicional?
-
+  const [reportMarker, setReportMarker] = useState(null);
   const fields = [
     {
       label: "Tipo de Ocorrência",
@@ -100,7 +104,7 @@ const Ocorrencia = () => {
       handleChange: (e) => {
         setMidia(e.target.value);
       },
-    }, // implementação apropriada para múltiplos arquivos pendente e necessita integrar com a API de Mídia já configurada com suas associações
+    },
     /* {
       label: "Geolocalização",
       type: "text",
@@ -141,13 +145,15 @@ const Ocorrencia = () => {
   const [selectedBairro, setSelectedBairro] = useState("");
   const inputFiltro = useRef();
   /* Mapa */ // Investigar bug na reatividade dos mapas durante interação com os campos do formulário
+  const initialCenter = [-8.063153, -34.87114];
+
   const Map = ({ apiKey }) => {
-    const initialCenter = [-8.063153, -34.87114];
+    // const initialCenter = [-8.063153, -34.87114];
     //const centerIcon = new L.Icon({ iconUrl: centerMarkerIcon });
 
     const map = useMap();
     const [marker, setMarker] = useState(L.marker(initialCenter));
-    map.setView(initialCenter, 10);
+    //map.setView(initialCenter, 10);
 
     if (ocorrencias) {
       let icon = L.icon({
@@ -182,8 +188,9 @@ const Ocorrencia = () => {
       searchLabel:
         "Recomendamos buscar seguindo a ordem: rua, bairro, cidade...'",
       notFoundMessage:
-        "Não encontrado. Tente seguindo a ordem: rua, bairro, cidade.",
+        "Não encontrado. Tente seguindo a ordem: rua, bairro, cidade...",
       style: "bar",
+      showMarker: false,
       //keepResult: true
     });
 
@@ -208,6 +215,10 @@ const Ocorrencia = () => {
       setMarker(mrk);
       handleTempLatLng(mrk);
       /* console.log("temp after click ", temp) */
+      /* let currZoom = map.getZoom();
+      console.log("zoom: ", currZoom);
+      map.setZoom(currZoom); */
+      //map.setView(marker.getLatLng(), currZoom);
     });
     marker.addTo(map);
     //map.setView(marker.getLatLng(), 20); // centralização inicial
@@ -266,7 +277,11 @@ const Ocorrencia = () => {
   const MyMap = () => {
     return (
       <>
-        <MapContainer style={{ height: "60vh", width: "60vh" }}>
+        <MapContainer
+          center={initialCenter}
+          zoom={10}
+          style={{ height: "60vh", width: "60vh" }}
+        >
           <Map apiKey={import.meta.env.VITE_APP_MAPBOX_GEOSEARCH_API_TOKEN} />
           <TileLayer
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -325,6 +340,7 @@ const Ocorrencia = () => {
   const handleSubmit = (e) => {
     //console.log("midiasArr: ", midiasArr);
     e.preventDefault();
+    // console.log(reportMarker.getLatLng().lng)
     const ocorrenciaRequest = {
       descricao,
       cidade,
@@ -332,7 +348,9 @@ const Ocorrencia = () => {
       dataHoraOcorrencia: data, // alterar formatação (data + hora)
       hora,
       //midia,
-      geolocalizacao: "" + temp.lat + "," + temp.lng,
+      //geolocalizacao: "" + temp.lat + "," + temp.lng, //anterior com componentes locais
+      geolocalizacao:
+        "" + reportMarker.getLatLng().lat + "," + reportMarker.getLatLng().lng, //atual com componente NovaOcorrenciaMap
       usuarioId,
       categoriaId,
     };
@@ -422,7 +440,9 @@ const Ocorrencia = () => {
         <div className="flex relative justify-between gap-10 items-start pt-10">
           <div className="sticky top-0">
             {/* Mapa da listagem de ocorrências */}
-            <MyMap />
+            {/* <MyMap /> */}
+            {/* <NewMap /> */}
+            <OcorrenciasMap />
           </div>
           {/* Listagem de Ocorrências */}
           {ocorrenciasFiltradas != [] ? (
@@ -519,8 +539,8 @@ const Ocorrencia = () => {
             className="justify-center items-start flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
           >
             {/* <div className="relative min-w-[550px] my-6 mx-auto max-w-3xl">
-            <MyMap />
-            </div> */}
+          <MyMap />
+          </div> */}
 
             <div className="relative min-w-[550px] my-6 mx-auto max-w-3xl">
               {/*content*/}
@@ -586,7 +606,8 @@ const Ocorrencia = () => {
                     )
                   )}
                   {/* Mapa de Registro de Ocorrência */}
-                  <MyMap  />
+                  {/* <MyMap /> */}
+                  <NovaOcorrenciaMap setReportMarker={setReportMarker} />
                 </div>
                 {/*footer*/}
                 <div className="flex gap-[20px] items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b text-white">

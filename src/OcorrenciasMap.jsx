@@ -16,16 +16,17 @@ import {
   Marker,
 } from "react-leaflet";
 import * as L from "leaflet";
-import centerMarkerIcon from "/centermarker.png";
 import dangerMarkerIcon from "/danger-icon.png";
 import axios from "axios";
 
 const initialCenter = [-8.063153, -34.87114];
 
-const Map = ({ apiKey }) => {
-  const map = useMap({});
+const Map = () => {
+  const myAPIKey = import.meta.env.VITE_APP_GEOAPIFY_API_KEY; // Get an API Key on https://myprojects.geoapify.com
+  const map = useMap();
   const [ocorrencias, setOcorrencias] = useState([]);
-  const [marker, setMarker] = useState(L.marker(initialCenter));
+  //const [marker, setMarker] = useState(L.marker(initialCenter));
+  let marker = null;
 
   if (ocorrencias) {
     let icon = L.icon({
@@ -49,57 +50,68 @@ const Map = ({ apiKey }) => {
       }
     });
   }
-  const provider = new MapBoxProvider({
-    params: {
-      access_token: apiKey,
+
+  // Add Geoapify Address Search control
+  const addressSearchControl = L.control.addressSearch(myAPIKey, {
+    position: "topright",
+    className: "custom-address-field", // add a custom class name
+    lang: "pt",
+    placeholder: "Digite um endereço aqui",
+    noResultsPlaceholder: "Nenhum resultado encontrado",
+    resultCallback: (address) => {
+      if (marker) {
+        marker.remove();
+      }
+
+      if (!address) {
+        return;
+      }
+
+      marker = L.marker([address.lat, address.lon]).addTo(map);
+      if (
+        address.bbox &&
+        address.bbox.lat1 !== address.bbox.lat2 &&
+        address.bbox.lon1 !== address.bbox.lon2
+      ) {
+        map.fitBounds(
+          [
+            [address.bbox.lat1, address.bbox.lon1],
+            [address.bbox.lat2, address.bbox.lon2],
+          ],
+          { padding: [100, 100] }
+        );
+      } else {
+        map.setView([address.lat, address.lon], 15);
+      }
+    },
+    suggestionsCallback: (suggestions) => {
+      //console.log(suggestions);
     },
   });
-
-  const searchControl = new GeoSearchControl({
-    provider: provider,
-    searchLabel: "Insira o endereço",
-    notFoundMessage: "Não encontrado. Insira na ordem 'Rua, Bairro, Cidade'.",
-    style: "bar",
-    showMarker: false,
-    //keepResult: true
-  });
-
-  useMapEvent("click", (e) => {
-    if (marker) {
-      marker.removeFrom(map);
-      marker.setLatLng(e.latlng);
-      marker.addTo(map);
-    } /*  else {
-      map.addLayer(L.marker(e.latlng));
-      setMarker(L.marker(e.latlng));
-    } */
-  });
-
   useEffect(() => {
     axios.get("http://localhost:8082/api/ocorrencia").then((r) => {
       setOcorrencias(r.data);
     });
-    map.addControl(searchControl);
-    return () => map.removeControl(searchControl);
+    map.addControl(addressSearchControl);
+    return () => map.removeControl(addressSearchControl);
   }, []);
 
   return null;
 };
 
-const NewMap = () => {
+const OcorrenciasMap = () => {
   return (
     <>
       <MapContainer
         center={initialCenter}
-        zoom={13}
+        zoom={10}
         style={{ height: "60vh", width: "60vh" }}
       >
-        {/* <Map apiKey={import.meta.env.VITE_APP_MAPBOX_GEOSEARCH_API_TOKEN} /> */}
-        <Map apiKey={import.meta.env.VITE_APP_GEOAPIFY_API_KEY} />
+        <Map />
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       </MapContainer>
     </>
   );
 };
 
-export default NewMap;
+export default OcorrenciasMap;

@@ -186,3 +186,25 @@ table {
 /* .leaflet-default-icon-path {
   background-image: url(https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png);
 } */
+
+.leaflet-bar.custom-address-field {
+  border: 5px solid #ff5722;
+  border-radius: 10px;
+  background-color: #fff;
+}
+
+.custom-address-field .geoapify-address-input {
+  line-height: 36px;
+  height: 36px;
+  font-size: 16px;
+  
+}
+
+.custom-address-field .geoapify-clear-button {
+  height: 36px;
+}
+
+.custom-address-field .address {
+  font-size: 14px;
+}
+      

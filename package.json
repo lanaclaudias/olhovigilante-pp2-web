@@ -13,6 +13,7 @@
     "@chakra-ui/react": "^2.8.1",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@geoapify/leaflet-address-search-plugin": "^1.0.2",
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
     "@mapbox/search-js-react": "^1.0.0-beta.18",
