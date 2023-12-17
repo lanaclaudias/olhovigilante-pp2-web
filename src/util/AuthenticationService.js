@@ -1,6 +1,6 @@
 import axios from "axios";
 import { notifyError } from "./Util";
-import { redirect } from "react-router-dom";
+import { redirect, useNavigate } from "react-router-dom";
 
 export const TOKEN_SESSION_ATTRIBUTE_NAME = "token";
 export const EXPIRATION_SESSION_ATTRIBUTE_NAME = "expiration";
@@ -42,6 +42,8 @@ export const createJWTToken = (token) => {
 export const logout = () => {
   localStorage.clear();
   delete axios.defaults.headers.common["Authorization"];
+  const navigate = useNavigate();
+  navigate(0);
   /* redirect("/"); */
 };
 

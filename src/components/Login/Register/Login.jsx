@@ -57,7 +57,7 @@ function FormLogin() {
           Login
         </h2>
         <label htmlFor="" className="block text-black font-bold">
-          email
+          Email
         </label>
         <input
           id="email"

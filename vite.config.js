@@ -18,6 +18,19 @@ export default defineConfig(({ command, mode }) => {
         }, */
       },
     },
+    preview: {
+      host: true, //"127.0.0.1",
+      port: 5173,
+      proxy: {
+        "/v1": "https://api.geoapify.com",
+        /* "/api": {
+          target: "https://api.geoapify.com",
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, ""),
+        }, */
+      },
+      strictPort: true,
+    },
     build: {
       assetsDir: "assets",
     },

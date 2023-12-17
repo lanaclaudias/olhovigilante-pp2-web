@@ -5,7 +5,7 @@ const DeletarOcorrencia = ({ idOcorr, ocorrs, setOcorrList, usuario }) => {
   const handleClick = (e) => {
     e.stopPropagation();
     //console.log(ocorrs[0].usuario.id)
-    console.log("Stored id: ", localStorage.id, "\n User id: ", usuario.id);
+    /* console.log("Stored id: ", localStorage.id, "\n User id: ", usuario.id); */
     let url = `http://localhost:8082/api/ocorrencia/${idOcorr}`;
     axios
       .delete(url)
@@ -17,7 +17,6 @@ const DeletarOcorrencia = ({ idOcorr, ocorrs, setOcorrList, usuario }) => {
       .catch((err) => notifyError("Erro ao apagar a ocorrência"));
   };
   return (
-    /* ocorrs.userId && */
     parseInt(localStorage.id) === usuario.id && (
       <button
         className="w-5 h-[1.4em] bg-trash-icon hover:bg-trash-hover-icon"
