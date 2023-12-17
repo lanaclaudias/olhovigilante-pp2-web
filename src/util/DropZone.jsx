@@ -76,7 +76,7 @@ const DropZone = ({ onUpload }) => (
                 }) */
         // Alternativa: fazer as requisições na API de midia diretamente por aqui e retornar os valores para componente pai
       }
-      onComplete={(elem) => console.log("onComplete: ", elem)}
+      /* onComplete={(elem) => console.log("onComplete: ", elem)} */
       width="560px"
       height="260px"
     />

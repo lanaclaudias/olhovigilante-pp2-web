@@ -240,13 +240,13 @@ const Ocorrencia = () => {
       const ocorrenciasFiltradas = ocorrenciasOriginais.filter((ocorrencia) => {
         return valor === ocorrencia.bairro.toLowerCase();
       });
-      console.log(ocorrenciasFiltradas);
+      //console.log(ocorrenciasFiltradas);
       setOcorrencias(ocorrenciasFiltradas);
     }
   };
 
   const cancelFiltro = () => {
-    console.log(bairroRef.current);
+    //console.log(bairroRef.current);
     setSelectedBairro("Selecione");
     bairroRef.current.value = selectedBairro;
     setOcorrencias(ocorrenciasOriginais); // Reset to original occurrences
@@ -302,7 +302,7 @@ const Ocorrencia = () => {
       })
       .catch((err) => {
         setTipoOcorrenciaLista([{ nome: "Lista Vazia" }]);
-        console.log("Nenhuma categoria de ocorrência encontrada.");
+        notifyError("Nenhuma categoria de ocorrência encontrada.");
       });
   }, [tipoOcorrenciaLista]);
 
@@ -315,7 +315,7 @@ const Ocorrencia = () => {
         //console.log(ocorrencias);
       })
       .catch((err) => {
-        console.log(err);
+        notifyError("Erro ao carregar a lista de ocorrências");
       });
   }, [ocorrencias]);
 
@@ -351,7 +351,8 @@ const Ocorrencia = () => {
           import.meta.env.VITE_APP_GEOAPIFY_API_KEY
         }`,
         {
-          withCredentials: false
+          /* withCredentials: false, */
+          headers: {},
         }
       )
       .then((result) => {
@@ -401,7 +402,7 @@ const Ocorrencia = () => {
             notifySuccess("Ocorrencia cadastrada com sucesso.");
           })
           .catch((err) => {
-            notifyError("Falha ao cadastrar a ocorrência.", err.message);
+            notifyError("Falha ao cadastrar a ocorrência. Verifique os dados informados e a região selecionada no mapa", err.message);
           });
       })
       .catch((error) =>

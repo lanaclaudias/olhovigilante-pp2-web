@@ -9,6 +9,7 @@ import MapDemo from "./MapDemo";
 import NewMap from "./NewMap";
 import GeoapifyMap from "./GeoapifyMap";
 import { ProtectedRoute } from "./util/ProtectedRoute";
+import { LoggedInRouting } from "./util/LoggedInRouting";
 import Comunidade from "./Comunidade";
 import FileUploader from "./util/FileUploader";
 import DropZone from "./util/DropZone";
@@ -18,7 +19,14 @@ function Rotas() {
     <>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="login" element={<Login />} />
+        <Route
+          path="login"
+          element={
+            <LoggedInRouting>
+              <Login />
+            </LoggedInRouting>
+          }
+        />
         <Route path="cadastro" element={<Cadastro />} />
         <Route path="ocorrencia" element={<Ocorrencia />} />
         <Route

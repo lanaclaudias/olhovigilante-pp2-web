@@ -7,7 +7,7 @@ import { memo, useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
 import { getUserId } from "../../util/AuthenticationService";
-import { notifyError } from "../../util/Util";
+import { notifyError, notifySuccess } from "../../util/Util";
 
 const Perfil = () => {
   const [showModal, setShowModal] = useState(false);
@@ -59,12 +59,13 @@ const Perfil = () => {
     axios
       .put(`http://localhost:8082/api/usuario/${userId}`, usuarioRequest)
       .then((res) => {
-        console.log(res.status);
+        //console.log(res.status);
+        notifySuccess("Perfil atualizado com sucesso")
         setShowModal(false);
         setUser(res.data);
         getUser();
       })
-      .catch((err) => console.log(err));
+      .catch((err) => notifyError("Erro ao atualizar o perfil"));
   };
 
   useEffect(() => {

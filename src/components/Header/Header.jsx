@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useLocation, Link, useNavigate, redirect } from "react-router-dom";
+import { useLocation, Link, useNavigate, redirect, Navigate } from "react-router-dom";
 import logo from "/mini-logo.png";
 import { isUserLoggedIn, logout } from "../../util/AuthenticationService";
 
@@ -67,6 +67,7 @@ const Header = () => {
   const handleLogout = () => {
     //userState(!userState);
     logout();
+    //<Navigate to={"/"} />
     redirect("/");
   };
 
