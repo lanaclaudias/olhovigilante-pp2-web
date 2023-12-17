@@ -5,6 +5,8 @@ import axios from "axios";
 import { GeoSearchControl, MapBoxProvider } from "leaflet-geosearch";
 import { MapContainer, useMap, TileLayer } from "react-leaflet";
 import L from "leaflet";
+
+// Missing default leaflet icon production build fix
 delete L.Icon.Default.prototype._getIconUrl;
 import retinaIcon from "leaflet/dist/images/marker-icon-2x.png";
 import icnUrl from "leaflet/dist/images/marker-icon.png";
@@ -14,6 +16,7 @@ L.Icon.Default.mergeOptions({
   iconUrl: icnUrl,
   shadowUrl: shadowUrl,
 });
+
 import {
   isUserLoggedIn,
   getUserId,
@@ -341,9 +344,11 @@ const Ocorrencia = () => {
     //console.log("midiasArr: ", midiasArr);
     e.preventDefault();
     // console.log(reportMarker.getLatLng().lng)
+    //axios.defaults.headers.get['Access-Control-Allow-Origin'] = '*';
+    //let targetUrl = "https://api.geoapify.com";
     axios
       .get(
-        `https://api.geoapify.com/v1/geocode/reverse?lat=${
+        `http://localhost:5173/v1/geocode/reverse?lat=${
           reportMarker.getLatLng().lat
         }&lon=${
           reportMarker.getLatLng().lng
@@ -523,6 +528,7 @@ const Ocorrencia = () => {
                   dataHoraOcorrencia,
                   hora,
                   avaliacao,
+                  usuario
                 }) => {
                   return (
                     <div
@@ -560,6 +566,7 @@ const Ocorrencia = () => {
                             idOcorr={id}
                             ocorrs={ocorrencias}
                             setOcorrList={setOcorrencias}
+                            usuario={usuario}
                           />
                         </div>
                       </div>
