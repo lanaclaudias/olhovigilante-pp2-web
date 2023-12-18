@@ -123,12 +123,8 @@ const Ocorrencia = () => {
   const [ocorrencias, setOcorrencias] = useState([]);
   const [midiasArr, setMidiasArr] = useState([]);
 
-  const [ocorrenciasFiltradas, setOcorrenciasFiltradas] = useState([]);
   const [ocorrenciasOriginais, setOcorrenciasOriginais] = useState([]);
-  const bairroRef = useRef();
-  const [timer, setTimer] = useState(null);
-  const [selectedBairro, setSelectedBairro] = useState("");
-  const inputFiltro = useRef();
+  const [bairroSelecionado, setBairroSelecionado] = useState("Selecione");
   /* Mapa */ // Investigar bug na reatividade dos mapas durante interação com os campos do formulário
   const Map = ({ apiKey }) => {
     const initialCenter = [-8.063153, -34.87114];
@@ -208,45 +204,6 @@ const Ocorrencia = () => {
 
     return null;
   };
-
-  const selectBairro = (valor) => {
-    if (!valor) {
-      setOcorrencias(ocorrenciasOriginais);
-    } else {
-      const ocorrenciasFiltradas = ocorrenciasOriginais.filter((ocorrencia) => {
-        return valor === ocorrencia.bairro.toLowerCase();
-      });
-      setOcorrencias(ocorrenciasFiltradas);
-    }
-  };
-
-  const cancelFiltro = () => {
-    setSelectedBairro("Selecione");
-    bairroRef.current.value = selectedBairro;
-    setOcorrencias(ocorrenciasOriginais); // Reset to original occurrences
-  };
-
-  // const debounce = (func, delay) => {
-  //   clearTimeout(timer);
-  //   setTimer(setTimeout(func, delay));
-  // };
-
-  // const buscarPorBairro = () => {
-  //   const termoFiltro = inputFiltro.current.value.toLowerCase();
-  //   if (termoFiltro === "") {
-  //     setOcorrencias(ocorrenciasOriginais);
-  //   } else {
-  //     const ocorrenciasFiltradas = ocorrenciasOriginais.filter((ocorrencia) => {
-  //       return termoFiltro === ocorrencia.bairro.toLowerCase();
-  //     });
-
-  //     setOcorrencias(ocorrenciasFiltradas);
-  //   }
-  // };
-
-  // const handleInputChange = () => {
-  //   debounce(buscarPorBairro, 300); // Ajuste o tempo de debounce conforme necessário (300ms neste exemplo)
-  // };
 
   const MyMap = () => {
     return (
@@ -349,14 +306,6 @@ const Ocorrencia = () => {
       });
   };
 
-  // const getTipoOcorrencias = () => {
-  //   console.log(categorias);
-  // };
-
-  // useEffect(() => {
-  //   getTipoOcorrencias();
-  // }, []);
-
   const [ocorrenciaUnica, setOcorrenciaUnica] = useState();
 
   const handleClickOcorrencia = (id) => {
@@ -365,6 +314,20 @@ const Ocorrencia = () => {
       .then((response) => setOcorrenciaUnica(response.data))
       .catch((error) => notifyError(error.message));
     setShowModalOcorrencia(true);
+  };
+
+  const [ocorrenciasCopy, setOcorrenciasCopy] = useState([]);
+  const filtro = (valor) => {
+    setBairroSelecionado(valor);
+    const ocorrenciasFiltradas = ocorrencias.filter((ocorrencia) => {
+      return ocorrencia.bairro.toLowerCase() == valor.toLowerCase();
+    });
+    setOcorrenciasCopy(ocorrenciasFiltradas);
+  };
+
+  const cancelFiltro = () => {
+    setBairroSelecionado("selecione");
+    setOcorrenciasCopy([]);
   };
 
   return (
@@ -394,15 +357,16 @@ const Ocorrencia = () => {
           <div className="flex space-x-4 justify-end pr-4">
             <div className="relative h-10 min-w-[200px]">
               <select
-                onChange={(e) => selectBairro(e.target.value)}
                 className="peer h-full w-full rounded-[7px] border border-blue-gray-200 border-t-transparent bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 empty:!bg-gray-900 focus:border-2 focus:border-gray-900 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+                value={bairroSelecionado}
+                onChange={(e) => filtro(e.target.value)}
               >
-                <option ref={bairroRef} value="selecione">
-                  Selecione
-                </option>
-                <option value="cavaleiro">Cavaleiro</option>
-                <option value="boa viagem">Boa Viagem</option>
-                <option value="vila rica">Vila Rica</option>
+                <option value="selecione">Selecione</option>
+                {ocorrencias.map(({ bairro }, id) => (
+                  <option key={id} value={bairro}>
+                    {bairro}
+                  </option>
+                ))}
               </select>
               <label className="before:content[' '] after:content[' '] pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none text-[11px] font-normal leading-tight text-blue-gray-400 transition-all before:pointer-events-none before:mt-[6.5px] before:mr-1 before:box-border before:block before:h-1.5 before:w-2.5 before:rounded-tl-md before:border-t before:border-l before:border-blue-gray-200 before:transition-all after:pointer-events-none after:mt-[6.5px] after:ml-1 after:box-border after:block after:h-1.5 after:w-2.5 after:flex-grow after:rounded-tr-md after:border-t after:border-r after:border-blue-gray-200 after:transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-blue-gray-500 peer-placeholder-shown:before:border-transparent peer-placeholder-shown:after:border-transparent peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-gray-900 peer-focus:before:border-t-2 peer-focus:before:border-l-2 peer-focus:before:border-gray-900 peer-focus:after:border-t-2 peer-focus:after:border-r-2 peer-focus:after:border-gray-900 peer-disabled:text-transparent peer-disabled:before:border-transparent peer-disabled:after:border-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
                 Selecione um bairro
@@ -417,59 +381,50 @@ const Ocorrencia = () => {
             {/* Mapa listando todas as ocorrências */}
             <MyMap />
           </div>
+
           {/* Listagem de Ocorrências */}
-          {ocorrenciasFiltradas != [] ? (
-            <div className="flex-1 hover:cursor-pointer">
-              {ocorrencias.map(
-                ({ id, categoria, bairro, cidade, dataHoraOcorrencia }) => {
-                  return (
-                    <div
-                      onClick={() => handleClickOcorrencia(id)}
-                      key={id}
-                      className="mt-4 bg-blue-100 hover:bg-blue-200 p-4 rounded border font border-gray-300 flex flex-col"
-                    >
-                      <p className="font-semibold">{categoria.nome}</p>
-                      <div className="flex gap-4 justify-between">
-                        <p className="text-gray-600">
-                          {bairro}, {cidade}
-                        </p>
-                        <p className="text-gray-600">{dataHoraOcorrencia}</p>
-                      </div>
+          <div className="flex-1 hover:cursor-pointer">
+            {ocorrenciasCopy.length == 0
+              ? ocorrencias.map((ocorrencia, id) => (
+                  <div
+                    key={id}
+                    onClick={() => handleClickOcorrencia(ocorrencia.id)}
+                    className="mt-4 bg-blue-100 hover:bg-blue-200 p-4 rounded border font border-gray-300 flex flex-col"
+                  >
+                    <p className="font-semibold">{ocorrencia.categoria.nome}</p>
+                    <div className="flex gap-4 justify-between">
+                      <p className="text-gray-600">
+                        {ocorrencia.bairro}, {ocorrencia.cidade}
+                      </p>
+                      <p className="text-gray-600">
+                        {ocorrencia.dataHoraOcorrencia}
+                      </p>
                     </div>
-                  );
-                }
-              )}
-            </div>
-          ) : (
-            <div className="flex-1 bg-blue-100 hover:bg-blue-200 hover:cursor-pointer">
-              {ocorrenciasFiltradas &&
-                ocorrenciasFiltradas.map(
-                  ({ id, categoria, bairro, cidade, dataHoraOcorrencia }) => {
-                    return (
-                      <div
-                        onClick={() => handleClickOcorrencia(id)}
-                        key={id}
-                        className="mt-4 p-4 rounded border font border-gray-300 flex flex-col"
-                      >
-                        <p className="font-semibold">{categoria.nome}</p>
-                        <div className="flex gap-4 justify-between">
-                          <p className="text-gray-600">
-                            {bairro}, {cidade}
-                          </p>
-                          <p className="text-gray-600">{dataHoraOcorrencia}</p>
-                        </div>
-                      </div>
-                    );
-                  }
-                )}
-            </div>
-          )}
+                  </div>
+                ))
+              : ocorrenciasCopy.map((ocorrencia, id) => (
+                  <div
+                    key={id}
+                    onClick={() => handleClickOcorrencia(ocorrencia.id)}
+                    className="mt-4 bg-blue-100 hover:bg-blue-200 p-4 rounded border font border-gray-300 flex flex-col"
+                  >
+                    <p className="font-semibold">{ocorrencia.categoria.nome}</p>
+                    <div className="flex gap-4 justify-between">
+                      <p className="text-gray-600">
+                        {ocorrencia.bairro}, {ocorrencia.cidade}
+                      </p>
+                      <p className="text-gray-600">
+                        {ocorrencia.dataHoraOcorrencia}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+          </div>
         </div>
       </div>
       {/* MODAL */}
       {showModal ? (
         <div className="flex justify-between">
-          {/* {" "} */}
           <form
             name="ocorrenciaForm"
             id="ocorrenciaForm"
@@ -486,7 +441,7 @@ const Ocorrencia = () => {
                 <h1 className="text-black font-sora text-[24px] font-bold text-center pt-4">
                   NOVA OCORRÊNCIA
                 </h1>
-                <div className="relative p-6 flex-auto">
+                <div className="relative p-6 flex-auto overflow-hidden">
                   {fields.map(
                     ({
                       label,
@@ -501,313 +456,23 @@ const Ocorrencia = () => {
                           {label}
                         </label>
                         {type === "textarea" ? (
-                          (<textarea
+                          <textarea
+                            key={label}
                             placeholder={label}
                             onChange={handleChange}
                             className="border rounded-[6px] p-3 w-full mb-4 text-black"
-                          /> /*: type === "radio" ? (
-                          <div className="flex">
-                            {values.map((value, index) => (
-                              <div key={index} className="mr-4">
-                                <input
-                                  type={type}
-                                  value={value}
-                                  name={label}
-                                  onChange={handleChange}
-                                  className="mr-1"
-                                />
-                                <label htmlFor={value} className="text-black">
-                                  {value}
-                                </label>
-                              </div>
-                            ))}
-                          </div>
-                        ) */ /*: type === "radio" ? (
-                          <div className="flex">
-                            {values.map((value, index) => (
-                              <div key={index} className="mr-4">
-                                <input
-                                  type={type}
-                                  value={value}
-                                  name={label}
-                                  onChange={handleChange}
-                                  className="mr-1"
-                                />
-                                <label htmlFor={value} className="text-black">
-                                  {value}
-                                </label>
-                              </div>
-                            ))}
-                          </div>
-                        ) */ /*: type === "radio" ? (
-                          <div className="flex">
-                            {values.map((value, index) => (
-                              <div key={index} className="mr-4">
-                                <input
-                                  type={type}
-                                  value={value}
-                                  name={label}
-                                  onChange={handleChange}
-                                  className="mr-1"
-                                />
-                                <label htmlFor={value} className="text-black">
-                                  {value}
-                                </label>
-                              </div>
-                            ))}
-                          </div>
-                        ) */ /*: type === "radio" ? (
-                          <div className="flex">
-                            {values.map((value, index) => (
-                              <div key={index} className="mr-4">
-                                <input
-                                  type={type}
-                                  value={value}
-                                  name={label}
-                                  onChange={handleChange}
-                                  className="mr-1"
-                                />
-                                <label htmlFor={value} className="text-black">
-                                  {value}
-                                </label>
-                              </div>
-                            ))}
-                          </div>
-                        ) */ /*: type === "radio" ? (
-                          <div className="flex">
-                            {values.map((value, index) => (
-                              <div key={index} className="mr-4">
-                                <input
-                                  type={type}
-                                  value={value}
-                                  name={label}
-                                  onChange={handleChange}
-                                  className="mr-1"
-                                />
-                                <label htmlFor={value} className="text-black">
-                                  {value}
-                                </label>
-                              </div>
-                            ))}
-                          </div>
-                        ) */ /*: type === "radio" ? (
-                          <div className="flex">
-                            {values.map((value, index) => (
-                              <div key={index} className="mr-4">
-                                <input
-                                  type={type}
-                                  value={value}
-                                  name={label}
-                                  onChange={handleChange}
-                                  className="mr-1"
-                                />
-                                <label htmlFor={value} className="text-black">
-                                  {value}
-                                </label>
-                              </div>
-                            ))}
-                          </div>
-                        ) */ /*: type === "radio" ? (
-                          <div className="flex">
-                            {values.map((value, index) => (
-                              <div key={index} className="mr-4">
-                                <input
-                                  type={type}
-                                  value={value}
-                                  name={label}
-                                  onChange={handleChange}
-                                  className="mr-1"
-                                />
-                                <label htmlFor={value} className="text-black">
-                                  {value}
-                                </label>
-                              </div>
-                            ))}
-                          </div>
-                        ) */ /*: type === "radio" ? (
-                          <div className="flex">
-                            {values.map((value, index) => (
-                              <div key={index} className="mr-4">
-                                <input
-                                  type={type}
-                                  value={value}
-                                  name={label}
-                                  onChange={handleChange}
-                                  className="mr-1"
-                                />
-                                <label htmlFor={value} className="text-black">
-                                  {value}
-                                </label>
-                              </div>
-                            ))}
-                          </div>
-                        ) */ /*: type === "radio" ? (
-                          <div className="flex">
-                            {values.map((value, index) => (
-                              <div key={index} className="mr-4">
-                                <input
-                                  type={type}
-                                  value={value}
-                                  name={label}
-                                  onChange={handleChange}
-                                  className="mr-1"
-                                />
-                                <label htmlFor={value} className="text-black">
-                                  {value}
-                                </label>
-                              </div>
-                            ))}
-                          </div>
-                        ) */ /*: type === "radio" ? (
-                          <div className="flex">
-                            {values.map((value, index) => (
-                              <div key={index} className="mr-4">
-                                <input
-                                  type={type}
-                                  value={value}
-                                  name={label}
-                                  onChange={handleChange}
-                                  className="mr-1"
-                                />
-                                <label htmlFor={value} className="text-black">
-                                  {value}
-                                </label>
-                              </div>
-                            ))}
-                          </div>
-                        ) */ /*: type === "radio" ? (
-                          <div className="flex">
-                            {values.map((value, index) => (
-                              <div key={index} className="mr-4">
-                                <input
-                                  type={type}
-                                  value={value}
-                                  name={label}
-                                  onChange={handleChange}
-                                  className="mr-1"
-                                />
-                                <label htmlFor={value} className="text-black">
-                                  {value}
-                                </label>
-                              </div>
-                            ))}
-                          </div>
-                        ) */ /*: type === "radio" ? (
-                          <div className="flex">
-                            {values.map((value, index) => (
-                              <div key={index} className="mr-4">
-                                <input
-                                  type={type}
-                                  value={value}
-                                  name={label}
-                                  onChange={handleChange}
-                                  className="mr-1"
-                                />
-                                <label htmlFor={value} className="text-black">
-                                  {value}
-                                </label>
-                              </div>
-                            ))}
-                          </div>
-                        ) */ /*: type === "radio" ? (
-                          <div className="flex">
-                            {values.map((value, index) => (
-                              <div key={index} className="mr-4">
-                                <input
-                                  type={type}
-                                  value={value}
-                                  name={label}
-                                  onChange={handleChange}
-                                  className="mr-1"
-                                />
-                                <label htmlFor={value} className="text-black">
-                                  {value}
-                                </label>
-                              </div>
-                            ))}
-                          </div>
-                        ) */ /*: type === "radio" ? (
-                          <div className="flex">
-                            {values.map((value, index) => (
-                              <div key={index} className="mr-4">
-                                <input
-                                  type={type}
-                                  value={value}
-                                  name={label}
-                                  onChange={handleChange}
-                                  className="mr-1"
-                                />
-                                <label htmlFor={value} className="text-black">
-                                  {value}
-                                </label>
-                              </div>
-                            ))}
-                          </div>
-                        ) */ /*: type === "radio" ? (
-                          <div className="flex">
-                            {values.map((value, index) => (
-                              <div key={index} className="mr-4">
-                                <input
-                                  type={type}
-                                  value={value}
-                                  name={label}
-                                  onChange={handleChange}
-                                  className="mr-1"
-                                />
-                                <label htmlFor={value} className="text-black">
-                                  {value}
-                                </label>
-                              </div>
-                            ))}
-                          </div>
-                        ) */ /*: type === "radio" ? (
-                          <div className="flex">
-                            {values.map((value, index) => (
-                              <div key={index} className="mr-4">
-                                <input
-                                  type={type}
-                                  value={value}
-                                  name={label}
-                                  onChange={handleChange}
-                                  className="mr-1"
-                                />
-                                <label htmlFor={value} className="text-black">
-                                  {value}
-                                </label>
-                              </div>
-                            ))}
-                          </div>
-                        ) */ /*: type === "radio" ? (
-                          <div className="flex">
-                            {values.map((value, index) => (
-                              <div key={index} className="mr-4">
-                                <input
-                                  type={type}
-                                  value={value}
-                                  name={label}
-                                  onChange={handleChange}
-                                  className="mr-1"
-                                />
-                                <label htmlFor={value} className="text-black">
-                                  {value}
-                                </label>
-                              </div>
-                            ))}
-                          </div>
-                        ) */)
+                          />
                         ) : type === "file" ? (
                           //< FileUploader />
-                          <DropZone
-                            onUpload={handleUpload}
-                            ocorrenciaId={ocorrenciaId}
-                          />
-                        ) : /* <input
-                              type="file"
-                              onChange={handleChange}
-                              className="border rounded-[6px] p-3 w-full mb-4 text-black"
-                            /> */
-                        type === "select" ? (
+                          <div key={label} className="flex justify-center">
+                            <DropZone
+                              onUpload={handleUpload}
+                              ocorrenciaId={ocorrenciaId}
+                            />
+                          </div>
+                        ) : type === "select" ? (
                           <TipoOcorrenciaSelect
+                            key={label}
                             lista={tipoOcorrenciaLista}
                             className="border rounded-[6px] p-3 w-full mb-4 text-black"
                             handleChange={handleChange}
@@ -815,6 +480,7 @@ const Ocorrencia = () => {
                           />
                         ) : (
                           <input
+                            key={label}
                             type={type}
                             placeholder={label}
                             onChange={handleChange}
@@ -825,9 +491,10 @@ const Ocorrencia = () => {
                       </div>
                     )
                   )}
-                  {/* Mapa de Registro de Ocorrência */}
-                  <MyMap />
                 </div>
+                {/* Mapa de Registro de Ocorrência */}
+                {/* <MyMap /> */}
+                {/* <NovaOcorrenciaMap setReportMarker={setReportMarker} /> */}
                 {/*footer*/}
                 <div className="flex gap-[20px] items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b text-white">
                   <button
