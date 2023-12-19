@@ -72,13 +72,9 @@ const Abas = ({ color }) => {
             <div className="px-4 py-5">
               <div className="tab-content tab-space">
                 <div className={openTab === 1 ? "block" : "hidden"} id="link1">
-                  <p className="text-black">
-                    Collaboratively administrate empowered markets via
-                    plug-and-play networks. Dynamically procrastinate B2C users
-                    after installed base benefits.
-                    <br />
-                    <br /> Dramatically visualize customer directed convergence
-                    without revolutionary ROI.
+                  <p className="text-red-600 text-center">
+                    <strong>[INCOMPLETO] Espaço dedicado aos comentários feitos pelo
+                    usuário.</strong>
                   </p>
                 </div>
                 <div className={openTab === 2 ? "block" : "hidden"} id="link2">
@@ -88,23 +84,20 @@ const Abas = ({ color }) => {
                       // key={id}
                       className="mt-4 p-4 rounded border font border-gray-300 flex flex-col"
                     >
-                      <p className="font-semibold">nome</p>
+                      {/* <p className="font-semibold">nome</p>
                       <div className="flex gap-4 justify-between">
                         <p className="text-gray-600">bairro</p>
                         <p className="text-gray-600">data</p>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
+                  <p className="text-red-600 text-center">
+                    <strong>[INCOMPLETO] Espaço dedicado às ocorrências registradas pelo
+                    usuário.</strong></p>
                 </div>
                 <div className={openTab === 3 ? "block" : "hidden"} id="link3">
-                  <p className="text-black">
-                    Efficiently unleash cross-media information without
-                    cross-media value. Quickly maximize timely deliverables for
-                    real-time schemas.
-                    <br />
-                    <br /> Dramatically maintain clicks-and-mortar solutions
-                    without functional solutions.
-                  </p>
+                <p className="text-red-600 text-center">
+                    <strong>[INCOMPLETO] Espaço dedicado à lista de seguidores do usuário.</strong></p>
                 </div>
               </div>
             </div>
