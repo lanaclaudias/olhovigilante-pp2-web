@@ -24,9 +24,9 @@ export const Footer = () => (
             <a href="/comunidade">
               <p>Comunidade</p>
             </a>
-            <a href="/denunciar">
+            {/* <a href="/denunciar">
               <p>Onde Denunciar</p>
-            </a>
+            </a> */}
           </div>
         </div>
 
