@@ -27,7 +27,14 @@ function Rotas() {
             </LoggedInRouting>
           }
         />
-        <Route path="cadastro" element={<Cadastro />} />
+        <Route
+          path="cadastro"
+          element={
+            <LoggedInRouting>
+              <Cadastro />
+            </LoggedInRouting>
+          }
+        />
         <Route path="ocorrencia" element={<Ocorrencia />} />
         <Route
           path="perfil"

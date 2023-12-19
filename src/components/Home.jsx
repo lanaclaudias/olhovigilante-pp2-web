@@ -37,7 +37,7 @@ const Home = () => {
           </div>
         </div>
 
-        <div className={`bg-sky-950 pt-[70px] pb-1`}>
+        {/* <div className={`bg-sky-950 pt-[70px] pb-1`}>
           <div className="container">
             <p className="text-white w-[599px] text-left text-[35px] font-bold pb-4">
               Como Podemos te Ajudar?
@@ -79,7 +79,7 @@ const Home = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
         <Footer />
         </div>
     </>

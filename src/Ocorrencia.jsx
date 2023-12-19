@@ -455,9 +455,9 @@ const Ocorrencia = () => {
       <div className="container">
         <div className="flex space-x-4 justify-between items-center mt-6">
           <div className="flex gap-10">
-            <button className="bg-black text-white font-bold py-2 px-4 rounded">
+            {/* <button className="bg-black text-white font-bold py-2 px-4 rounded">
               Minhas Ocorrências
-            </button>
+            </button> */}
             <button
               onClick={() => {
                 //console.log(usuarioId)
