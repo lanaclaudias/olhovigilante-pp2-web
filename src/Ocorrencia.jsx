@@ -32,10 +32,13 @@ import DropZone from "./util/DropZone";
 import { Footer } from "./Footer";
 import VoteOcorrencia from "./VoteOcorrencia";
 import DeletarOcorrencia from "./DeletarOcorrencia";
-import NovaOcorrenciaModal from "./NovaOcorrenciaModal";
+/* import NovaOcorrenciaForm from "./NovaOcorrenciaForm"; */
 import NewMap from "./NewMap";
 import OcorrenciasMap from "./OcorrenciasMap";
 import NovaOcorrenciaMap from "./NovaOcorrenciaMap";
+
+import * as TestData from "./util/TestData";
+import { useNavigate } from "react-router-dom";
 
 const TipoOcorrenciaSelect = (props) => {
   return (
@@ -277,6 +280,25 @@ const Ocorrencia = () => {
       });
   }, [tipoOcorrenciaLista]);
 
+  const getUsuarios = React.useCallback(() => {
+    axios.get("http://localhost:8082/api/ocorrencia").then((res) => {
+      // Usuários
+      TestData.usuariosIniciais.map((elem) => {
+        const usuarioRequestInicial = elem;
+        //console.log(usuarioRequestInicial);
+        axios
+          .post("http://localhost:8082/api/usuario", usuarioRequestInicial)
+          .then((response) => {
+            notifySuccess("Usuários iniciais carregados com sucesso.");
+          })
+          .catch((err) => {
+            notifyError("Falha ao carregar os usuários iniciais.", err.message);
+            //navigate("/");
+          });
+      });
+    });
+  });
+
   const getOcorrencias = React.useCallback(() => {
     axios
       .get("http://localhost:8082/api/ocorrencia")
@@ -284,12 +306,51 @@ const Ocorrencia = () => {
         setOcorrencias(res.data);
         setOcorrenciasOriginais(res.data);
         //console.log(ocorrencias);
+
+        // Popular tabelas de usuário e ocorrência
+        /* if (res.data.length == 0) {
+          // Ocorrências
+          TestData.ocorrenciasIniciais.map((elem) => {
+            const ocorrenciaRequestInicial = elem;
+            //console.log(ocorrenciaRequestInicial);
+            axios
+              .post(
+                "http://localhost:8082/api/ocorrencia",
+                ocorrenciaRequestInicial
+              )
+              .then((response) => {
+                // midiasArr.map(({ fileUrl }) => {
+                //   const midiaRequest = {
+                //     ocorrenciaId: response.data.id,
+                //     midiaUrl: fileUrl,
+                //   };
+                //   axios
+                //     .post("http://localhost:8082/api/midia", midiaRequest)
+                //     .then((res) => {
+                //       //console.log("Midia cadastrada: ", res.data)
+                //     })
+                //     .catch((err) => notifyError("Falha no upload dos arquivos."));
+                // });
+                setOcorrencias([...ocorrencias, response.data]);
+                notifySuccess("Ocorrencia iniciais carregadas com sucesso.");
+                //navigate("/");
+              })
+              .catch((err) => {
+                notifyError(
+                  "Falha ao carregar as ocorrências iniciais.",
+                  err.message
+                );
+                //navigate("/");
+              });
+          });
+        } */
       })
       .catch((err) => {
         notifyError("Erro ao carregar a lista de ocorrências");
       });
   }, [ocorrencias]);
 
+  const navigate = useNavigate();
   useEffect(
     () => {
       getCategoriasOcorrencias();
