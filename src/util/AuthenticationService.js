@@ -74,7 +74,7 @@ export const getUserId = () => {
   let userid = 0;
   if (token === null) return "";
   return axios
-    .get(`http://localhost:8082/api/usuario/u/${username}`)
+    .get(`/api/usuario/u/${username}`)
     .then((res) => {
       //userid = res.data;
       //console.log(userid)

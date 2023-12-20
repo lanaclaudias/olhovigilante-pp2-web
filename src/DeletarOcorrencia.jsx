@@ -6,7 +6,7 @@ const DeletarOcorrencia = ({ idOcorr, ocorrs, setOcorrList, usuario }) => {
     e.stopPropagation();
     //console.log(ocorrs[0].usuario.id)
     /* console.log("Stored id: ", localStorage.id, "\n User id: ", usuario.id); */
-    let url = `http://localhost:8082/api/ocorrencia/${idOcorr}`;
+    let url = `/api/ocorrencia/${idOcorr}`;
     axios
       .delete(url)
       .then((res) => {

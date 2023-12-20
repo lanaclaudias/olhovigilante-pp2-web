@@ -25,7 +25,7 @@ const Perfil = () => {
 
   const getUser = () => {
     axios
-      .get(`http://localhost:8082/api/usuario/${userId}`)
+      .get(`/api/usuario/${userId}`)
       .then((res) => {
         //console.log(res.data);
         setUser(res.data);
@@ -57,7 +57,7 @@ const Perfil = () => {
     };
 
     axios
-      .put(`http://localhost:8082/api/usuario/${userId}`, usuarioRequest)
+      .put(`/api/usuario/${userId}`, usuarioRequest)
       .then((res) => {
         //console.log(res.status);
         notifySuccess("Perfil atualizado com sucesso");

@@ -268,10 +268,10 @@ const Ocorrencia = () => {
 
   const getCategoriasOcorrencias = React.useCallback(() => {
     axios
-      .get("http://localhost:8082/api/categoriaocorrencia")
+      .get("/api/categoriaocorrencia")
       .then((res) => {
         setTipoOcorrenciaLista(res.data);
-        /* if(res.data.length == 0) { axios.post("http://localhost:8082/api/categoriaocorrencia/populate")
+        /* if(res.data.length == 0) { axios.post("/api/categoriaocorrencia/populate")
         .then((r) => setTipoOcorrenciaLista(r.data)); } // precisa fazer populate retornar um array com todas as categorias */
       })
       .catch((err) => {
@@ -281,13 +281,13 @@ const Ocorrencia = () => {
   }, [tipoOcorrenciaLista]);
 
   const getUsuarios = React.useCallback(() => {
-    axios.get("http://localhost:8082/api/ocorrencia").then((res) => {
+    axios.get("/api/ocorrencia").then((res) => {
       // Usuários
       TestData.usuariosIniciais.map((elem) => {
         const usuarioRequestInicial = elem;
         //console.log(usuarioRequestInicial);
         axios
-          .post("http://localhost:8082/api/usuario", usuarioRequestInicial)
+          .post("/api/usuario", usuarioRequestInicial)
           .then((response) => {
             notifySuccess("Usuários iniciais carregados com sucesso.");
           })
@@ -301,7 +301,7 @@ const Ocorrencia = () => {
 
   const getOcorrencias = React.useCallback(() => {
     axios
-      .get("http://localhost:8082/api/ocorrencia")
+      .get("/api/ocorrencia")
       .then((res) => {
         setOcorrencias(res.data);
         setOcorrenciasOriginais(res.data);
@@ -315,7 +315,7 @@ const Ocorrencia = () => {
             //console.log(ocorrenciaRequestInicial);
             axios
               .post(
-                "http://localhost:8082/api/ocorrencia",
+                "/api/ocorrencia",
                 ocorrenciaRequestInicial
               )
               .then((response) => {
@@ -325,7 +325,7 @@ const Ocorrencia = () => {
                 //     midiaUrl: fileUrl,
                 //   };
                 //   axios
-                //     .post("http://localhost:8082/api/midia", midiaRequest)
+                //     .post("/api/midia", midiaRequest)
                 //     .then((res) => {
                 //       //console.log("Midia cadastrada: ", res.data)
                 //     })
@@ -377,12 +377,9 @@ const Ocorrencia = () => {
     //let targetUrl = "https://api.geoapify.com";
     axios
       .get(
-        `http://localhost:5173/v1/geocode/reverse?lat=${
-          reportMarker.getLatLng().lat
-        }&lon=${
-          reportMarker.getLatLng().lng
-        }&type=street&lang=pt&limit=1&format=json&apiKey=${
-          import.meta.env.VITE_APP_GEOAPIFY_API_KEY
+        `http://localhost:5173/v1/geocode/reverse?lat=${reportMarker.getLatLng().lat
+        }&lon=${reportMarker.getLatLng().lng
+        }&type=street&lang=pt&limit=1&format=json&apiKey=${import.meta.env.VITE_APP_GEOAPIFY_API_KEY
         }`,
         {
           /* withCredentials: false, */
@@ -414,7 +411,7 @@ const Ocorrencia = () => {
         };
 
         axios
-          .post("http://localhost:8082/api/ocorrencia", ocorrenciaRequest)
+          .post("/api/ocorrencia", ocorrenciaRequest)
           .then((response) => {
             // Nova implementação
             //console.log("midiasArr: ", midiasArr, "\nOcorrencia ID: ", response.data.id)
@@ -424,7 +421,7 @@ const Ocorrencia = () => {
                 midiaUrl: fileUrl,
               };
               axios
-                .post("http://localhost:8082/api/midia", midiaRequest)
+                .post("/api/midia", midiaRequest)
                 .then((res) => {
                   //console.log("Midia cadastrada: ", res.data)
                 })
@@ -460,7 +457,7 @@ const Ocorrencia = () => {
     };
 
     axios
-      .post("http://localhost:8082/api/ocorrencia", ocorrenciaRequest)
+      .post("/api/ocorrencia", ocorrenciaRequest)
       .then((response) => {
         // Nova implementação
         //console.log("midiasArr: ", midiasArr, "\nOcorrencia ID: ", response.data.id)
@@ -470,7 +467,7 @@ const Ocorrencia = () => {
             midiaUrl: fileUrl,
           };
           axios
-            .post("http://localhost:8082/api/midia", midiaRequest)
+            .post("/api/midia", midiaRequest)
             .then((res) => {
               //console.log("Midia cadastrada: ", res.data)
             })
@@ -490,7 +487,7 @@ const Ocorrencia = () => {
 
   const handleClickOcorrencia = (id) => {
     axios
-      .get(`http://localhost:8082/api/ocorrencia/${id}`)
+      .get(`/api/ocorrencia/${id}`)
       .then((response) => setOcorrenciaUnica(response.data))
       .catch((error) => notifyError("Falha na exibição da ocorrência."));
     setShowModalOcorrencia(true);
@@ -568,7 +565,61 @@ const Ocorrencia = () => {
           <div className="flex-1 hover:cursor-pointer">
             {ocorrenciasCopy.length == 0
               ? ocorrencias.map(
-                  ({
+                ({
+                  id,
+                  categoria,
+                  bairro,
+                  cidade,
+                  dataHoraOcorrencia,
+                  hora,
+                  avaliacao,
+                  usuario,
+                }) => (
+                  <div
+                    onClick={() => handleClickOcorrencia(id)}
+                    key={id}
+                    className="mt-4 bg-blue-100 hover:bg-blue-200 p-4 rounded border font border-gray-300 flex flex-col"
+                  >
+                    <p className="font-semibold">{categoria.nome}</p>
+                    {/*-- Avaliação por Votos */}
+                    <VoteOcorrencia
+                      userId={usuarioId}
+                      ocorrId={id}
+                      avaliacao={avaliacao}
+                    />
+                    {/*Avaliação por Votos -- */}
+                    <div className="flex gap-4 justify-around">
+                      <div className="regiao">
+                        <p className="text-gray-600 flex gap-2">
+                          <span className="self-center bg-pin-icon w-4 h-5"></span>
+                          {bairro}
+                          <br />
+                          {cidade}
+                        </p>
+                      </div>
+                      <div className="horario">
+                        <p className="text-gray-600 flex gap-2">
+                          <span className="self-center bg-clock-icon w-4 h-3.5"></span>
+                          {dataHoraOcorrencia}
+                          <br />
+                          {hora}
+                        </p>
+                      </div>
+                      <div className="self-end">
+                        <DeletarOcorrencia
+                          idOcorr={id}
+                          ocorrs={ocorrencias}
+                          setOcorrList={setOcorrencias}
+                          usuario={usuario}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )
+              )
+              : ocorrenciasCopy.map(
+                (
+                    /* ocorrencia, id */ {
                     id,
                     categoria,
                     bairro,
@@ -577,104 +628,50 @@ const Ocorrencia = () => {
                     hora,
                     avaliacao,
                     usuario,
-                  }) => (
-                    <div
-                      onClick={() => handleClickOcorrencia(id)}
-                      key={id}
-                      className="mt-4 bg-blue-100 hover:bg-blue-200 p-4 rounded border font border-gray-300 flex flex-col"
-                    >
-                      <p className="font-semibold">{categoria.nome}</p>
-                      {/*-- Avaliação por Votos */}
-                      <VoteOcorrencia
-                        userId={usuarioId}
-                        ocorrId={id}
-                        avaliacao={avaliacao}
-                      />
-                      {/*Avaliação por Votos -- */}
-                      <div className="flex gap-4 justify-around">
-                        <div className="regiao">
-                          <p className="text-gray-600 flex gap-2">
-                            <span className="self-center bg-pin-icon w-4 h-5"></span>
-                            {bairro}
-                            <br />
-                            {cidade}
-                          </p>
-                        </div>
-                        <div className="horario">
-                          <p className="text-gray-600 flex gap-2">
-                            <span className="self-center bg-clock-icon w-4 h-3.5"></span>
-                            {dataHoraOcorrencia}
-                            <br />
-                            {hora}
-                          </p>
-                        </div>
-                        <div className="self-end">
-                          <DeletarOcorrencia
-                            idOcorr={id}
-                            ocorrs={ocorrencias}
-                            setOcorrList={setOcorrencias}
-                            usuario={usuario}
-                          />
-                        </div>
+                  }
+                ) => (
+                  <div
+                    onClick={() => handleClickOcorrencia(id)}
+                    key={id}
+                    className="mt-4 bg-blue-100 hover:bg-blue-200 p-4 rounded border font border-gray-300 flex flex-col"
+                  >
+                    <p className="font-semibold">{categoria.nome}</p>
+                    {/*-- Avaliação por Votos */}
+                    <VoteOcorrencia
+                      userId={usuarioId}
+                      ocorrId={id}
+                      avaliacao={avaliacao}
+                    />
+                    {/*Avaliação por Votos -- */}
+                    <div className="flex gap-4 justify-around">
+                      <div className="regiao">
+                        <p className="text-gray-600 flex gap-2">
+                          <span className="self-center bg-pin-icon w-4 h-5"></span>
+                          {bairro}
+                          <br />
+                          {cidade}
+                        </p>
+                      </div>
+                      <div className="horario">
+                        <p className="text-gray-600 flex gap-2">
+                          <span className="self-center bg-clock-icon w-4 h-3.5"></span>
+                          {dataHoraOcorrencia}
+                          <br />
+                          {hora}
+                        </p>
+                      </div>
+                      <div className="self-end">
+                        <DeletarOcorrencia
+                          idOcorr={id}
+                          ocorrs={ocorrencias}
+                          setOcorrList={setOcorrencias}
+                          usuario={usuario}
+                        />
                       </div>
                     </div>
-                  )
+                  </div>
                 )
-              : ocorrenciasCopy.map(
-                  (
-                    /* ocorrencia, id */ {
-                      id,
-                      categoria,
-                      bairro,
-                      cidade,
-                      dataHoraOcorrencia,
-                      hora,
-                      avaliacao,
-                      usuario,
-                    }
-                  ) => (
-                    <div
-                      onClick={() => handleClickOcorrencia(id)}
-                      key={id}
-                      className="mt-4 bg-blue-100 hover:bg-blue-200 p-4 rounded border font border-gray-300 flex flex-col"
-                    >
-                      <p className="font-semibold">{categoria.nome}</p>
-                      {/*-- Avaliação por Votos */}
-                      <VoteOcorrencia
-                        userId={usuarioId}
-                        ocorrId={id}
-                        avaliacao={avaliacao}
-                      />
-                      {/*Avaliação por Votos -- */}
-                      <div className="flex gap-4 justify-around">
-                        <div className="regiao">
-                          <p className="text-gray-600 flex gap-2">
-                            <span className="self-center bg-pin-icon w-4 h-5"></span>
-                            {bairro}
-                            <br />
-                            {cidade}
-                          </p>
-                        </div>
-                        <div className="horario">
-                          <p className="text-gray-600 flex gap-2">
-                            <span className="self-center bg-clock-icon w-4 h-3.5"></span>
-                            {dataHoraOcorrencia}
-                            <br />
-                            {hora}
-                          </p>
-                        </div>
-                        <div className="self-end">
-                          <DeletarOcorrencia
-                            idOcorr={id}
-                            ocorrs={ocorrencias}
-                            setOcorrList={setOcorrencias}
-                            usuario={usuario}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  )
-                )}
+              )}
           </div>
         </div>
       </div>
@@ -742,7 +739,7 @@ const Ocorrencia = () => {
                             lista={tipoOcorrenciaLista}
                             className="border rounded-[6px] p-3 w-full mb-4 text-black"
                             handleChange={handleChange}
-                            // handleBlur={handleBlur}
+                          // handleBlur={handleBlur}
                           />
                         ) : (
                           <input

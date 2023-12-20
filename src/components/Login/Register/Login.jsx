@@ -13,7 +13,7 @@ function FormLogin() {
   const handleLogin = async () => {
     if (email !== "" && senha !== "") {
       try {
-        const url = "http://localhost:8082/api/login";
+        const url = "/api/login";
         const request = {
           username: email,
           password: senha,
@@ -100,7 +100,8 @@ function Login() {
       };
 
       axios
-        .post("http://localhost:8080/api/login", authenticationRequest)
+        // .post("http://localhost:8080/api/login", authenticationRequest)
+        .post("/api/login", authenticationRequest)
         .then((response) => {
           // registerSuccessfulLoginForJwt(response.data.token, response.data.expiration);
           navigate("/");
