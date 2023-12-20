@@ -147,7 +147,7 @@ const Register = () => {
       notifyError("A senha e a confirmação estão diferentes.");
     } else {
       axios
-        .post("http://localhost:8082/api/usuario", usuarioRequest)
+        .post("http://localhost:8082/api/usuario", usuarioRequest) //request from "/api/usuario" works with the current proxy setup. Next step: trying to replace http://localhost:8082 with the external API url
         .then(
           //(res) => console.log("Usuário cadastrado com sucesso.")
           () => {
