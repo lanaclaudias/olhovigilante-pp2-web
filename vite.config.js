@@ -28,8 +28,11 @@ export default defineConfig(({ command, mode }) => {
       host: true, //"127.0.0.1",
       port: 5173,
       proxy: {
-        "/v1": "https://api.geoapify.com",
-        //"/api": "https://olho-demo.onrender.com",
+        "/v1": {
+          target: "https://api.geoapify.com",
+          changeOrigin: true,
+          //secure: false,
+        },
         "/api": {
           target: "https://olho-demo.onrender.com",
           changeOrigin: true,
@@ -41,7 +44,7 @@ export default defineConfig(({ command, mode }) => {
           rewrite: (path) => path.replace(/^\/api/, ""),
         }, */
       },
-      strictPort: true,
+      //strictPort: true,
     },
     build: {
       //assetsDir: "assets",
