@@ -28,4 +28,4 @@ RUN npm run build
 
 RUN BACKGROUND npm run preview
 
-EXPOSE WEBSITE http://localhost:5173
+EXPOSE WEBSITE localhost:5173
