@@ -29,6 +29,12 @@ export default defineConfig(({ command, mode }) => {
       port: 5173,
       proxy: {
         "/v1": "https://api.geoapify.com",
+        //"/api": "https://olho-demo.onrender.com",
+        "/api": {
+          target: "https://olho-demo.onrender.com",
+          changeOrigin: true,
+          //secure: false,
+        },
         /* "/api": {
           target: "https://api.geoapify.com",
           changeOrigin: true,
