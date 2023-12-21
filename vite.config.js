@@ -44,7 +44,8 @@ export default defineConfig(({ command, mode }) => {
       strictPort: true,
     },
     build: {
-      assetsDir: "assets",
+      //assetsDir: "assets",
+
     },
     define: {
       __APP_ENV__: JSON.stringify(env.APP_ENV),
