@@ -377,7 +377,7 @@ const Ocorrencia = () => {
     //let targetUrl = "https://api.geoapify.com";
     axios
       .get(
-        `http://localhost:5173/v1/geocode/reverse?lat=${reportMarker.getLatLng().lat
+        `/v1/geocode/reverse?lat=${reportMarker.getLatLng().lat
         }&lon=${reportMarker.getLatLng().lng
         }&type=street&lang=pt&limit=1&format=json&apiKey=${import.meta.env.VITE_APP_GEOAPIFY_API_KEY
         }`,

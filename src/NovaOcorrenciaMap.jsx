@@ -107,7 +107,7 @@ const Map = ({ setReportMarker }) => {
   });
 
   useEffect(() => {
-    axios.get("http://localhost:8082/api/ocorrencia").then((r) => {
+    axios.get("/api/ocorrencia").then((r) => {
       setOcorrencias(r.data);
     });
     map.addControl(addressSearchControl);
