@@ -28,6 +28,7 @@ export default defineConfig(({ command, mode }) => {
       host: true, //"127.0.0.1",
       port: 5173,
       proxy: {
+        "/v1": "https://api.geoapify.com",
         "/v1": {
           target: "https://api.geoapify.com",
           changeOrigin: true,
