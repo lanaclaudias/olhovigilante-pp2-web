@@ -1,16 +1,14 @@
 import { Route, Routes } from "react-router-dom";
-import Cadastro from "./components/Login/Register/Register";
-import NotFound from "./NotFound";
-import Home from "./components/Home";
-import Ocorrencia from "./Ocorrencia";
-import Login from "./components/Login/Register/Login";
-import Perfil from "./components/Perfil/Perfil";
-import MapDemo from "./MapDemo";
-import NewMap from "./NewMap";
-import GeoapifyMap from "./GeoapifyMap";
+import Cadastro from "./views/register/Register";
+import NotFound from "./views/NotFound";
+import Home from "./views/home/Home";
+import Ocorrencia from "./views/ocorrencias/Ocorrencia";
+import Login from "./views/login/Login";
+import Perfil from "./views/perfil/Perfil";
+import GeoapifyMap from "./util/maps/GeoapifyMap";
 import { ProtectedRoute } from "./util/ProtectedRoute";
 import { LoggedInRouting } from "./util/LoggedInRouting";
-import Comunidade from "./Comunidade";
+import Comunidade from "./views/comunidade/Comunidade";
 import FileUploader from "./util/FileUploader";
 import DropZone from "./util/DropZone";
 

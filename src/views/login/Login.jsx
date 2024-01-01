@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "../../Header/Header";
-import { mensagemErro, notifyError, notifySuccess } from "../../../util/Util";
-import { registerSuccessfulLoginForJwt } from "../../../util/AuthenticationService";
+import Header from "../Header";
+import { notifyError, notifySuccess } from "../../util/Util";
+import { registerSuccessfulLoginForJwt } from "../../util/AuthenticationService";
 import axios from "axios";
 
 function FormLogin() {

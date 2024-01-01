@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation, Link, useNavigate, redirect, Navigate } from "react-router-dom";
 import logo from "/mini-logo.png";
-import { isUserLoggedIn, logout } from "../../util/AuthenticationService";
+import { isUserLoggedIn, logout } from "../util/AuthenticationService";
 
 const navMenuItems = [
   {

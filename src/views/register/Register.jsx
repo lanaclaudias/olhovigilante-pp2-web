@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
 import cepPromise from "cep-promise";
-import Header from "../../Header/Header";
-import { notifyError, notifySuccess } from "../../../util/Util"
+import Header from "../Header";
+import { notifyError, notifySuccess } from "../../util/Util"
 import { redirect, useNavigate } from "react-router-dom";
 
 const Register = () => {

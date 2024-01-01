@@ -1,5 +1,5 @@
 import axios from "axios";
-import { notifyError, notifySuccess } from "./util/Util";
+import { notifyError, notifySuccess } from "../../util/Util";
 
 const DeletarOcorrencia = ({ idOcorr, ocorrs, setOcorrList, usuario }) => {
   const handleClick = (e) => {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo, useContext } from "react";
-import Header from "./components/Header/Header";
+import Header from "../Header";
 //import categorias from "./categorias.json";
 import axios from "axios";
 //import MyMap from "./MyMap";
@@ -22,22 +22,21 @@ import {
   isUserLoggedIn,
   getUserId,
   USERID_SESSION_ATTRIBUTE_NAME,
-} from "./util/AuthenticationService";
+} from "../../util/AuthenticationService";
 
 import centerMarkerIcon from "/centermarker.png";
 import dangerMarkerIcon from "/danger-icon.png";
-import { notifyError, notifySuccess } from "./util/Util";
-import FileUploader from "./util/FileUploader";
-import DropZone from "./util/DropZone";
-import { Footer } from "./Footer";
+import { notifyError, notifySuccess } from "../../util/Util";
+import FileUploader from "../../util/FileUploader";
+import DropZone from "../../util/DropZone";
+import { Footer } from "../Footer";
 import VoteOcorrencia from "./VoteOcorrencia";
 import DeletarOcorrencia from "./DeletarOcorrencia";
 /* import NovaOcorrenciaForm from "./NovaOcorrenciaForm"; */
-import NewMap from "./NewMap";
 import OcorrenciasMap from "./OcorrenciasMap";
 import NovaOcorrenciaMap from "./NovaOcorrenciaMap";
 
-import * as TestData from "./util/TestData";
+import * as TestData from "../../util/TestData";
 import { useNavigate } from "react-router-dom";
 
 const TipoOcorrenciaSelect = (props) => {

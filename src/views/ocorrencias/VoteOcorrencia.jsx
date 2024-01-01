@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { notifyError } from "./util/Util";
+import { notifyError } from "../../util/Util";
 
 /* const getAvaliacao = (id) => {
   let url = `http://localhost:8082/api/ocorrencia/${id}`;

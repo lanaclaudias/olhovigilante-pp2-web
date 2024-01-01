@@ -2,14 +2,14 @@ export const Footer = () => (
     <div className="h-[275px] text-white bg-black">
         <div className="container flex gap-1 justify-between pt-20 text-[20px]">
           <div>
-            <p>Rua Jurema, 10 - Centro, Jaboatão Dos Guararapes/PE</p>
+            <p>Estrada de Bulhões, Sem Nº - Centro, Jaboatão Dos Guararapes/PE</p>
 
             <p>CEP: 50000-111</p>
             <p>CNPJ: 00.000.000/0001-00</p>
           </div>
 
           <div>
-            <p className="container text-white">contato@olhovigilante.com.br</p>
+            <p className="container text-white">olhovigilante01@gmail.com</p>
 
             <p>(81) 9 0800-0800</p>
           </div>
