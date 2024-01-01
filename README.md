@@ -3,10 +3,9 @@
 Front end do projeto Olho Vigilante
 
 
-# Informações parciais para teste do projeto
+## Informações para teste presencial do projeto (IFPE-JG DemoDay 19/12/2023)
 
 - Ordem de inicialização das tabelas: Categorias > Usuarios > Ocorrências
-- id dos Usuários em ordem: 43, 45, 47...
 - Contas disponíveis para login:
 	email: joao.silva@email.com
 	senha: senha123
@@ -16,3 +15,9 @@ Front end do projeto Olho Vigilante
 
 	email: pedro.santos@email.com
 	senha: minhasenha
+
+## Melhorias a serem implementadas
+
+- [ ] Reorganização e decoupling dos componentes
+- [ ] Implementação da área "Comunidade"
+- [ ] Outras...
