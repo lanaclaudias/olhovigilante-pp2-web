@@ -16,6 +16,17 @@ import {
   Marker,
 } from "react-leaflet";
 import * as L from "leaflet";
+// Missing default leaflet icon production build fix
+delete L.Icon.Default.prototype._getIconUrl;
+import retinaIcon from "leaflet/dist/images/marker-icon-2x.png";
+import icnUrl from "leaflet/dist/images/marker-icon.png";
+import shadowUrl from "leaflet/dist/images/marker-shadow.png";
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: retinaIcon,
+  iconUrl: icnUrl,
+  shadowUrl: shadowUrl,
+});
+
 import dangerMarkerIcon from "/danger-icon.png";
 import axios from "axios";
 

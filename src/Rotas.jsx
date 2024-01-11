@@ -11,6 +11,7 @@ import { LoggedInRouting } from "./util/LoggedInRouting";
 import Comunidade from "./views/comunidade/Comunidade";
 import FileUploader from "./util/FileUploader";
 import DropZone from "./util/DropZone";
+import NovaOcorrenciaForm from "./views/ocorrencias/NovaOcorrenciaForm";
 
 function Rotas() {
   return (
@@ -42,7 +43,7 @@ function Rotas() {
             </ProtectedRoute>
           }
         />
-        <Route path="mapdemo" element={<GeoapifyMap />} />
+        <Route path="formdemo" element={<NovaOcorrenciaForm />} />
         <Route path="comunidade" element={<Comunidade />} />
         <Route path="uploader" element={<DropZone />} />
         <Route path="*" element={<NotFound />} /> {/* Página 404 */}

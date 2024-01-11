@@ -15,9 +15,3 @@ Front end do projeto Olho Vigilante
 
 	email: pedro.santos@email.com
 	senha: minhasenha
-
-## Melhorias a serem implementadas
-
-- [ ] Reorganização e decoupling dos componentes
-- [ ] Implementação da área "Comunidade"
-- [ ] Outras...
