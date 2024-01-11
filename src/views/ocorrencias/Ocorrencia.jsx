@@ -186,6 +186,12 @@ const Ocorrencia = () => {
     setMidiasArr(midias /* [...midias, midias] */);
   };
 
+  // Novo handleSubmit
+  const handleSubmitNew = (e) => {
+    e.preventDefault();
+    
+  }
+  // Implementação anterior do handleSubmit
   const handleSubmit = (e) => {
     //console.log("midiasArr: ", midiasArr);
     e.preventDefault();
