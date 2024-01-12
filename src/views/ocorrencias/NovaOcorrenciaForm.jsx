@@ -3,7 +3,7 @@ import { TipoOcorrenciaSelect } from "./TipoOcorrenciaSelect";
 import { useState, useEffect, useCallback } from "react";
 import NovaOcorrenciaMap from "./NovaOcorrenciaMap";
 import axios from "axios";
-
+import { notifyError, notifySuccess } from "../../util/Util";
 // handleSubmit should be implemented at parent component to handle the modal effects
 /* 
 include the lines below in the submit function
@@ -65,10 +65,6 @@ const NovaOcorrenciaForm = ({ handleSubmit, setOcorrencias, setShowModal }) => {
   };
 
   const handleClick = (e) => {
-    //console.log("midiasArr: ", midiasArr);
-    // console.log(reportMarker.getLatLng().lng)
-    //axios.defaults.headers.get['Access-Control-Allow-Origin'] = '*';
-    //let targetUrl = "https://api.geoapify.com";
     axios
       .get(
         `/v1/geocode/reverse?lat=${reportMarker.getLatLng().lat}&lon=${reportMarker.getLatLng().lng
@@ -80,20 +76,12 @@ const NovaOcorrenciaForm = ({ handleSubmit, setOcorrencias, setShowModal }) => {
         }
       )
       .then((result) => {
-        /* console.log(
-          "cidade: ",
-          result.data.results[0].city,
-          "bairro: ",
-          result.data.results[0].suburb
-        ); */
         const ocorrenciaRequest = {
           descricao,
           cidade: result.data.results[0].city,
           bairro: result.data.results[0].suburb,
           dataHoraOcorrencia: data, // alterar formatação (data + hora)
           hora,
-          //midia,
-          //geolocalizacao: "" + temp.lat + "," + temp.lng, //anterior com componentes locais
           geolocalizacao:
             "" +
             reportMarker.getLatLng().lat +
@@ -106,8 +94,6 @@ const NovaOcorrenciaForm = ({ handleSubmit, setOcorrencias, setShowModal }) => {
         axios
           .post("/api/ocorrencia", ocorrenciaRequest)
           .then((response) => {
-            // Nova implementação
-            //console.log("midiasArr: ", midiasArr, "\nOcorrencia ID: ", response.data.id)
             midiasArr.map(({ fileUrl }) => {
               const midiaRequest = {
                 ocorrenciaId: response.data.id,
@@ -124,8 +110,8 @@ const NovaOcorrenciaForm = ({ handleSubmit, setOcorrencias, setShowModal }) => {
             setOcorrencias(
               (ocorrencias) => ([...ocorrencias, response.data])
             );
-            /*setShowModal(false);
-            notifySuccess("Ocorrencia cadastrada com sucesso."); */
+
+            notifySuccess("Ocorrencia cadastrada com sucesso.");
           })
           .catch((err) => {
             notifyError(
@@ -247,6 +233,7 @@ const NovaOcorrenciaForm = ({ handleSubmit, setOcorrencias, setShowModal }) => {
             <button
               className="font-bold bg-blue-400 px-[52px] py-[12px] rounded-lg mt-3"
               type="submit"
+              onClick={handleClick}
             >
               SALVAR
             </button>

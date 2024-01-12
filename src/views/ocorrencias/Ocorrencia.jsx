@@ -23,6 +23,7 @@ import NovaOcorrenciaMap from "./NovaOcorrenciaMap";
 import * as TestData from "../../util/TestData";
 import { useNavigate } from "react-router-dom";
 import { TipoOcorrenciaSelect } from "./TipoOcorrenciaSelect";
+import NovaOcorrenciaForm from "./NovaOcorrenciaForm";
 
 const Ocorrencia = () => {
   // Acrescentar value: {state} ao array de fields para os inputs
@@ -179,93 +180,10 @@ const Ocorrencia = () => {
   );
 
   const [ocorrenciaId, setOcorrenciaId] = useState(0);
-  // Sharing states between components
-  const handleUpload = (midias) => {
-    // iterar por todas as mídias para fazer as requisições de da api de mídia
-    //console.log("midias: ", midias);
-    setMidiasArr(midias /* [...midias, midias] */);
-  };
 
-  // Novo handleSubmit
-  const handleSubmitNew = (e) => {
-    e.preventDefault();
-    
-  }
-  // Implementação anterior do handleSubmit
   const handleSubmit = (e) => {
-    //console.log("midiasArr: ", midiasArr);
     e.preventDefault();
-    // console.log(reportMarker.getLatLng().lng)
-    //axios.defaults.headers.get['Access-Control-Allow-Origin'] = '*';
-    //let targetUrl = "https://api.geoapify.com";
-    axios
-      .get(
-        `/v1/geocode/reverse?lat=${reportMarker.getLatLng().lat}&lon=${
-          reportMarker.getLatLng().lng
-        }&type=street&lang=pt&limit=1&format=json&apiKey=${
-          import.meta.env.VITE_APP_GEOAPIFY_API_KEY
-        }`,
-        {
-          /* withCredentials: false, */
-          headers: {},
-        }
-      )
-      .then((result) => {
-        /* console.log(
-          "cidade: ",
-          result.data.results[0].city,
-          "bairro: ",
-          result.data.results[0].suburb
-        ); */
-        const ocorrenciaRequest = {
-          descricao,
-          cidade: result.data.results[0].city,
-          bairro: result.data.results[0].suburb,
-          dataHoraOcorrencia: data, // alterar formatação (data + hora)
-          hora,
-          //midia,
-          //geolocalizacao: "" + temp.lat + "," + temp.lng, //anterior com componentes locais
-          geolocalizacao:
-            "" +
-            reportMarker.getLatLng().lat +
-            "," +
-            reportMarker.getLatLng().lng, //atual com componente NovaOcorrenciaMap
-          usuarioId,
-          categoriaId,
-        };
-
-        axios
-          .post("/api/ocorrencia", ocorrenciaRequest)
-          .then((response) => {
-            // Nova implementação
-            //console.log("midiasArr: ", midiasArr, "\nOcorrencia ID: ", response.data.id)
-            midiasArr.map(({ fileUrl }) => {
-              const midiaRequest = {
-                ocorrenciaId: response.data.id,
-                midiaUrl: fileUrl,
-              };
-              axios
-                .post("/api/midia", midiaRequest)
-                .then((res) => {
-                  //console.log("Midia cadastrada: ", res.data)
-                })
-                .catch((err) => notifyError("Falha no upload dos arquivos."));
-            });
-
-            setOcorrencias([...ocorrencias, response.data]);
-            setShowModal(false);
-            notifySuccess("Ocorrencia cadastrada com sucesso.");
-          })
-          .catch((err) => {
-            notifyError(
-              "Falha ao cadastrar a ocorrência. Verifique os dados informados e a região selecionada no mapa",
-              err.message
-            );
-          });
-      })
-      .catch((error) =>
-        notifyError("Erro ao processar a localização informada.")
-      );
+    setShowModal(false);
   };
 
   const [ocorrenciaUnica, setOcorrenciaUnica] = useState();
@@ -318,7 +236,61 @@ const Ocorrencia = () => {
   const OcorrenciasLista = (/* {ocorrenciasCopy} */) =>
     ocorrenciasCopy.length == 0
       ? ocorrencias.map(
-          ({
+        ({
+          id,
+          categoria,
+          bairro,
+          cidade,
+          dataHoraOcorrencia,
+          hora,
+          avaliacao,
+          usuario,
+        }) => (
+          <div
+            onClick={() => handleClickOcorrencia(id)}
+            key={id}
+            className="mt-4 bg-blue-100 hover:bg-blue-200 p-4 rounded border font border-gray-300 flex flex-col"
+          >
+            <p className="font-semibold">{categoria.nome}</p>
+            {/*-- Avaliação por Votos */}
+            <VoteOcorrencia
+              userId={usuarioId}
+              ocorrId={id}
+              avaliacao={avaliacao}
+            />
+            {/*Avaliação por Votos -- */}
+            <div className="flex gap-4 justify-around">
+              <div className="regiao">
+                <p className="text-gray-600 flex gap-2">
+                  <span className="self-center bg-pin-icon w-4 h-5"></span>
+                  {bairro}
+                  <br />
+                  {cidade}
+                </p>
+              </div>
+              <div className="horario">
+                <p className="text-gray-600 flex gap-2">
+                  <span className="self-center bg-clock-icon w-4 h-3.5"></span>
+                  {dataHoraOcorrencia}
+                  <br />
+                  {hora}
+                </p>
+              </div>
+              <div className="self-end">
+                <DeletarOcorrencia
+                  idOcorr={id}
+                  ocorrs={ocorrencias}
+                  setOcorrList={setOcorrencias}
+                  usuario={usuario}
+                />
+              </div>
+            </div>
+          </div>
+        )
+      )
+      : ocorrenciasCopy.map(
+        (
+            /* ocorrencia, id */ {
             id,
             categoria,
             bairro,
@@ -327,104 +299,50 @@ const Ocorrencia = () => {
             hora,
             avaliacao,
             usuario,
-          }) => (
-            <div
-              onClick={() => handleClickOcorrencia(id)}
-              key={id}
-              className="mt-4 bg-blue-100 hover:bg-blue-200 p-4 rounded border font border-gray-300 flex flex-col"
-            >
-              <p className="font-semibold">{categoria.nome}</p>
-              {/*-- Avaliação por Votos */}
-              <VoteOcorrencia
-                userId={usuarioId}
-                ocorrId={id}
-                avaliacao={avaliacao}
-              />
-              {/*Avaliação por Votos -- */}
-              <div className="flex gap-4 justify-around">
-                <div className="regiao">
-                  <p className="text-gray-600 flex gap-2">
-                    <span className="self-center bg-pin-icon w-4 h-5"></span>
-                    {bairro}
-                    <br />
-                    {cidade}
-                  </p>
-                </div>
-                <div className="horario">
-                  <p className="text-gray-600 flex gap-2">
-                    <span className="self-center bg-clock-icon w-4 h-3.5"></span>
-                    {dataHoraOcorrencia}
-                    <br />
-                    {hora}
-                  </p>
-                </div>
-                <div className="self-end">
-                  <DeletarOcorrencia
-                    idOcorr={id}
-                    ocorrs={ocorrencias}
-                    setOcorrList={setOcorrencias}
-                    usuario={usuario}
-                  />
-                </div>
+          }
+        ) => (
+          <div
+            onClick={() => handleClickOcorrencia(id)}
+            key={id}
+            className="mt-4 bg-blue-100 hover:bg-blue-200 p-4 rounded border font border-gray-300 flex flex-col"
+          >
+            <p className="font-semibold">{categoria.nome}</p>
+            {/*-- Avaliação por Votos */}
+            <VoteOcorrencia
+              userId={usuarioId}
+              ocorrId={id}
+              avaliacao={avaliacao}
+            />
+            {/*Avaliação por Votos -- */}
+            <div className="flex gap-4 justify-around">
+              <div className="regiao">
+                <p className="text-gray-600 flex gap-2">
+                  <span className="self-center bg-pin-icon w-4 h-5"></span>
+                  {bairro}
+                  <br />
+                  {cidade}
+                </p>
+              </div>
+              <div className="horario">
+                <p className="text-gray-600 flex gap-2">
+                  <span className="self-center bg-clock-icon w-4 h-3.5"></span>
+                  {dataHoraOcorrencia}
+                  <br />
+                  {hora}
+                </p>
+              </div>
+              <div className="self-end">
+                <DeletarOcorrencia
+                  idOcorr={id}
+                  ocorrs={ocorrencias}
+                  setOcorrList={setOcorrencias}
+                  usuario={usuario}
+                />
               </div>
             </div>
-          )
+          </div>
         )
-      : ocorrenciasCopy.map(
-          (
-            /* ocorrencia, id */ {
-              id,
-              categoria,
-              bairro,
-              cidade,
-              dataHoraOcorrencia,
-              hora,
-              avaliacao,
-              usuario,
-            }
-          ) => (
-            <div
-              onClick={() => handleClickOcorrencia(id)}
-              key={id}
-              className="mt-4 bg-blue-100 hover:bg-blue-200 p-4 rounded border font border-gray-300 flex flex-col"
-            >
-              <p className="font-semibold">{categoria.nome}</p>
-              {/*-- Avaliação por Votos */}
-              <VoteOcorrencia
-                userId={usuarioId}
-                ocorrId={id}
-                avaliacao={avaliacao}
-              />
-              {/*Avaliação por Votos -- */}
-              <div className="flex gap-4 justify-around">
-                <div className="regiao">
-                  <p className="text-gray-600 flex gap-2">
-                    <span className="self-center bg-pin-icon w-4 h-5"></span>
-                    {bairro}
-                    <br />
-                    {cidade}
-                  </p>
-                </div>
-                <div className="horario">
-                  <p className="text-gray-600 flex gap-2">
-                    <span className="self-center bg-clock-icon w-4 h-3.5"></span>
-                    {dataHoraOcorrencia}
-                    <br />
-                    {hora}
-                  </p>
-                </div>
-                <div className="self-end">
-                  <DeletarOcorrencia
-                    idOcorr={id}
-                    ocorrs={ocorrencias}
-                    setOcorrList={setOcorrencias}
-                    usuario={usuario}
-                  />
-                </div>
-              </div>
-            </div>
-          )
-        );
+      );
   const OcorrenciaDetalhes = () => (
     <>
       <div className="justify-center items-start flex overflow-x-hidden overflow-y-auto inset-0 z-50 outline-none focus:outline-none fixed min-w-[550px] my-6 mx-auto max-w-3xl">
@@ -550,105 +468,11 @@ const Ocorrencia = () => {
         <div className="flex justify-between">
           {/* <NovaOcorrenciaForm // handleSubmit={handleSubmit}
           /> */}
-          <form
-            name="ocorrenciaForm"
-            id="ocorrenciaForm"
-            onSubmit={handleSubmit}
-            className="justify-center items-start flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
-          >
-            <div className="relative min-w-[550px] my-6 mx-auto max-w-3xl">
-              {/*content*/}
-              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                <div className="px-6 flex justify-between items-center">
-                  <h1 className="text-black font-sora text-[24px] font-bold pt-4">
-                    Nova Ocorrência
-                  </h1>
-                  <button
-                    className="font-normal px-[20px] font-rubik text-[14px] py-[5px] rounded-lg bg-black text-white"
-                    type="button"
-                    onClick={() => setShowModal(false)}
-                  >
-                    FECHAR
-                  </button>
-                </div>
-
-                <div className="relative p-6 flex-auto overflow-hidden">
-                  {fields.map(
-                    ({
-                      label,
-                      type,
-                      values,
-                      disabled,
-                      handleChange,
-                      handleBlur,
-                    }) => (
-                      <div key={label}>
-                        <label className="block text-black font-bold">
-                          {label}
-                        </label>
-                        {type === "textarea" ? (
-                          <textarea
-                            key={label}
-                            placeholder={label}
-                            onChange={handleChange}
-                            className="border rounded-[6px] p-3 w-full mb-4 text-black"
-                          />
-                        ) : type === "file" ? (
-                          //< FileUploader />
-                          <div key={label} className="flex justify-center">
-                            <DropZone
-                              onUpload={handleUpload}
-                              ocorrenciaId={ocorrenciaId}
-                            />
-                          </div>
-                        ) : type === "select" ? (
-                          <TipoOcorrenciaSelect
-                            key={label}
-                            lista={tipoOcorrenciaLista}
-                            className="border rounded-[6px] p-3 w-full mb-4 text-black"
-                            handleChange={handleChange}
-                            // handleBlur={handleBlur}
-                          />
-                        ) : (
-                          <input
-                            key={label}
-                            type={type}
-                            placeholder={label}
-                            onChange={handleChange}
-                            disabled={disabled}
-                            className="border rounded-[6px] p-3 w-full mb-4 text-black"
-                          />
-                        )}
-                      </div>
-                    )
-                  )}
-                  {/* Mapa de Registro de Ocorrência */}
-                  {/* <MyMap /> */}
-                  <NovaOcorrenciaMap setReportMarker={setReportMarker} />
-                </div>
-                {/* Mapa de Registro de Ocorrência */}
-                {/* <MyMap /> */}
-                {/* <NovaOcorrenciaMap setReportMarker={setReportMarker} /> */}
-                {/*footer*/}
-                <div className="flex gap-[20px] items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b text-white">
-                  <button
-                    className="font-bold bg-blue-400 px-[52px] py-[12px] rounded-lg mt-3"
-                    type="submit"
-                  >
-                    SALVAR
-                  </button>
-
-                  <button
-                    className="font-bold px-[52px] py-[12px] rounded-lg mt-3 bg-red-600"
-                    type="button"
-                    onClick={() => setShowModal(false)}
-                  >
-                    FECHAR
-                  </button>
-                </div>
-              </div>
-            </div>
-          </form>
+          <NovaOcorrenciaForm
+            setShowModal={setShowModal}
+            setOcorrencias={setOcorrencias}
+            handleSubmit={handleSubmit}
+          />
           {/* Background Overlay */}
           <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
         </div>
